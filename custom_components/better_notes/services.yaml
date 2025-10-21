@@ -1,0 +1,100 @@
+create_note:
+  name: Create Note
+  description: Create a new note
+  fields:
+    title:
+      name: Title
+      description: The title of the note
+      required: true
+      example: "Shopping List"
+      selector:
+        text:
+    content:
+      name: Content
+      description: The content of the note
+      required: false
+      example: "Milk, Eggs, Bread"
+      selector:
+        text:
+          multiline: true
+    color:
+      name: Color
+      description: The color of the note (hex code)
+      required: false
+      default: "#FFEB3B"
+      example: "#FF9800"
+      selector:
+        color_rgb:
+    pinned:
+      name: Pinned
+      description: Whether the note should be pinned
+      required: false
+      default: false
+      selector:
+        boolean:
+    tags:
+      name: Tags
+      description: Tags for organizing the note
+      required: false
+      example: ["shopping", "groceries"]
+      selector:
+        object:
+
+update_note:
+  name: Update Note
+  description: Update an existing note
+  fields:
+    note_id:
+      name: Note ID
+      description: The ID of the note to update
+      required: true
+      example: "abc123-def456-ghi789"
+      selector:
+        text:
+    title:
+      name: Title
+      description: The new title of the note
+      required: false
+      selector:
+        text:
+    content:
+      name: Content
+      description: The new content of the note
+      required: false
+      selector:
+        text:
+          multiline: true
+    color:
+      name: Color
+      description: The new color of the note (hex code)
+      required: false
+      selector:
+        color_rgb:
+    pinned:
+      name: Pinned
+      description: Whether the note should be pinned
+      required: false
+      selector:
+        boolean:
+    tags:
+      name: Tags
+      description: Tags for organizing the note
+      required: false
+      selector:
+        object:
+
+delete_note:
+  name: Delete Note
+  description: Delete a note
+  fields:
+    note_id:
+      name: Note ID
+      description: The ID of the note to delete
+      required: true
+      example: "abc123-def456-ghi789"
+      selector:
+        text:
+
+get_notes:
+  name: Get Notes
+  description: Get all notes (fires an event with the notes list)
