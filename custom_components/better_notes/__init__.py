@@ -26,7 +26,6 @@ from .const import (
     PANEL_TITLE,
     PANEL_ICON,
     PANEL_URL,
-    PANEL_COMPONENT_NAME,
 )
 from .storage import NotesStorage
 
@@ -151,6 +150,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     async_remove_panel(hass, PANEL_URL)
 
     # Clear data
-    hass.data[DOMAIN].clear()
+    hass.data.pop(DOMAIN, None)
 
     return True
