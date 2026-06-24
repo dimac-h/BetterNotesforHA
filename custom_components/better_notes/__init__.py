@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 import voluptuous as vol
 
+from homeassistant.components.frontend import async_register_built_in_panel, async_remove_panel
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall
@@ -72,12 +73,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     ])
 
-    hass.components.frontend.async_register_built_in_panel(
-        "iframe",
-        PANEL_TITLE,
-        PANEL_ICON,
-        PANEL_URL,
-        {"url": f"/better_notes_panel/better-notes-panel.html"},
+    async_register_built_in_panel(
+        hass,
+        component_name="iframe",
+        sidebar_title=PANEL_TITLE,
+        sidebar_icon=PANEL_ICON,
+        frontend_url_path=PANEL_URL,
+        config={"url": "/better_notes_panel/better-notes-panel.html"},
         require_admin=False,
     )
 
@@ -146,7 +148,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.services.async_remove(DOMAIN, SERVICE_GET_NOTES)
 
     # Remove panel
-    hass.components.frontend.async_remove_panel(PANEL_URL)
+    async_remove_panel(hass, PANEL_URL)
 
     # Clear data
     hass.data[DOMAIN].clear()
