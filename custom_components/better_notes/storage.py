@@ -133,7 +133,7 @@ class NotesStorage:
         notes = list(self._data.values())
         # Sort by pinned first, then by modified date (newest first)
         notes.sort(
-            key=lambda x: (not x.get(ATTR_PINNED, False), x.get(ATTR_MODIFIED, "")),
+            key=lambda x: (x.get(ATTR_PINNED, False), x.get(ATTR_MODIFIED, "")),
             reverse=True
         )
         return notes
