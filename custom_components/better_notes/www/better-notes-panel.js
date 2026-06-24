@@ -475,8 +475,8 @@ class BetterNotesPanel extends HTMLElement {
 
   _escapeAttr(text) {
     const d = document.createElement('div');
-    d.setAttribute('x', String(text));
-    return d.getAttribute('x');
+    d.textContent = String(text);
+    return d.innerHTML.replace(/"/g, '&quot;');
   }
 
   _formatDate(iso) {
@@ -550,7 +550,7 @@ class BetterNotesPanel extends HTMLElement {
       // Find the newly created note: created after beforeCreate, not pinned, empty content
       const newNote = this._notes.find(n =>
         n.created >= beforeCreate && n.title === 'New Note' && n.content === ''
-      ) ?? (this._notes.length > 0 ? this._notes[this._notes.length - 1] : null);
+      ) ?? (this._notes.length > 0 ? this._notes[0] : null);
       if (newNote) {
         this._selectNote(newNote.note_id);
         this.shadowRoot.getElementById('noteTitle')?.select();
