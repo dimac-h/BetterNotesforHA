@@ -530,6 +530,8 @@ class BetterNotesPanel extends HTMLElement {
 
   _selectNote(id) {
     clearTimeout(this._saveTimeout);
+    clearTimeout(this._deleteTimeout);
+    this._pendingDelete = false;
     this._currentNoteId = id;
     this._view = 'editor';
     this._render();
@@ -537,6 +539,7 @@ class BetterNotesPanel extends HTMLElement {
 
   async _createNote() {
     try {
+      const beforeCreate = new Date().toISOString();
       await this._hass.callService('better_notes', 'create_note', {
         title: 'New Note',
         content: '',
@@ -544,8 +547,12 @@ class BetterNotesPanel extends HTMLElement {
         pinned: false,
       });
       await this._loadNotes();
-      if (this._notes.length > 0) {
-        this._selectNote(this._notes[0].note_id);
+      // Find the newly created note: created after beforeCreate, not pinned, empty content
+      const newNote = this._notes.find(n =>
+        n.created >= beforeCreate && n.title === 'New Note' && n.content === ''
+      ) ?? (this._notes.length > 0 ? this._notes[this._notes.length - 1] : null);
+      if (newNote) {
+        this._selectNote(newNote.note_id);
         this.shadowRoot.getElementById('noteTitle')?.select();
       }
     } catch (e) {
@@ -553,7 +560,7 @@ class BetterNotesPanel extends HTMLElement {
     }
   }
 
-  async _saveNote() {
+  async _saveNote(overrides = {}) {
     if (this._saving) return;
     this._saving = true;
     clearTimeout(this._saveTimeout);
@@ -563,16 +570,18 @@ class BetterNotesPanel extends HTMLElement {
       return;
     }
 
-    const title = this.shadowRoot.getElementById('noteTitle')?.value ?? note.title;
-    const content = this.shadowRoot.getElementById('noteContent')?.value ?? note.content;
+    const title = overrides.title ?? this.shadowRoot.getElementById('noteTitle')?.value ?? note.title;
+    const content = overrides.content ?? this.shadowRoot.getElementById('noteContent')?.value ?? note.content;
+    const color = overrides.color ?? note.color;
+    const pinned = overrides.pinned ?? note.pinned;
 
     try {
       await this._hass.callService('better_notes', 'update_note', {
         note_id: note.note_id,
         title,
         content,
-        color: note.color,
-        pinned: note.pinned,
+        color,
+        pinned,
       });
       const savedId = note.note_id;
       await this._loadNotes();
@@ -623,15 +632,13 @@ class BetterNotesPanel extends HTMLElement {
   async _togglePin() {
     const note = this._currentNote();
     if (!note) return;
-    note.pinned = !note.pinned;
-    await this._saveNote();
+    await this._saveNote({ pinned: !note.pinned });
   }
 
   async _setColor(color) {
     const note = this._currentNote();
     if (!note) return;
-    note.color = color;
-    await this._saveNote();
+    await this._saveNote({ color });
   }
 
   _showSavedFeedback() {
