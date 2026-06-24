@@ -563,8 +563,9 @@
             color: this.currentNote.color,
             pinned: this.currentNote.pinned,
           });
+          const savedId = this.currentNote.note_id;
           await this.loadNotes();
-          this.renderNotesList();
+          this.currentNote = this.notes.find(n => n.note_id === savedId) ?? null;
         } catch (error) {
           console.error('Error saving note:', error);
         }
