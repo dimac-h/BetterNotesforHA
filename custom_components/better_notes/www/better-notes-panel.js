@@ -69,6 +69,7 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   _render() {
+    this.setAttribute('data-view', this._view);
     const filtered = this._filteredNotes();
     this.shadowRoot.innerHTML = `
       <style>
@@ -332,8 +333,8 @@ class BetterNotesPanel extends HTMLElement {
 
         /* Mobile: show only the active view */
         @media (max-width: 767px) {
-          .panel-list { display: ${this._view === 'list' ? 'flex' : 'none'}; }
-          .panel-editor { display: ${this._view === 'editor' ? 'flex' : 'none'}; }
+          :host([data-view="list"]) .panel-editor { display: none; }
+          :host([data-view="editor"]) .panel-list { display: none; }
           .back-btn { display: block; }
         }
 
@@ -356,7 +357,7 @@ class BetterNotesPanel extends HTMLElement {
               ? `<div class="empty-list">No notes found</div>`
               : filtered.map(note => `
                 <div class="note-item ${this._currentNoteId === note.note_id ? 'active' : ''}" data-id="${note.note_id}">
-                  <div class="note-color-bar" style="background:${note.color}"></div>
+                  <div class="note-color-bar" style="background:${this._safeColor(note.color)}"></div>
                   <div class="note-item-header">
                     <div class="note-item-title">${this._escapeHtml(note.title || 'Untitled')}</div>
                     ${note.pinned ? '<span class="pin-icon">📌</span>' : ''}
@@ -416,7 +417,7 @@ class BetterNotesPanel extends HTMLElement {
           <div class="color-picker">
             ${COLORS.map(c => `
               <div class="color-dot ${note.color === c ? 'active' : ''}"
-                   style="background:${c}" data-color="${c}"></div>
+                   style="background:${this._safeColor(c)}" data-color="${c}"></div>
             `).join('')}
           </div>
         </div>
@@ -426,6 +427,10 @@ class BetterNotesPanel extends HTMLElement {
                   placeholder="Start typing...">${this._escapeHtml(note.content || '')}</textarea>
       </div>
     `;
+  }
+
+  _safeColor(color) {
+    return /^#[0-9a-fA-F]{3,6}$/.test(color) ? color : '#FFEB3B';
   }
 
   _escapeHtml(text) {
@@ -557,18 +562,18 @@ class BetterNotesPanel extends HTMLElement {
     }
   }
 
-  _togglePin() {
+  async _togglePin() {
     const note = this._currentNote();
     if (!note) return;
     note.pinned = !note.pinned;
-    this._saveNote();
+    await this._saveNote();
   }
 
-  _setColor(color) {
+  async _setColor(color) {
     const note = this._currentNote();
     if (!note) return;
     note.color = color;
-    this._saveNote();
+    await this._saveNote();
   }
 }
 
