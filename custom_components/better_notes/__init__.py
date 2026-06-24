@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 import voluptuous as vol
 
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
@@ -63,10 +64,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN]["storage"] = storage
 
     # Register frontend panel
-    await hass.http.async_register_static_paths([{
-        "url_path": f"/better_notes_panel",
-        "path": f"{hass.config.path('custom_components')}/better_notes/www",
-    }])
+    await hass.http.async_register_static_paths([
+        StaticPathConfig(
+            url_path="/better_notes_panel",
+            path=hass.config.path("custom_components/better_notes/www"),
+            cache_headers=False,
+        )
+    ])
 
     hass.components.frontend.async_register_built_in_panel(
         "iframe",
