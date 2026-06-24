@@ -7,7 +7,7 @@ import voluptuous as vol
 from homeassistant.components.frontend import async_register_built_in_panel, async_remove_panel
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
 from homeassistant.helpers import config_validation as cv
 
 from .const import (
@@ -116,10 +116,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 {ATTR_NOTE_ID: call.data[ATTR_NOTE_ID]}
             )
 
-    async def handle_get_notes(call: ServiceCall) -> None:
+    async def handle_get_notes(call: ServiceCall) -> dict:
         """Handle the get notes service."""
         notes = await storage.async_get_all_notes()
-        hass.bus.async_fire(f"{DOMAIN}_notes_list", {"notes": notes})
+        return {"notes": notes}
 
     hass.services.async_register(
         DOMAIN, SERVICE_CREATE_NOTE, handle_create_note, schema=CREATE_NOTE_SCHEMA
@@ -131,7 +131,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         DOMAIN, SERVICE_DELETE_NOTE, handle_delete_note, schema=DELETE_NOTE_SCHEMA
     )
     hass.services.async_register(
-        DOMAIN, SERVICE_GET_NOTES, handle_get_notes
+        DOMAIN, SERVICE_GET_NOTES, handle_get_notes, supports_response=SupportsResponse.ONLY
     )
 
     _LOGGER.info("Better Notes integration setup complete")
