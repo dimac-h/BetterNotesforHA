@@ -5,6 +5,7 @@ class BetterNotesCard extends HTMLElement {
     this._config = {};
     this._hass = null;
     this._notes = [];
+    this._unsubscribeEvents = null;
   }
 
   setConfig(config) {
@@ -26,11 +27,15 @@ class BetterNotesCard extends HTMLElement {
   }
 
   set hass(hass) {
+    const firstLoad = !this._hass;
     this._hass = hass;
-    this.updateNotes();
+    if (firstLoad) {
+      this._loadNotes();
+      this._subscribeToNoteEvents();
+    }
   }
 
-  async updateNotes() {
+  async _loadNotes() {
     if (!this._hass) return;
 
     try {
@@ -46,6 +51,30 @@ class BetterNotesCard extends HTMLElement {
       }
     } catch (error) {
       console.error('Error loading notes for card:', error);
+    }
+  }
+
+  _subscribeToNoteEvents() {
+    if (!this._hass?.connection || this._unsubscribeEvents) return;
+
+    const refresh = () => this._loadNotes();
+    const events = [
+      'better_notes_note_created',
+      'better_notes_note_updated',
+      'better_notes_note_deleted',
+    ];
+
+    Promise.all(
+      events.map(e => this._hass.connection.subscribeEvents(refresh, e))
+    ).then(unsubs => {
+      this._unsubscribeEvents = () => unsubs.forEach(fn => fn());
+    });
+  }
+
+  disconnectedCallback() {
+    if (this._unsubscribeEvents) {
+      this._unsubscribeEvents();
+      this._unsubscribeEvents = null;
     }
   }
 
