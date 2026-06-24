@@ -67,7 +67,11 @@ class BetterNotesCard extends HTMLElement {
     Promise.all(
       events.map(e => this._hass.connection.subscribeEvents(refresh, e))
     ).then(unsubs => {
-      this._unsubscribeEvents = () => unsubs.forEach(fn => fn());
+      if (!this.isConnected) {
+        unsubs.forEach(fn => fn());
+      } else {
+        this._unsubscribeEvents = () => unsubs.forEach(fn => fn());
+      }
     });
   }
 
@@ -368,6 +372,11 @@ window.customCards.push({
 
 // Card Editor
 class BetterNotesCardEditor extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+  }
+
   setConfig(config) {
     this._config = config;
     this.render();
@@ -378,10 +387,6 @@ class BetterNotesCardEditor extends HTMLElement {
   }
 
   render() {
-    if (!this.shadowRoot) {
-      this.attachShadow({ mode: 'open' });
-    }
-
     this.shadowRoot.innerHTML = `
       <style>
         .card-config {
