@@ -43,7 +43,7 @@ class BetterNotesCard extends HTMLElement {
         'better_notes',
         'get_notes',
         {},
-        { return_response: true }
+        undefined, false, true
       );
       if (response && Array.isArray(response.notes)) {
         this._notes = response.notes;

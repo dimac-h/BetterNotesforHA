@@ -49,7 +49,7 @@ class BetterNotesPanel extends HTMLElement {
   async _loadNotes() {
     try {
       const result = await this._hass.callService(
-        'better_notes', 'get_notes', {}, { return_response: true }
+        'better_notes', 'get_notes', {}, undefined, false, true
       );
       if (result && Array.isArray(result.notes)) {
         this._notes = result.notes;
