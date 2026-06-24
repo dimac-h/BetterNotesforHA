@@ -208,7 +208,7 @@ class BetterNotesCard extends HTMLElement {
       <ha-card>
         <div class="card-header">
           <span>📝</span>
-          <span>${this._config.title}</span>
+          <span>${this.escapeHtml(this._config.title)}</span>
         </div>
         ${content}
       </ha-card>
@@ -230,7 +230,7 @@ class BetterNotesCard extends HTMLElement {
     }
 
     return `
-      <div class="note-card" style="--note-color: ${note.color}" data-note-id="${note.note_id}">
+      <div class="note-card" style="--note-color: ${this._safeColor(note.color)}" data-note-id="${note.note_id}">
         <div class="note-title">
           <span>${this.escapeHtml(note.title || 'Untitled')}</span>
           ${note.pinned ? '<span class="pinned-badge">📌</span>' : ''}
@@ -268,7 +268,7 @@ class BetterNotesCard extends HTMLElement {
 
     return `
       ${notes.map(note => `
-        <div class="note-card" style="--note-color: ${note.color}" data-note-id="${note.note_id}">
+        <div class="note-card" style="--note-color: ${this._safeColor(note.color)}" data-note-id="${note.note_id}">
           <div class="note-title">
             <span>${this.escapeHtml(note.title || 'Untitled')}</span>
             ${note.pinned ? '<span class="pinned-badge">📌</span>' : ''}
@@ -339,6 +339,10 @@ class BetterNotesCard extends HTMLElement {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  _safeColor(color) {
+    return /^#[0-9a-fA-F]{6}$|^#[0-9a-fA-F]{3}$/.test(color) ? color : '#FFEB3B';
   }
 
   getCardSize() {
