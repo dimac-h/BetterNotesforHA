@@ -4,7 +4,8 @@ from __future__ import annotations
 import logging
 import voluptuous as vol
 
-from homeassistant.components.frontend import async_register_custom_panel, async_remove_panel
+from homeassistant.components.frontend import async_remove_panel
+from homeassistant.components.panel_custom import async_register_panel
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
@@ -73,7 +74,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     ])
 
-    async_register_custom_panel(
+    await async_register_panel(
         hass,
         frontend_url_path=PANEL_URL,
         webcomponent_name=PANEL_COMPONENT_NAME,

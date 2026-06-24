@@ -424,7 +424,7 @@ class BetterNotesCardEditor extends HTMLElement {
       <div class="card-config">
         <div class="option">
           <label for="title">Title</label>
-          <input type="text" id="title" value="${this._config.title || 'Notes'}">
+          <input type="text" id="title" value="${this._escapeAttr(this._config.title || 'Notes')}">
         </div>
 
         <div class="option">
@@ -441,7 +441,7 @@ class BetterNotesCardEditor extends HTMLElement {
 
         <div class="option">
           <label for="note_id">Specific Note ID (optional)</label>
-          <input type="text" id="note_id" value="${this._config.note_id || ''}" placeholder="Leave empty to show all">
+          <input type="text" id="note_id" value="${this._escapeAttr(this._config.note_id || '')}" placeholder="Leave empty to show all">
         </div>
       </div>
     `;
@@ -456,6 +456,12 @@ class BetterNotesCardEditor extends HTMLElement {
     });
 
     this.shadowRoot.getElementById('show_pinned_only').addEventListener('change', () => this.configChanged());
+  }
+
+  _escapeAttr(text) {
+    const d = document.createElement('div');
+    d.textContent = String(text);
+    return d.innerHTML.replace(/"/g, '&quot;');
   }
 
   configChanged() {
