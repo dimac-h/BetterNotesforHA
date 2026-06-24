@@ -607,7 +607,7 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${this.getToken()}`,
           },
-          body: JSON.stringify({ ...data, return_response: true }),
+          body: JSON.stringify(data),
         });
 
         if (!response.ok) {
