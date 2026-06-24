@@ -48,11 +48,16 @@ class BetterNotesPanel extends HTMLElement {
 
   async _loadNotes() {
     try {
-      const result = await this._hass.callService(
-        'better_notes', 'get_notes', {}, undefined, false, true
-      );
-      if (result && Array.isArray(result.notes)) {
-        this._notes = result.notes;
+      const result = await this._hass.connection.sendMessagePromise({
+        type: 'call_service',
+        domain: 'better_notes',
+        service: 'get_notes',
+        service_data: {},
+        return_response: true,
+      });
+      const notes = result?.response?.notes;
+      if (Array.isArray(notes)) {
+        this._notes = notes;
         this._render();
       }
     } catch (e) {

@@ -39,14 +39,16 @@ class BetterNotesCard extends HTMLElement {
     if (!this._hass) return;
 
     try {
-      const response = await this._hass.callService(
-        'better_notes',
-        'get_notes',
-        {},
-        undefined, false, true
-      );
-      if (response && Array.isArray(response.notes)) {
-        this._notes = response.notes;
+      const result = await this._hass.connection.sendMessagePromise({
+        type: 'call_service',
+        domain: 'better_notes',
+        service: 'get_notes',
+        service_data: {},
+        return_response: true,
+      });
+      const notes = result?.response?.notes;
+      if (Array.isArray(notes)) {
+        this._notes = notes;
         this.render();
       }
     } catch (error) {
