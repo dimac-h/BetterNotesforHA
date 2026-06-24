@@ -17,6 +17,8 @@ class BetterNotesPanel extends HTMLElement {
     this._unsubscribeEvents = null;
     this._disconnected = false;
     this._saving = false;
+    this._pendingDelete = false;
+    this._deleteTimeout = null;
   }
 
   set hass(hass) {
@@ -37,6 +39,7 @@ class BetterNotesPanel extends HTMLElement {
   disconnectedCallback() {
     this._disconnected = true;
     clearTimeout(this._saveTimeout);
+    clearTimeout(this._deleteTimeout);
     if (this._unsubscribeEvents) {
       this._unsubscribeEvents();
       this._unsubscribeEvents = null;
@@ -576,6 +579,7 @@ class BetterNotesPanel extends HTMLElement {
       this._currentNoteId = this._notes.find(n => n.note_id === savedId)
         ? savedId
         : null;
+      this._showSavedFeedback();
     } catch (e) {
       console.error('Better Notes: failed to save note', e);
     } finally {
@@ -586,7 +590,23 @@ class BetterNotesPanel extends HTMLElement {
   async _deleteNote() {
     const note = this._currentNote();
     if (!note) return;
-    if (!confirm('Delete this note?')) return;
+
+    if (!this._pendingDelete) {
+      this._pendingDelete = true;
+      const btn = this.shadowRoot.getElementById('deleteBtn');
+      if (btn) {
+        btn.textContent = 'Confirm?';
+        btn.classList.add('confirming');
+      }
+      this._deleteTimeout = setTimeout(() => {
+        this._pendingDelete = false;
+        this._render();
+      }, 3000);
+      return;
+    }
+
+    clearTimeout(this._deleteTimeout);
+    this._pendingDelete = false;
 
     try {
       await this._hass.callService('better_notes', 'delete_note', {
@@ -612,6 +632,19 @@ class BetterNotesPanel extends HTMLElement {
     if (!note) return;
     note.color = color;
     await this._saveNote();
+  }
+
+  _showSavedFeedback() {
+    const existing = this.shadowRoot.querySelector('.save-toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'save-toast';
+    toast.textContent = 'Saved';
+    this.shadowRoot.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      setTimeout(() => toast.remove(), 400);
+    }, 1100);
   }
 }
 
