@@ -270,14 +270,11 @@ class BetterNotesCard extends HTMLElement {
   }
 
   openBetterNotes() {
-    // Navigate to the Better Notes panel
     window.history.pushState(null, '', '/better-notes');
-    const event = new Event('location-changed', {
-      bubbles: false,
-      cancelable: true,
-      composed: false,
-    });
-    window.dispatchEvent(event);
+    window.dispatchEvent(new Event('location-changed', {
+      bubbles: true,
+      composed: true,
+    }));
   }
 
   truncateText(text, maxLength) {
