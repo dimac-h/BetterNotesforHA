@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 import voluptuous as vol
 
-from homeassistant.components.frontend import async_register_built_in_panel, async_remove_panel
+from homeassistant.components.frontend import async_register_custom_panel, async_remove_panel
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
@@ -26,6 +26,7 @@ from .const import (
     PANEL_TITLE,
     PANEL_ICON,
     PANEL_URL,
+    PANEL_COMPONENT_NAME,
 )
 from .storage import NotesStorage
 
@@ -72,13 +73,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     ])
 
-    async_register_built_in_panel(
+    async_register_custom_panel(
         hass,
-        component_name="iframe",
+        frontend_url_path=PANEL_URL,
+        webcomponent_name=PANEL_COMPONENT_NAME,
         sidebar_title=PANEL_TITLE,
         sidebar_icon=PANEL_ICON,
-        frontend_url_path=PANEL_URL,
-        config={"url": "/better_notes_panel/better-notes-panel.html"},
+        module_url="/better_notes_panel/better-notes-panel.js",
+        embed_iframe=False,
         require_admin=False,
     )
 
