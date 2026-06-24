@@ -89,7 +89,7 @@ class NotesStorage:
     ) -> dict[str, Any] | None:
         """Update an existing note."""
         if note_id not in self._data:
-            _LOGGER.error("Note not found: %s", note_id)
+            _LOGGER.warning("Note not found: %s", note_id)
             return None
 
         note = self._data[note_id]
@@ -115,7 +115,7 @@ class NotesStorage:
     async def async_delete_note(self, note_id: str) -> bool:
         """Delete a note."""
         if note_id not in self._data:
-            _LOGGER.error("Note not found: %s", note_id)
+            _LOGGER.warning("Note not found: %s", note_id)
             return False
 
         del self._data[note_id]
@@ -123,10 +123,6 @@ class NotesStorage:
 
         _LOGGER.info("Deleted note: %s", note_id)
         return True
-
-    async def async_get_note(self, note_id: str) -> dict[str, Any] | None:
-        """Get a specific note."""
-        return self._data.get(note_id)
 
     async def async_get_all_notes(self) -> list[dict[str, Any]]:
         """Get all notes."""

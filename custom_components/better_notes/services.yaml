@@ -24,7 +24,7 @@ create_note:
       default: "#FFEB3B"
       example: "#FF9800"
       selector:
-        color_rgb:
+        text:
     pinned:
       name: Pinned
       description: Whether the note should be pinned
@@ -69,7 +69,7 @@ update_note:
       description: The new color of the note (hex code)
       required: false
       selector:
-        color_rgb:
+        text:
     pinned:
       name: Pinned
       description: Whether the note should be pinned
@@ -97,4 +97,4 @@ delete_note:
 
 get_notes:
   name: Get Notes
-  description: Get all notes (fires an event with the notes list)
+  description: Get all notes. Returns a response object with a "notes" array.

@@ -36,7 +36,7 @@ _LOGGER = logging.getLogger(__name__)
 CREATE_NOTE_SCHEMA = vol.Schema({
     vol.Required(ATTR_TITLE): cv.string,
     vol.Optional(ATTR_CONTENT, default=""): cv.string,
-    vol.Optional(ATTR_COLOR, default=DEFAULT_COLOR): cv.string,
+    vol.Optional(ATTR_COLOR, default=DEFAULT_COLOR): vol.Match(r'^#[0-9a-fA-F]{3}$|^#[0-9a-fA-F]{6}$'),
     vol.Optional(ATTR_PINNED, default=False): cv.boolean,
     vol.Optional(ATTR_TAGS, default=[]): [cv.string],
 })
@@ -45,7 +45,7 @@ UPDATE_NOTE_SCHEMA = vol.Schema({
     vol.Required(ATTR_NOTE_ID): cv.string,
     vol.Optional(ATTR_TITLE): cv.string,
     vol.Optional(ATTR_CONTENT): cv.string,
-    vol.Optional(ATTR_COLOR): cv.string,
+    vol.Optional(ATTR_COLOR): vol.Match(r'^#[0-9a-fA-F]{3}$|^#[0-9a-fA-F]{6}$'),
     vol.Optional(ATTR_PINNED): cv.boolean,
     vol.Optional(ATTR_TAGS): [cv.string],
 })
