@@ -602,7 +602,9 @@
       }
 
       async callService(service, data) {
-        const response = await fetch(`/api/services/better_notes/${service}`, {
+        const returnsResponse = service === 'get_notes';
+        const url = `/api/services/better_notes/${service}${returnsResponse ? '?return_response' : ''}`;
+        const response = await fetch(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
