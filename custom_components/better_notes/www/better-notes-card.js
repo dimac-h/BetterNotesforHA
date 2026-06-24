@@ -5,6 +5,7 @@ class BetterNotesCard extends HTMLElement {
     this._config = {};
     this._hass = null;
     this._notes = [];
+    this._unsubscribeEvents = null;
   }
 
   setConfig(config) {
@@ -26,22 +27,60 @@ class BetterNotesCard extends HTMLElement {
   }
 
   set hass(hass) {
+    const firstLoad = !this._hass;
     this._hass = hass;
-    this.updateNotes();
+    if (firstLoad) {
+      this._loadNotes();
+      this._subscribeToNoteEvents();
+    }
   }
 
-  async updateNotes() {
+  async _loadNotes() {
     if (!this._hass) return;
 
     try {
-      // Get notes from storage (in production, this would use HA's data store)
-      const stored = localStorage.getItem('better_notes_cache');
-      if (stored) {
-        this._notes = JSON.parse(stored);
+      const result = await this._hass.connection.sendMessagePromise({
+        type: 'call_service',
+        domain: 'better_notes',
+        service: 'get_notes',
+        service_data: {},
+        return_response: true,
+      });
+      const notes = result?.response?.notes;
+      if (Array.isArray(notes)) {
+        this._notes = notes;
         this.render();
       }
     } catch (error) {
-      console.error('Error loading notes:', error);
+      console.error('Error loading notes for card:', error);
+    }
+  }
+
+  _subscribeToNoteEvents() {
+    if (!this._hass?.connection || this._unsubscribeEvents) return;
+
+    const refresh = () => this._loadNotes();
+    const events = [
+      'better_notes_note_created',
+      'better_notes_note_updated',
+      'better_notes_note_deleted',
+    ];
+
+    Promise.all(
+      events.map(e => this._hass.connection.subscribeEvents(refresh, e))
+    ).then(unsubs => {
+      if (!this.isConnected) {
+        unsubs.forEach(fn => fn());
+      } else {
+        this._unsubscribeEvents = () => unsubs.forEach(fn => fn());
+      }
+    });
+  }
+
+  disconnectedCallback() {
+    if (this._unsubscribeEvents) {
+      this._unsubscribeEvents();
+      this._unsubscribeEvents = null;
     }
   }
 
@@ -171,7 +210,7 @@ class BetterNotesCard extends HTMLElement {
       <ha-card>
         <div class="card-header">
           <span>📝</span>
-          <span>${this._config.title}</span>
+          <span>${this.escapeHtml(this._config.title)}</span>
         </div>
         ${content}
       </ha-card>
@@ -193,7 +232,7 @@ class BetterNotesCard extends HTMLElement {
     }
 
     return `
-      <div class="note-card" style="--note-color: ${note.color}" data-note-id="${note.note_id}">
+      <div class="note-card" style="--note-color: ${this._safeColor(note.color)}" data-note-id="${note.note_id}">
         <div class="note-title">
           <span>${this.escapeHtml(note.title || 'Untitled')}</span>
           ${note.pinned ? '<span class="pinned-badge">📌</span>' : ''}
@@ -231,7 +270,7 @@ class BetterNotesCard extends HTMLElement {
 
     return `
       ${notes.map(note => `
-        <div class="note-card" style="--note-color: ${note.color}" data-note-id="${note.note_id}">
+        <div class="note-card" style="--note-color: ${this._safeColor(note.color)}" data-note-id="${note.note_id}">
           <div class="note-title">
             <span>${this.escapeHtml(note.title || 'Untitled')}</span>
             ${note.pinned ? '<span class="pinned-badge">📌</span>' : ''}
@@ -270,14 +309,11 @@ class BetterNotesCard extends HTMLElement {
   }
 
   openBetterNotes() {
-    // Navigate to the Better Notes panel
     window.history.pushState(null, '', '/better-notes');
-    const event = new Event('location-changed', {
-      bubbles: false,
-      cancelable: true,
-      composed: false,
-    });
-    window.dispatchEvent(event);
+    window.dispatchEvent(new Event('location-changed', {
+      bubbles: true,
+      composed: true,
+    }));
   }
 
   truncateText(text, maxLength) {
@@ -305,6 +341,10 @@ class BetterNotesCard extends HTMLElement {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  _safeColor(color) {
+    return /^#[0-9a-fA-F]{6}$|^#[0-9a-fA-F]{3}$/.test(color) ? color : '#FFEB3B';
   }
 
   getCardSize() {
@@ -338,6 +378,11 @@ window.customCards.push({
 
 // Card Editor
 class BetterNotesCardEditor extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+  }
+
   setConfig(config) {
     this._config = config;
     this.render();
@@ -348,10 +393,6 @@ class BetterNotesCardEditor extends HTMLElement {
   }
 
   render() {
-    if (!this.shadowRoot) {
-      this.attachShadow({ mode: 'open' });
-    }
-
     this.shadowRoot.innerHTML = `
       <style>
         .card-config {
@@ -385,7 +426,7 @@ class BetterNotesCardEditor extends HTMLElement {
       <div class="card-config">
         <div class="option">
           <label for="title">Title</label>
-          <input type="text" id="title" value="${this._config.title || 'Notes'}">
+          <input type="text" id="title" value="${this._escapeAttr(this._config.title || 'Notes')}">
         </div>
 
         <div class="option">
@@ -402,7 +443,7 @@ class BetterNotesCardEditor extends HTMLElement {
 
         <div class="option">
           <label for="note_id">Specific Note ID (optional)</label>
-          <input type="text" id="note_id" value="${this._config.note_id || ''}" placeholder="Leave empty to show all">
+          <input type="text" id="note_id" value="${this._escapeAttr(this._config.note_id || '')}" placeholder="Leave empty to show all">
         </div>
       </div>
     `;
@@ -417,6 +458,12 @@ class BetterNotesCardEditor extends HTMLElement {
     });
 
     this.shadowRoot.getElementById('show_pinned_only').addEventListener('change', () => this.configChanged());
+  }
+
+  _escapeAttr(text) {
+    const d = document.createElement('div');
+    d.textContent = String(text);
+    return d.innerHTML.replace(/"/g, '&quot;');
   }
 
   configChanged() {

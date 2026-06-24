@@ -4,8 +4,11 @@ from __future__ import annotations
 import logging
 import voluptuous as vol
 
+from homeassistant.components.frontend import async_remove_panel
+from homeassistant.components.panel_custom import async_register_panel
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
 from homeassistant.helpers import config_validation as cv
 
 from .const import (
@@ -34,7 +37,7 @@ _LOGGER = logging.getLogger(__name__)
 CREATE_NOTE_SCHEMA = vol.Schema({
     vol.Required(ATTR_TITLE): cv.string,
     vol.Optional(ATTR_CONTENT, default=""): cv.string,
-    vol.Optional(ATTR_COLOR, default=DEFAULT_COLOR): cv.string,
+    vol.Optional(ATTR_COLOR, default=DEFAULT_COLOR): vol.Match(r'^#[0-9a-fA-F]{3}$|^#[0-9a-fA-F]{6}$'),
     vol.Optional(ATTR_PINNED, default=False): cv.boolean,
     vol.Optional(ATTR_TAGS, default=[]): [cv.string],
 })
@@ -43,7 +46,7 @@ UPDATE_NOTE_SCHEMA = vol.Schema({
     vol.Required(ATTR_NOTE_ID): cv.string,
     vol.Optional(ATTR_TITLE): cv.string,
     vol.Optional(ATTR_CONTENT): cv.string,
-    vol.Optional(ATTR_COLOR): cv.string,
+    vol.Optional(ATTR_COLOR): vol.Match(r'^#[0-9a-fA-F]{3}$|^#[0-9a-fA-F]{6}$'),
     vol.Optional(ATTR_PINNED): cv.boolean,
     vol.Optional(ATTR_TAGS): [cv.string],
 })
@@ -63,17 +66,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN]["storage"] = storage
 
     # Register frontend panel
-    await hass.http.async_register_static_paths([{
-        "url_path": f"/better_notes_panel",
-        "path": f"{hass.config.path('custom_components')}/better_notes/www",
-    }])
+    await hass.http.async_register_static_paths([
+        StaticPathConfig(
+            url_path="/better_notes_panel",
+            path=hass.config.path("custom_components/better_notes/www"),
+            cache_headers=False,
+        )
+    ])
 
-    hass.components.frontend.async_register_built_in_panel(
-        "iframe",
-        PANEL_TITLE,
-        PANEL_ICON,
-        PANEL_URL,
-        {"url": f"/better_notes_panel/better-notes-panel.html"},
+    await async_register_panel(
+        hass,
+        frontend_url_path=PANEL_URL,
+        webcomponent_name=PANEL_COMPONENT_NAME,
+        sidebar_title=PANEL_TITLE,
+        sidebar_icon=PANEL_ICON,
+        module_url="/better_notes_panel/better-notes-panel.js",
+        embed_iframe=False,
         require_admin=False,
     )
 
@@ -111,10 +119,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 {ATTR_NOTE_ID: call.data[ATTR_NOTE_ID]}
             )
 
-    async def handle_get_notes(call: ServiceCall) -> None:
+    async def handle_get_notes(call: ServiceCall) -> dict:
         """Handle the get notes service."""
         notes = await storage.async_get_all_notes()
-        hass.bus.async_fire(f"{DOMAIN}_notes_list", {"notes": notes})
+        return {"notes": notes}
 
     hass.services.async_register(
         DOMAIN, SERVICE_CREATE_NOTE, handle_create_note, schema=CREATE_NOTE_SCHEMA
@@ -126,7 +134,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         DOMAIN, SERVICE_DELETE_NOTE, handle_delete_note, schema=DELETE_NOTE_SCHEMA
     )
     hass.services.async_register(
-        DOMAIN, SERVICE_GET_NOTES, handle_get_notes
+        DOMAIN, SERVICE_GET_NOTES, handle_get_notes, supports_response=SupportsResponse.ONLY
     )
 
     _LOGGER.info("Better Notes integration setup complete")
@@ -142,9 +150,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.services.async_remove(DOMAIN, SERVICE_GET_NOTES)
 
     # Remove panel
-    hass.components.frontend.async_remove_panel(PANEL_URL)
+    async_remove_panel(hass, PANEL_URL)
 
     # Clear data
-    hass.data[DOMAIN].clear()
+    hass.data.pop(DOMAIN, None)
 
     return True
