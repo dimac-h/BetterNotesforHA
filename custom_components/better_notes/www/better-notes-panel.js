@@ -32,6 +32,7 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   disconnectedCallback() {
+    clearTimeout(this._saveTimeout);
     if (this._unsubscribeEvents) {
       this._unsubscribeEvents();
       this._unsubscribeEvents = null;
@@ -489,9 +490,85 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   _selectNote(id) {
+    clearTimeout(this._saveTimeout);
     this._currentNoteId = id;
     this._view = 'editor';
     this._render();
+  }
+
+  async _createNote() {
+    try {
+      await this._hass.callService('better_notes', 'create_note', {
+        title: 'New Note',
+        content: '',
+        color: COLORS[0],
+        pinned: false,
+      });
+      await this._loadNotes();
+      if (this._notes.length > 0) {
+        this._selectNote(this._notes[0].note_id);
+        this.shadowRoot.getElementById('noteTitle')?.select();
+      }
+    } catch (e) {
+      console.error('Better Notes: failed to create note', e);
+    }
+  }
+
+  async _saveNote() {
+    clearTimeout(this._saveTimeout);
+    const note = this._currentNote();
+    if (!note) return;
+
+    const title = this.shadowRoot.getElementById('noteTitle')?.value ?? note.title;
+    const content = this.shadowRoot.getElementById('noteContent')?.value ?? note.content;
+
+    try {
+      await this._hass.callService('better_notes', 'update_note', {
+        note_id: note.note_id,
+        title,
+        content,
+        color: note.color,
+        pinned: note.pinned,
+      });
+      const savedId = note.note_id;
+      await this._loadNotes();
+      this._currentNoteId = this._notes.find(n => n.note_id === savedId)
+        ? savedId
+        : null;
+    } catch (e) {
+      console.error('Better Notes: failed to save note', e);
+    }
+  }
+
+  async _deleteNote() {
+    const note = this._currentNote();
+    if (!note) return;
+    if (!confirm('Delete this note?')) return;
+
+    try {
+      await this._hass.callService('better_notes', 'delete_note', {
+        note_id: note.note_id,
+      });
+      this._currentNoteId = null;
+      this._view = 'list';
+      await this._loadNotes();
+    } catch (e) {
+      console.error('Better Notes: failed to delete note', e);
+    }
+  }
+
+  _togglePin() {
+    const note = this._currentNote();
+    if (!note) return;
+    note.pinned = !note.pinned;
+    this._saveNote();
+  }
+
+  _setColor(color) {
+    const note = this._currentNote();
+    if (!note) return;
+    note.color = color;
+    this._saveNote();
   }
 }
 
