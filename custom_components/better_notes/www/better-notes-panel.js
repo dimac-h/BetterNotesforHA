@@ -35,6 +35,7 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   disconnectedCallback() {
+    this._disconnected = true;
     clearTimeout(this._saveTimeout);
     if (this._unsubscribeEvents) {
       this._unsubscribeEvents();
@@ -67,7 +68,11 @@ class BetterNotesPanel extends HTMLElement {
     Promise.all(
       events.map(e => this._hass.connection.subscribeEvents(refresh, e))
     ).then(unsubs => {
-      this._unsubscribeEvents = () => unsubs.forEach(fn => fn());
+      if (this._disconnected) {
+        unsubs.forEach(fn => fn());
+      } else {
+        this._unsubscribeEvents = () => unsubs.forEach(fn => fn());
+      }
     });
   }
 
@@ -456,7 +461,7 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   _safeColor(color) {
-    return /^#[0-9a-fA-F]{3,6}$/.test(color) ? color : '#FFEB3B';
+    return /^#[0-9a-fA-F]{6}$|^#[0-9a-fA-F]{3}$/.test(color) ? color : '#FFEB3B';
   }
 
   _escapeHtml(text) {
@@ -546,9 +551,14 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   async _saveNote() {
+    if (this._saving) return;
+    this._saving = true;
     clearTimeout(this._saveTimeout);
     const note = this._currentNote();
-    if (!note) return;
+    if (!note) {
+      this._saving = false;
+      return;
+    }
 
     const title = this.shadowRoot.getElementById('noteTitle')?.value ?? note.title;
     const content = this.shadowRoot.getElementById('noteContent')?.value ?? note.content;
@@ -568,6 +578,8 @@ class BetterNotesPanel extends HTMLElement {
         : null;
     } catch (e) {
       console.error('Better Notes: failed to save note', e);
+    } finally {
+      this._saving = false;
     }
   }
 
