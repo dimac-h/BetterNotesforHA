@@ -434,7 +434,9 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   _escapeAttr(text) {
-    return String(text).replace(/"/g, '&quot;');
+    const d = document.createElement('div');
+    d.setAttribute('x', String(text));
+    return d.getAttribute('x');
   }
 
   _formatDate(iso) {
