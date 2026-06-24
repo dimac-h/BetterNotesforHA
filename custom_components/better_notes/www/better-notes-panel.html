@@ -403,36 +403,14 @@
 
       async loadNotes() {
         try {
-          const response = await fetch('/api/services/better_notes/get_notes', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${this.getToken()}`
-            }
-          });
-
-          // Listen for the event with notes
-          this.subscribeToEvents();
-
-          // Also load from local storage as fallback
-          const stored = localStorage.getItem('better_notes_cache');
-          if (stored) {
-            this.notes = JSON.parse(stored);
+          const response = await this.callService('get_notes', {});
+          if (response && Array.isArray(response.notes)) {
+            this.notes = response.notes;
             this.renderNotesList();
           }
         } catch (error) {
           console.error('Error loading notes:', error);
         }
-      }
-
-      subscribeToEvents() {
-        // In a real implementation, this would use Home Assistant's WebSocket API
-        // For now, we'll use localStorage and polling
-        setInterval(() => this.checkForUpdates(), 2000);
-      }
-
-      async checkForUpdates() {
-        // This would use HA's event stream in production
       }
 
       getToken() {
@@ -552,30 +530,23 @@
       }
 
       async createNewNote() {
-        const newNote = {
-          note_id: this.generateId(),
-          title: '',
-          content: '',
-          color: COLORS[0],
-          pinned: false,
-          created: new Date().toISOString(),
-          modified: new Date().toISOString(),
-          tags: []
-        };
-
-        this.notes.unshift(newNote);
-        this.currentNote = newNote;
-        this.renderNotesList();
-        this.selectNote(newNote.note_id);
-        document.getElementById('noteTitle').focus();
-
-        // Save to backend
-        await this.callService('create_note', {
-          title: newNote.title || 'New Note',
-          content: newNote.content,
-          color: newNote.color,
-          pinned: newNote.pinned
-        });
+        try {
+          await this.callService('create_note', {
+            title: 'New Note',
+            content: '',
+            color: COLORS[0],
+            pinned: false,
+          });
+          // Reload from server so we get the server-assigned note_id
+          await this.loadNotes();
+          // Select the first note (newest, just created)
+          if (this.notes.length > 0) {
+            this.selectNote(this.notes[0].note_id);
+            document.getElementById('noteTitle').select();
+          }
+        } catch (error) {
+          console.error('Error creating note:', error);
+        }
       }
 
       async saveCurrentNote() {
@@ -583,93 +554,69 @@
 
         this.currentNote.title = document.getElementById('noteTitle').value;
         this.currentNote.content = document.getElementById('noteContent').value;
-        this.currentNote.modified = new Date().toISOString();
 
-        // Update local storage
-        localStorage.setItem('better_notes_cache', JSON.stringify(this.notes));
-
-        // Save to backend
-        await this.callService('update_note', {
-          note_id: this.currentNote.note_id,
-          title: this.currentNote.title,
-          content: this.currentNote.content,
-          color: this.currentNote.color,
-          pinned: this.currentNote.pinned
-        });
-
-        this.renderNotesList();
+        try {
+          await this.callService('update_note', {
+            note_id: this.currentNote.note_id,
+            title: this.currentNote.title,
+            content: this.currentNote.content,
+            color: this.currentNote.color,
+            pinned: this.currentNote.pinned,
+          });
+          await this.loadNotes();
+          this.renderNotesList();
+        } catch (error) {
+          console.error('Error saving note:', error);
+        }
       }
 
       async deleteCurrentNote() {
         if (!this.currentNote) return;
-
         if (!confirm('Are you sure you want to delete this note?')) return;
 
         const noteId = this.currentNote.note_id;
-        this.notes = this.notes.filter(n => n.note_id !== noteId);
-
-        // Delete from backend
-        await this.callService('delete_note', { note_id: noteId });
-
-        this.currentNote = null;
-        document.getElementById('emptyState').style.display = 'flex';
-        document.getElementById('noteEditor').style.display = 'none';
-
-        localStorage.setItem('better_notes_cache', JSON.stringify(this.notes));
-        this.renderNotesList();
+        try {
+          await this.callService('delete_note', { note_id: noteId });
+          this.currentNote = null;
+          document.getElementById('emptyState').style.display = 'flex';
+          document.getElementById('noteEditor').style.display = 'none';
+          await this.loadNotes();
+        } catch (error) {
+          console.error('Error deleting note:', error);
+        }
       }
 
       togglePin() {
         if (!this.currentNote) return;
-
         this.currentNote.pinned = !this.currentNote.pinned;
         this.updatePinToggle();
         this.saveCurrentNote();
-
-        // Re-sort notes (pinned first)
-        this.notes.sort((a, b) => {
-          if (a.pinned === b.pinned) {
-            return new Date(b.modified) - new Date(a.modified);
-          }
-          return b.pinned - a.pinned;
-        });
-
-        this.renderNotesList();
       }
 
       setNoteColor(color) {
         if (!this.currentNote) return;
-
         this.currentNote.color = color;
         this.updateColorPicker();
         this.saveCurrentNote();
       }
 
       async callService(service, data) {
-        try {
-          const response = await fetch(`/api/services/better_notes/${service}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${this.getToken()}`
-            },
-            body: JSON.stringify(data)
-          });
-
-          if (!response.ok) {
-            console.error('Service call failed:', response.statusText);
-          }
-        } catch (error) {
-          console.error('Error calling service:', error);
-        }
-      }
-
-      generateId() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-          const r = Math.random() * 16 | 0;
-          const v = c === 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
+        const response = await fetch(`/api/services/better_notes/${service}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.getToken()}`,
+          },
+          body: JSON.stringify({ ...data, return_response: true }),
         });
+
+        if (!response.ok) {
+          throw new Error(`Service call failed: ${response.status} ${response.statusText}`);
+        }
+
+        const body = await response.json();
+        // HA wraps service responses: { "service_response": { ... } }
+        return body?.service_response ?? body;
       }
 
       formatDate(isoString) {

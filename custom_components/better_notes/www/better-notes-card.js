@@ -34,14 +34,18 @@ class BetterNotesCard extends HTMLElement {
     if (!this._hass) return;
 
     try {
-      // Get notes from storage (in production, this would use HA's data store)
-      const stored = localStorage.getItem('better_notes_cache');
-      if (stored) {
-        this._notes = JSON.parse(stored);
+      const response = await this._hass.callService(
+        'better_notes',
+        'get_notes',
+        {},
+        { return_response: true }
+      );
+      if (response && Array.isArray(response.notes)) {
+        this._notes = response.notes;
         this.render();
       }
     } catch (error) {
-      console.error('Error loading notes:', error);
+      console.error('Error loading notes for card:', error);
     }
   }
 
