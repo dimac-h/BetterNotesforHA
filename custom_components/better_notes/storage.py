@@ -2,12 +2,12 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime
 from typing import Any
 import uuid
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
+from homeassistant.util import dt as dt_util
 
 from .const import (
     ATTR_NOTE_ID,
@@ -59,7 +59,7 @@ class NotesStorage:
     ) -> dict[str, Any]:
         """Create a new note."""
         note_id = str(uuid.uuid4())
-        now = datetime.now().isoformat()
+        now = dt_util.utcnow().isoformat()
 
         note = {
             ATTR_NOTE_ID: note_id,
@@ -89,7 +89,7 @@ class NotesStorage:
     ) -> dict[str, Any] | None:
         """Update an existing note."""
         if note_id not in self._data:
-            _LOGGER.error("Note not found: %s", note_id)
+            _LOGGER.warning("Note not found: %s", note_id)
             return None
 
         note = self._data[note_id]
@@ -105,7 +105,7 @@ class NotesStorage:
         if tags is not None:
             note[ATTR_TAGS] = tags
 
-        note[ATTR_MODIFIED] = datetime.now().isoformat()
+        note[ATTR_MODIFIED] = dt_util.utcnow().isoformat()
 
         await self.async_save()
 
@@ -115,7 +115,7 @@ class NotesStorage:
     async def async_delete_note(self, note_id: str) -> bool:
         """Delete a note."""
         if note_id not in self._data:
-            _LOGGER.error("Note not found: %s", note_id)
+            _LOGGER.warning("Note not found: %s", note_id)
             return False
 
         del self._data[note_id]
@@ -124,16 +124,12 @@ class NotesStorage:
         _LOGGER.info("Deleted note: %s", note_id)
         return True
 
-    async def async_get_note(self, note_id: str) -> dict[str, Any] | None:
-        """Get a specific note."""
-        return self._data.get(note_id)
-
     async def async_get_all_notes(self) -> list[dict[str, Any]]:
         """Get all notes."""
         notes = list(self._data.values())
         # Sort by pinned first, then by modified date (newest first)
         notes.sort(
-            key=lambda x: (not x.get(ATTR_PINNED, False), x.get(ATTR_MODIFIED, "")),
+            key=lambda x: (x.get(ATTR_PINNED, False), x.get(ATTR_MODIFIED, "")),
             reverse=True
         )
         return notes
