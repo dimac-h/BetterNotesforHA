@@ -23,7 +23,7 @@ An Apple Notes-like integration for Home Assistant that brings a beautiful, intu
 2. Click on "Integrations"
 3. Click the three dots in the top right corner
 4. Select "Custom repositories"
-5. Add this repository URL: `https://github.com/CameronVerrells/BetterNotesforHA`
+5. Add this repository URL: `https://github.com/dimac-h/BetterNotesforHA`
 6. Select category: "Integration"
 7. Click "Add"
 8. Find "Better Notes" in the integration list and click "Download"
