@@ -36,6 +36,9 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   connectedCallback() {
+    // Stop keyboard events from reaching HA's global shortcut handler
+    this.addEventListener('keydown', e => e.stopPropagation());
+    this.addEventListener('keypress', e => e.stopPropagation());
     if (this._initialized) {
       this._renderList();
       this._renderEditor(this._currentNote());
