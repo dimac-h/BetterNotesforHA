@@ -23,6 +23,10 @@ class BetterNotesPanel extends HTMLElement {
     this._deleteTimeout = null;
     this._closeDropdownsHandler = null;
     this._tiptapPromise = null;
+    this._onKeyDown = null;
+    this._onKeyPress = null;
+    this._onMouseDown = null;
+    this._suppressNextUpdate = false;
   }
 
   set hass(hass) {
@@ -39,26 +43,23 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   connectedCallback() {
-    // Stop keyboard events from reaching HA's window-level shortcut handler.
-    // This works in bubble phase: the target (input/editor) processes the event
-    // first, then it bubbles to us, and we stop it before it reaches window.
-    this.addEventListener('keydown', e => e.stopPropagation());
-    this.addEventListener('keypress', e => e.stopPropagation());
-
-    // Prevent focus from leaving the panel when clicking non-input elements
-    // (buttons, note items, panel background). The click still fires normally;
-    // only the focus change is suppressed. composedPath()[0] gives the actual
-    // clicked element inside the shadow root, not the retargeted host.
-    this.addEventListener('mousedown', e => {
+    this._onKeyDown = e => e.stopPropagation();
+    this._onKeyPress = e => e.stopPropagation();
+    this._onMouseDown = e => {
       const target = e.composedPath()[0];
+      const inEditor = e.composedPath().some(el => el.id === 'tiptap-mount');
       if (
+        !inEditor &&
         target.tagName !== 'INPUT' &&
         target.tagName !== 'TEXTAREA' &&
         !target.isContentEditable
       ) {
         e.preventDefault();
       }
-    });
+    };
+    this.addEventListener('keydown', this._onKeyDown);
+    this.addEventListener('keypress', this._onKeyPress);
+    this.addEventListener('mousedown', this._onMouseDown);
 
     if (this._initialized) {
       this._renderList();
@@ -70,6 +71,12 @@ class BetterNotesPanel extends HTMLElement {
     this._disconnected = true;
     clearTimeout(this._saveTimeout);
     clearTimeout(this._deleteTimeout);
+    if (this._onKeyDown) {
+      this.removeEventListener('keydown', this._onKeyDown);
+      this.removeEventListener('keypress', this._onKeyPress);
+      this.removeEventListener('mousedown', this._onMouseDown);
+      this._onKeyDown = this._onKeyPress = this._onMouseDown = null;
+    }
     if (this._editor) {
       this._editor.destroy();
       this._editor = null;
@@ -641,6 +648,7 @@ class BetterNotesPanel extends HTMLElement {
     } else {
       const titleInput = this.shadowRoot.querySelector('#noteTitle');
       if (titleInput) titleInput.value = note.title || '';
+      this._suppressNextUpdate = true;
       this._editor.commands.setContent(note.content || '');
       this._editor.commands.focus('end');
       this._updateToolbarState(note);
@@ -910,7 +918,10 @@ class BetterNotesPanel extends HTMLElement {
         if (window.TiptapBundle) resolve(window.TiptapBundle);
         else reject(new Error('TiptapBundle not found after script load'));
       };
-      script.onerror = () => reject(new Error('Failed to load tiptap-bundle.js'));
+      script.onerror = () => {
+        this._tiptapPromise = null; // allow retry on next call
+        reject(new Error('Failed to load tiptap-bundle.js'));
+      };
       document.head.appendChild(script);
     });
     return this._tiptapPromise;
@@ -953,6 +964,10 @@ class BetterNotesPanel extends HTMLElement {
         content: note.content || '',
         autofocus: 'end',
         onUpdate: () => {
+          if (this._suppressNextUpdate) {
+            this._suppressNextUpdate = false;
+            return;
+          }
           clearTimeout(this._saveTimeout);
           this._saveTimeout = setTimeout(() => this._saveNote(), 1000);
         },
@@ -1057,7 +1072,6 @@ class BetterNotesPanel extends HTMLElement {
       this._dirtyDuringInflight = true;
       return;
     }
-    this._dirtyDuringInflight = false;
     this._saving = true;
     clearTimeout(this._saveTimeout);
     const note = this._currentNote();
@@ -1076,6 +1090,7 @@ class BetterNotesPanel extends HTMLElement {
     const pinned = overrides.pinned ?? note.pinned;
 
     try {
+      this._dirtyDuringInflight = false;
       await this._hass.callService('better_notes', 'update_note', {
         note_id: note.note_id,
         title,
