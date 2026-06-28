@@ -5,14 +5,13 @@ An Apple Notes-like integration for Home Assistant that brings a beautiful, intu
 ## Features
 
 - **Apple Notes-Inspired UI** - Clean, modern interface with familiar UX patterns
+- **Rich Text Editing** - WYSIWYG editor with bold, italic, headings, lists, checklists, highlights, and links
 - **Sidebar Panel** - Quick access to all your notes from the Home Assistant sidebar
-- **Rich Note Management** - Create, edit, delete, and organize notes with ease
 - **Color Coding** - Choose from 10 beautiful colors to organize your notes
 - **Pin Important Notes** - Keep your most important notes at the top
 - **Search & Filter** - Quickly find notes with real-time search
 - **Dashboard Cards** - Pin individual notes or note lists to any dashboard
 - **Auto-Save** - Never lose your work with automatic saving
-- **Tags Support** - Organize notes with custom tags
 - **Persistent Storage** - Notes are safely stored in Home Assistant's data store
 
 ## Installation
@@ -53,10 +52,24 @@ Click on **Better Notes** in the Home Assistant sidebar to open the full notes i
 ### Creating a Note
 
 1. Click the **"+ New Note"** button in the sidebar
-2. Enter a title and content
-3. Choose a color to organize your note
-4. Optionally pin the note to keep it at the top
-5. Notes are automatically saved as you type
+2. Enter a title
+3. Type your content — use the formatting toolbar to add headings, bold, lists, checklists, links, and more
+4. Use the 🎨 toolbar button to choose a color
+5. Use the 📌 toolbar button to pin the note to the top
+6. Notes are automatically saved as you type
+
+### Formatting Toolbar
+
+The toolbar appears at the bottom of the editor on desktop and at the top on mobile:
+
+| Button | Options |
+|--------|---------|
+| **H▾** | Normal text, H1, H2, H3 |
+| **B▾** | Bold, Italic, Strikethrough, Highlight |
+| **≡▾** | Bullet list, Numbered list, Checklist, Indent, Outdent |
+| **🎨▾** | Note color (10 options) |
+| **📌** | Pin / unpin the note |
+| **⋮** | Insert link |
 
 ### Pinning Notes to Dashboard
 
@@ -69,39 +82,34 @@ Click on **Better Notes** in the Home Assistant sidebar to open the full notes i
    - Set max number of notes to display
    - Option to show only pinned notes
 
-### Card Configuration Options
+### Card Configuration
 
 ```yaml
 type: custom:better-notes-card
 title: My Notes
 max_notes: 5
 show_pinned_only: false
-note_id: null  # Set to specific note ID to show only that note
+note_id: null  # Set to a specific note ID to show only that note
 ```
+
+The card renders formatted content (headings, bold, lists, etc.) when displaying a single note. In list view it shows a plain-text preview.
 
 ## Services
 
-Better Notes provides several services you can use in automations:
+Better Notes provides services you can use in automations. Note that `content` is stored as HTML — plain text values are accepted and will be displayed as a plain paragraph.
 
 ### `better_notes.create_note`
-
-Create a new note programmatically.
 
 ```yaml
 service: better_notes.create_note
 data:
   title: "Grocery List"
-  content: "Milk\nEggs\nBread"
+  content: "Milk, eggs, bread"
   color: "#FFEB3B"
   pinned: false
-  tags:
-    - shopping
-    - groceries
 ```
 
 ### `better_notes.update_note`
-
-Update an existing note.
 
 ```yaml
 service: better_notes.update_note
@@ -114,8 +122,6 @@ data:
 
 ### `better_notes.delete_note`
 
-Delete a note.
-
 ```yaml
 service: better_notes.delete_note
 data:
@@ -123,8 +129,6 @@ data:
 ```
 
 ### `better_notes.get_notes`
-
-Retrieve all notes (fires an event with the notes list).
 
 ```yaml
 service: better_notes.get_notes
@@ -162,27 +166,24 @@ automation:
       - service: better_notes.create_note
         data:
           title: "Daily Reminder - {{ now().strftime('%A, %B %d') }}"
-          content: "Don't forget to:\n- Check the mail\n- Water plants\n- Review calendar"
+          content: "Don't forget to check the mail, water plants, and review your calendar."
           color: "#4CAF50"
-          tags:
-            - daily
-            - reminders
 ```
 
 ## Available Colors
 
-The integration includes 10 beautiful colors:
-
-- Yellow (#FFEB3B) - Default
-- Orange (#FF9800)
-- Red (#F44336)
-- Pink (#E91E63)
-- Purple (#9C27B0)
-- Indigo (#3F51B5)
-- Blue (#2196F3)
-- Cyan (#00BCD4)
-- Teal (#009688)
-- Green (#4CAF50)
+| Color | Hex |
+|-------|-----|
+| Yellow (default) | `#FFEB3B` |
+| Orange | `#FF9800` |
+| Red | `#F44336` |
+| Pink | `#E91E63` |
+| Purple | `#9C27B0` |
+| Indigo | `#3F51B5` |
+| Blue | `#2196F3` |
+| Cyan | `#00BCD4` |
+| Teal | `#009688` |
+| Green | `#4CAF50` |
 
 ## Technical Details
 
@@ -197,8 +198,9 @@ custom_components/better_notes/
 ├── storage.py               # Notes storage handler
 ├── services.yaml            # Service definitions
 ├── www/                     # Frontend assets
-│   ├── better-notes-panel.html  # Main panel UI
-│   └── better-notes-card.js     # Lovelace card
+│   ├── better-notes-panel.js    # Main panel UI (custom element)
+│   ├── better-notes-card.js     # Lovelace card
+│   └── tiptap-bundle.js         # Bundled rich text editor
 └── translations/
     └── en.json              # English translations
 ```
@@ -209,14 +211,13 @@ Notes are stored using Home Assistant's built-in storage API at:
 `.storage/better_notes.notes`
 
 Each note contains:
-- `note_id`: Unique identifier
-- `title`: Note title
-- `content`: Note content
-- `color`: Color code
-- `pinned`: Boolean indicating if pinned
-- `created`: Creation timestamp
-- `modified`: Last modification timestamp
-- `tags`: Array of tags
+- `note_id`: Unique identifier (UUID v4)
+- `title`: Note title (plain text)
+- `content`: Note content (HTML)
+- `color`: Hex color code
+- `pinned`: Boolean
+- `created`: ISO 8601 timestamp
+- `modified`: ISO 8601 timestamp
 
 ## Troubleshooting
 
@@ -234,9 +235,8 @@ Each note contains:
 
 ### Card not working
 
-1. Make sure you've registered the card by adding it to your dashboard resources
-2. The card type should be: `custom:better-notes-card`
-3. Check browser console for JavaScript errors
+1. The card type is `custom:better-notes-card`
+2. Check the browser console for JavaScript errors
 
 ## Contributing
 
@@ -248,7 +248,7 @@ This project is licensed under the MIT License.
 
 ## Support
 
-If you encounter any issues or have feature requests, please [open an issue](https://github.com/CameronVerrells/BetterNotesforHA/issues) on GitHub.
+If you encounter any issues or have feature requests, please [open an issue](https://github.com/dimac-h/BetterNotesforHA/issues) on GitHub.
 
 ## Acknowledgments
 
