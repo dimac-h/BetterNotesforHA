@@ -36,16 +36,11 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   connectedCallback() {
-    // Stop keyboard events from reaching HA's global shortcut handler,
-    // but only when the user is actually typing in an input or the editor.
-    const stopIfTyping = e => {
-      const tag = e.target.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) {
-        e.stopPropagation();
-      }
-    };
-    this.addEventListener('keydown', stopIfTyping);
-    this.addEventListener('keypress', stopIfTyping);
+    // Block all keyboard events from reaching HA's global shortcut handler.
+    // The notes panel is a self-contained app — HA shortcuts should not fire
+    // while it is open.
+    this.addEventListener('keydown', e => e.stopPropagation());
+    this.addEventListener('keypress', e => e.stopPropagation());
     if (this._initialized) {
       this._renderList();
       this._renderEditor(this._currentNote());
