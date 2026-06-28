@@ -18,9 +18,11 @@ class BetterNotesPanel extends HTMLElement {
     this._unsubscribeEvents = null;
     this._disconnected = false;
     this._saving = false;
+    this._dirtyDuringInflight = false;
     this._pendingDelete = false;
     this._deleteTimeout = null;
     this._closeDropdownsHandler = null;
+    this._tiptapPromise = null;
   }
 
   set hass(hass) {
@@ -519,14 +521,6 @@ class BetterNotesPanel extends HTMLElement {
       }
       .tb-link-action-btn:hover { background: #f5f5f5; }
 
-      /* Desktop: toolbar at bottom — natural flex order (last child in panel-editor) */
-      .panel-editor {
-        display: flex;
-        flex-direction: column;
-      }
-      .editor-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
-      .formatting-toolbar { order: 3; }
-
       /* Mobile: toolbar below header, above editor body */
       @media (max-width: 767px) {
         .editor-body { order: 3; }
@@ -742,6 +736,10 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   _attachToolbarListeners(note) {
+    // Remove previous handler if any before registering a new one
+    if (this._closeDropdownsHandler) {
+      document.removeEventListener('click', this._closeDropdownsHandler);
+    }
     const root = this.shadowRoot;
 
     // Dropdown toggle logic
@@ -866,12 +864,18 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   _isValidUrl(str) {
-    try { new URL(str); return true; } catch { return false; }
+    try {
+      const url = new URL(str);
+      return ['https:', 'http:', 'mailto:'].includes(url.protocol);
+    } catch {
+      return false;
+    }
   }
 
   _loadTiptapBundle() {
     if (window.TiptapBundle) return Promise.resolve(window.TiptapBundle);
-    return new Promise((resolve, reject) => {
+    if (this._tiptapPromise) return this._tiptapPromise;
+    this._tiptapPromise = new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = '/better_notes_panel/tiptap-bundle.js';
       script.onload = () => {
@@ -881,6 +885,7 @@ class BetterNotesPanel extends HTMLElement {
       script.onerror = () => reject(new Error('Failed to load tiptap-bundle.js'));
       document.head.appendChild(script);
     });
+    return this._tiptapPromise;
   }
 
   async _initTiptap(note) {
@@ -996,20 +1001,22 @@ class BetterNotesPanel extends HTMLElement {
 
   async _createNote() {
     try {
-      const beforeCreate = new Date().toISOString();
-      await this._hass.callService('better_notes', 'create_note', {
-        title: 'New Note',
-        content: '',
-        color: COLORS[0],
-        pinned: false,
+      const result = await this._hass.connection.sendMessagePromise({
+        type: 'call_service',
+        domain: 'better_notes',
+        service: 'create_note',
+        service_data: {
+          title: 'New Note',
+          content: '',
+          color: COLORS[0],
+          pinned: false,
+        },
+        return_response: true,
       });
+      const noteId = result?.response?.note_id;
       await this._loadNotes();
-      // Find the newly created note: created after beforeCreate, not pinned, empty content
-      const newNote = this._notes.find(n =>
-        n.created >= beforeCreate && n.title === 'New Note' && n.content === ''
-      ) ?? (this._notes.length > 0 ? this._notes[0] : null);
-      if (newNote) {
-        this._selectNote(newNote.note_id);
+      if (noteId) {
+        this._selectNote(noteId);
         this.shadowRoot.querySelector('#noteTitle')?.select();
       }
     } catch (e) {
@@ -1018,7 +1025,11 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   async _saveNote(overrides = {}) {
-    if (this._saving) return;
+    if (this._saving) {
+      this._dirtyDuringInflight = true;
+      return;
+    }
+    this._dirtyDuringInflight = false;
     this._saving = true;
     clearTimeout(this._saveTimeout);
     const note = this._currentNote();
@@ -1054,6 +1065,10 @@ class BetterNotesPanel extends HTMLElement {
       console.error('Better Notes: failed to save note', e);
     } finally {
       this._saving = false;
+      if (this._dirtyDuringInflight) {
+        this._dirtyDuringInflight = false;
+        this._saveNote();
+      }
     }
   }
 
@@ -1070,7 +1085,13 @@ class BetterNotesPanel extends HTMLElement {
       }
       this._deleteTimeout = setTimeout(() => {
         this._pendingDelete = false;
-        this._renderEditor(this._currentNote());
+        const btn = this.shadowRoot.querySelector('#deleteBtn');
+        if (btn) {
+          btn.textContent = 'Delete';
+          btn.classList.remove('confirming');
+          btn.classList.remove('danger');
+          btn.classList.add('danger');
+        }
       }, 3000);
       return;
     }
