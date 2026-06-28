@@ -575,11 +575,14 @@ class BetterNotesPanel extends HTMLElement {
           </div>
         `).join('');
     this._attachNoteListeners();
-    // Only auto-focus the search box when no note is open.
-    // Avoid shadowRoot.activeElement: Firefox returns null for contenteditable
-    // elements inside shadow DOM, which would incorrectly steal focus from Tiptap.
+    // Only auto-focus the search box when no note is open and it does not
+    // already have focus — calling .focus() on an already-focused input on
+    // mobile can dismiss/re-show the virtual keyboard, causing visible disruption.
     if (!this._currentNoteId) {
-      this.shadowRoot.querySelector('#searchBox')?.focus({ preventScroll: true });
+      const searchBox = this.shadowRoot.querySelector('#searchBox');
+      if (searchBox && this.shadowRoot.activeElement !== searchBox) {
+        searchBox.focus({ preventScroll: true });
+      }
     }
   }
 
@@ -880,6 +883,7 @@ class BetterNotesPanel extends HTMLElement {
         else reject(new Error('TiptapBundle not found after script load'));
       };
       script.onerror = () => {
+        script.remove();
         this._tiptapPromise = null; // allow retry on next call
         reject(new Error('Failed to load tiptap-bundle.js'));
       };
@@ -1038,6 +1042,7 @@ class BetterNotesPanel extends HTMLElement {
     const note = this._currentNote();
     if (!note) {
       this._saving = false;
+      this._dirtyDuringInflight = false;
       return;
     }
 
