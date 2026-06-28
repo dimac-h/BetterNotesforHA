@@ -1,6 +1,14 @@
 const COLORS = [
-  '#FFEB3B', '#FF9800', '#F44336', '#E91E63', '#9C27B0',
-  '#3F51B5', '#2196F3', '#00BCD4', '#009688', '#4CAF50',
+  '#E8D44D', // warm yellow
+  '#E09455', // amber
+  '#C96060', // muted red
+  '#C4607A', // dusty rose
+  '#9068A8', // muted purple
+  '#5868A0', // slate indigo
+  '#4A85B8', // sky blue
+  '#3C9AAA', // teal-cyan
+  '#3A9080', // teal
+  '#52A068', // sage green
 ];
 
 class BetterNotesPanel extends HTMLElement {
@@ -189,19 +197,30 @@ class BetterNotesPanel extends HTMLElement {
 
       .search-box:focus { outline: none; border-color: var(--accent); }
 
+      .search-box:focus-visible,
+      .new-note-btn:focus-visible,
+      .back-btn:focus-visible,
+      .editor-btn:focus-visible,
+      .tb-btn:focus-visible,
+      .tb-link-action-btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
       .new-note-btn {
         width: 100%;
-        padding: 10px;
-        background: var(--accent);
-        color: #fff;
-        border: none;
+        padding: 9px;
+        background: transparent;
+        color: var(--accent);
+        border: 1.5px solid var(--accent);
         border-radius: 6px;
         cursor: pointer;
         font-size: 14px;
         font-weight: 500;
+        transition: background 0.12s;
       }
 
-      .new-note-btn:hover { background: var(--accent-dark); }
+      .new-note-btn:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
 
       .notes-list {
         flex: 1;
@@ -292,6 +311,7 @@ class BetterNotesPanel extends HTMLElement {
         color: var(--text);
         cursor: pointer;
         font-size: 14px;
+        transition: background 0.12s;
       }
 
       .back-btn:hover { background: var(--bg); }
@@ -306,6 +326,7 @@ class BetterNotesPanel extends HTMLElement {
         color: var(--text);
         cursor: pointer;
         font-size: 14px;
+        transition: background 0.12s;
       }
 
       .editor-btn:hover { background: var(--bg); }
@@ -354,15 +375,15 @@ class BetterNotesPanel extends HTMLElement {
         color: var(--text-faint);
       }
 
-      .empty-editor-icon { font-size: 56px; margin-bottom: 16px; }
+      .empty-editor-icon { width: 56px; height: 56px; margin-bottom: 16px; color: var(--text-faint); }
       .empty-editor-text { font-size: 16px; }
 
       .save-toast {
         position: fixed;
         bottom: 24px;
         right: 24px;
-        background: #323232;
-        color: #fff;
+        background: var(--text);
+        color: var(--surface);
         padding: 8px 16px;
         border-radius: 4px;
         font-size: 13px;
@@ -382,9 +403,9 @@ class BetterNotesPanel extends HTMLElement {
       }
 
       #tiptap-mount .ProseMirror p { margin: 0 0 8px; }
-      #tiptap-mount .ProseMirror h1 { font-size: 24px; font-weight: 700; margin: 0 0 8px; }
-      #tiptap-mount .ProseMirror h2 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
-      #tiptap-mount .ProseMirror h3 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+      #tiptap-mount .ProseMirror h1 { font-size: 26px; font-weight: 700; margin: 18px 0 8px; line-height: 1.25; }
+      #tiptap-mount .ProseMirror h2 { font-size: 21px; font-weight: 600; margin: 14px 0 6px; line-height: 1.3; }
+      #tiptap-mount .ProseMirror h3 { font-size: 17px; font-weight: 600; margin: 12px 0 4px; line-height: 1.35; }
       #tiptap-mount .ProseMirror ul,
       #tiptap-mount .ProseMirror ol { margin: 0 0 8px; padding-left: 24px; }
       #tiptap-mount .ProseMirror li { margin-bottom: 2px; }
@@ -439,6 +460,7 @@ class BetterNotesPanel extends HTMLElement {
         align-items: center;
         gap: 3px;
         white-space: nowrap;
+        transition: background 0.12s;
       }
       .tb-btn:hover { background: var(--bg); }
       .tb-btn.active { background: color-mix(in srgb, #FF9800 20%, var(--surface)); border-color: #FF9800; color: #FF9800; }
@@ -519,6 +541,7 @@ class BetterNotesPanel extends HTMLElement {
         cursor: pointer;
         font-size: 13px;
         flex-shrink: 0;
+        transition: background 0.12s;
       }
       .tb-link-action-btn:hover { background: var(--bg); }
 
@@ -559,8 +582,8 @@ class BetterNotesPanel extends HTMLElement {
         </div>
         <div class="panel-editor" id="panel-editor">
           <div class="empty-editor" id="editor-empty">
-            <div class="empty-editor-icon">📝</div>
-            <div class="empty-editor-text">Select a note or create a new one</div>
+            <svg class="empty-editor-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+            <div class="empty-editor-text">Select a note or create one</div>
           </div>
         </div>
       </div>
@@ -609,8 +632,8 @@ class BetterNotesPanel extends HTMLElement {
       }
       editorPanel.innerHTML = `
         <div class="empty-editor" id="editor-empty">
-          <div class="empty-editor-icon">📝</div>
-          <div class="empty-editor-text">Select a note or create a new one</div>
+          <svg class="empty-editor-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+          <div class="empty-editor-text">Select a note or create one</div>
         </div>
       `;
       return;
@@ -688,13 +711,13 @@ class BetterNotesPanel extends HTMLElement {
         </div>
       </div>
       <div class="toolbar-group" id="tbGroupColor">
-        <button class="tb-btn" id="tbColor">🎨 <span class="tb-caret">▾</span></button>
+        <button class="tb-btn" id="tbColor"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="7.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="10" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1.5" fill="currentColor" stroke="none"/><circle cx="8" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg> <span class="tb-caret">▾</span></button>
         <div class="tb-dropdown" id="tbDropColor">
           <div class="tb-color-swatches">${colorSwatches}</div>
         </div>
       </div>
-      <button class="tb-btn tb-pin-btn ${note.pinned ? 'active' : ''}" id="tbPin">📌</button>
-      <button class="tb-btn" id="tbLink">🔗</button>
+      <button class="tb-btn tb-pin-btn ${note.pinned ? 'active' : ''}" id="tbPin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg></button>
+      <button class="tb-btn" id="tbLink"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
       <div class="tb-link-row" id="tbLinkRow" style="display:none">
         <input type="url" class="tb-link-input" id="tbLinkUrl" placeholder="https://…">
         <button class="tb-link-action-btn" id="tbLinkApply">Apply</button>
