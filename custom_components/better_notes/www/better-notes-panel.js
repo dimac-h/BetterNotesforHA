@@ -609,12 +609,19 @@ class BetterNotesPanel extends HTMLElement {
       </div>
     `;
     this._attachListListeners();
-    // Keep a shadow-DOM element focused so HA's shortcut handler sees an input
-    // in composedPath() and skips letter shortcuts while the panel is open.
-    // Only steal focus when no element inside the shadow root already has it.
-    const active = this.shadowRoot.activeElement;
-    if (!active || active === this.shadowRoot.querySelector('#searchBox')) {
-      this.shadowRoot.querySelector('#searchBox')?.focus({ preventScroll: true });
+    // Only auto-focus the search box when no note is open.
+    // When a note is open, the Tiptap editor owns focus — do not steal it.
+    // We avoid shadowRoot.activeElement here because Firefox returns null for
+    // contenteditable elements inside shadow DOM (known Firefox bug).
+    if (!this._currentNoteId) {
+      const searchBox = this.shadowRoot.querySelector('#searchBox');
+      if (searchBox) {
+        searchBox.focus({ preventScroll: true });
+        // Restore cursor to end so typing doesn't jump to position 0 after
+        // _renderList() rebuilds the input element on every keystroke.
+        const len = searchBox.value.length;
+        searchBox.setSelectionRange(len, len);
+      }
     }
   }
 
