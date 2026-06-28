@@ -9,6 +9,7 @@ from homeassistant.components.panel_custom import async_register_panel
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
 
 from .const import (
@@ -66,13 +67,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN]["storage"] = storage
 
     # Register frontend panel
-    await hass.http.async_register_static_paths([
-        StaticPathConfig(
-            url_path="/better_notes_panel",
-            path=hass.config.path("custom_components/better_notes/www"),
-            cache_headers=False,
-        )
-    ])
+    if not hass.data[DOMAIN].get("resources_registered"):
+        await hass.http.async_register_static_paths([
+            StaticPathConfig(
+                url_path="/better_notes_panel",
+                path=hass.config.path("custom_components/better_notes/www"),
+                cache_headers=False,
+            )
+        ])
+        hass.data[DOMAIN]["resources_registered"] = True
 
     await async_register_panel(
         hass,
@@ -86,16 +89,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     # Register services
-    async def handle_create_note(call: ServiceCall) -> None:
+    async def handle_create_note(call: ServiceCall) -> dict:
         """Handle the create note service."""
         note = await storage.async_create_note(
             title=call.data[ATTR_TITLE],
-            content=call.data.get(ATTR_CONTENT, ""),
-            color=call.data.get(ATTR_COLOR, DEFAULT_COLOR),
-            pinned=call.data.get(ATTR_PINNED, False),
-            tags=call.data.get(ATTR_TAGS, []),
+            content=call.data[ATTR_CONTENT],
+            color=call.data[ATTR_COLOR],
+            pinned=call.data[ATTR_PINNED],
+            tags=call.data[ATTR_TAGS],
         )
         hass.bus.async_fire(f"{DOMAIN}_note_created", note)
+        return note
 
     async def handle_update_note(call: ServiceCall) -> None:
         """Handle the update note service."""
@@ -107,17 +111,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             pinned=call.data.get(ATTR_PINNED),
             tags=call.data.get(ATTR_TAGS),
         )
-        if note:
-            hass.bus.async_fire(f"{DOMAIN}_note_updated", note)
+        if note is None:
+            raise HomeAssistantError(f"Note {call.data[ATTR_NOTE_ID]} not found")
+        hass.bus.async_fire(f"{DOMAIN}_note_updated", note)
 
     async def handle_delete_note(call: ServiceCall) -> None:
         """Handle the delete note service."""
         success = await storage.async_delete_note(call.data[ATTR_NOTE_ID])
-        if success:
-            hass.bus.async_fire(
-                f"{DOMAIN}_note_deleted",
-                {ATTR_NOTE_ID: call.data[ATTR_NOTE_ID]}
-            )
+        if not success:
+            raise HomeAssistantError(f"Note {call.data[ATTR_NOTE_ID]} not found")
+        hass.bus.async_fire(
+            f"{DOMAIN}_note_deleted",
+            {ATTR_NOTE_ID: call.data[ATTR_NOTE_ID]}
+        )
 
     async def handle_get_notes(call: ServiceCall) -> dict:
         """Handle the get notes service."""
@@ -125,7 +131,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         return {"notes": notes}
 
     hass.services.async_register(
-        DOMAIN, SERVICE_CREATE_NOTE, handle_create_note, schema=CREATE_NOTE_SCHEMA
+        DOMAIN, SERVICE_CREATE_NOTE, handle_create_note,
+        schema=CREATE_NOTE_SCHEMA,
+        supports_response=SupportsResponse.OPTIONAL,
     )
     hass.services.async_register(
         DOMAIN, SERVICE_UPDATE_NOTE, handle_update_note, schema=UPDATE_NOTE_SCHEMA
