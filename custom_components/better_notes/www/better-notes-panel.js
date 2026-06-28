@@ -270,6 +270,7 @@ class BetterNotesPanel extends HTMLElement {
         flex-direction: column;
         background: #fff;
         min-width: 0;
+        min-height: 0;
       }
 
       .editor-header {
@@ -310,49 +311,10 @@ class BetterNotesPanel extends HTMLElement {
 
       .editor-body {
         flex: 1;
+        min-height: 0;
         overflow-y: auto;
         padding: 20px 24px;
       }
-
-      .editor-toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        align-items: center;
-        padding-bottom: 16px;
-        border-bottom: 1px solid var(--border);
-        margin-bottom: 16px;
-      }
-
-      .pin-toggle {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 10px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background: #fff;
-        cursor: pointer;
-        font-size: 13px;
-      }
-
-      .pin-toggle:hover { background: #f5f5f5; }
-      .pin-toggle.active { background: #fff3e0; border-color: #FF9800; color: #FF9800; }
-
-      .toolbar-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-
-      .color-picker { display: flex; gap: 6px; flex-wrap: wrap; }
-
-      .color-dot {
-        width: 28px; height: 28px;
-        border-radius: 50%;
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: all 0.15s;
-      }
-
-      .color-dot:hover { transform: scale(1.1); }
-      .color-dot.active { border-color: #333; transform: scale(1.15); }
 
       .note-title-input {
         width: 100%;
@@ -442,8 +404,7 @@ class BetterNotesPanel extends HTMLElement {
       }
 
       @media (min-width: 768px) {
-        .panel-list { width: 280px; display: flex; }
-        .panel-editor { display: flex; }
+        .panel-list { width: 280px; }
       }
 
       .formatting-toolbar {
@@ -614,11 +575,14 @@ class BetterNotesPanel extends HTMLElement {
           </div>
         `).join('');
     this._attachNoteListeners();
-    // Only auto-focus the search box when no note is open.
-    // Avoid shadowRoot.activeElement: Firefox returns null for contenteditable
-    // elements inside shadow DOM, which would incorrectly steal focus from Tiptap.
+    // Only auto-focus the search box when no note is open and it does not
+    // already have focus — calling .focus() on an already-focused input on
+    // mobile can dismiss/re-show the virtual keyboard, causing visible disruption.
     if (!this._currentNoteId) {
-      this.shadowRoot.querySelector('#searchBox')?.focus({ preventScroll: true });
+      const searchBox = this.shadowRoot.querySelector('#searchBox');
+      if (searchBox && this.shadowRoot.activeElement !== searchBox) {
+        searchBox.focus({ preventScroll: true });
+      }
     }
   }
 
@@ -919,6 +883,7 @@ class BetterNotesPanel extends HTMLElement {
         else reject(new Error('TiptapBundle not found after script load'));
       };
       script.onerror = () => {
+        script.remove();
         this._tiptapPromise = null; // allow retry on next call
         reject(new Error('Failed to load tiptap-bundle.js'));
       };
@@ -1077,6 +1042,7 @@ class BetterNotesPanel extends HTMLElement {
     const note = this._currentNote();
     if (!note) {
       this._saving = false;
+      this._dirtyDuringInflight = false;
       return;
     }
 
