@@ -682,12 +682,7 @@ class BetterNotesPanel extends HTMLElement {
         </div>
       </div>
       <button class="tb-btn tb-pin-btn ${note.pinned ? 'active' : ''}" id="tbPin">📌</button>
-      <div class="toolbar-group" id="tbGroupOverflow">
-        <button class="tb-btn" id="tbOverflow">⋮</button>
-        <div class="tb-dropdown" id="tbDropOverflow">
-          <button class="tb-dd-item" data-action="link">Link</button>
-        </div>
-      </div>
+      <button class="tb-btn" id="tbLink">🔗</button>
       <div class="tb-link-row" id="tbLinkRow" style="display:none">
         <input type="url" class="tb-link-input" id="tbLinkUrl" placeholder="https://…">
         <button class="tb-link-action-btn" id="tbLinkApply">Apply</button>
@@ -748,7 +743,6 @@ class BetterNotesPanel extends HTMLElement {
       ['tbFormat', 'tbGroupFormat'],
       ['tbList', 'tbGroupList'],
       ['tbColor', 'tbGroupColor'],
-      ['tbOverflow', 'tbGroupOverflow'],
     ];
 
     const closeAllDropdowns = () => {
@@ -833,8 +827,8 @@ class BetterNotesPanel extends HTMLElement {
     // Pin button
     root.querySelector('#tbPin')?.addEventListener('click', () => this._togglePin());
 
-    // Link (overflow)
-    root.querySelector('[data-action="link"]')?.addEventListener('click', () => {
+    // Link button
+    root.querySelector('#tbLink')?.addEventListener('click', () => {
       closeAllDropdowns();
       const linkRow = root.querySelector('#tbLinkRow');
       if (linkRow) {
