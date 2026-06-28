@@ -6,6 +6,7 @@ const COLORS = [
 class BetterNotesPanel extends HTMLElement {
   constructor() {
     super();
+    this.attachShadow({ mode: 'open' });
 
     this._hass = null;
     this._notes = [];
@@ -20,7 +21,6 @@ class BetterNotesPanel extends HTMLElement {
     this._pendingDelete = false;
     this._deleteTimeout = null;
     this._closeDropdownsHandler = null;
-    this._keyBlocker = null;
   }
 
   set hass(hass) {
@@ -37,16 +37,6 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   connectedCallback() {
-    // Register a capture-phase listener on document so we intercept keyboard
-    // events at the same level as HA's shortcut handler but in registration
-    // order (ours first). This replaces the earlier bubble-phase approach which
-    // could not stop capture-phase HA listeners.
-    this._keyBlocker = e => {
-      if (this.contains(e.target)) e.stopPropagation();
-    };
-    document.addEventListener('keydown',  this._keyBlocker, true);
-    document.addEventListener('keypress', this._keyBlocker, true);
-    document.addEventListener('keyup',    this._keyBlocker, true);
     if (this._initialized) {
       this._renderList();
       this._renderEditor(this._currentNote());
@@ -57,12 +47,6 @@ class BetterNotesPanel extends HTMLElement {
     this._disconnected = true;
     clearTimeout(this._saveTimeout);
     clearTimeout(this._deleteTimeout);
-    if (this._keyBlocker) {
-      document.removeEventListener('keydown',  this._keyBlocker, true);
-      document.removeEventListener('keypress', this._keyBlocker, true);
-      document.removeEventListener('keyup',    this._keyBlocker, true);
-      this._keyBlocker = null;
-    }
     if (this._editor) {
       this._editor.destroy();
       this._editor = null;
@@ -118,12 +102,9 @@ class BetterNotesPanel extends HTMLElement {
   _initStyles() {
     const style = document.createElement('style');
     style.textContent = `
-      better-notes-panel {
+      :host {
         display: block;
         height: 100%;
-      }
-
-      .bn-panel {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         --accent: #2196F3;
         --accent-dark: #1976D2;
@@ -132,15 +113,18 @@ class BetterNotesPanel extends HTMLElement {
         --text: #333;
         --text-muted: #666;
         --text-faint: #999;
+      }
+
+      .panel {
         display: flex;
         height: 100%;
         background: #fff;
         overflow: hidden;
       }
 
-      .bn-panel * { box-sizing: border-box; margin: 0; padding: 0; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
 
-      .bn-panel .panel-list {
+      .panel-list {
         width: 100%;
         background: var(--bg);
         border-right: 1px solid var(--border);
@@ -149,19 +133,19 @@ class BetterNotesPanel extends HTMLElement {
         flex-shrink: 0;
       }
 
-      .bn-panel .panel-list-header {
+.panel-list-header {
         padding: 16px;
         border-bottom: 1px solid var(--border);
       }
 
-      .bn-panel .panel-list-header h1 {
+.panel-list-header h1 {
         font-size: 22px;
         font-weight: 600;
         color: var(--text);
         margin-bottom: 12px;
       }
 
-      .bn-panel .search-box {
+.search-box {
         width: 100%;
         padding: 8px 12px;
         border: 1px solid var(--border);
@@ -171,9 +155,9 @@ class BetterNotesPanel extends HTMLElement {
         margin-bottom: 10px;
       }
 
-      .bn-panel .search-box:focus { outline: none; border-color: var(--accent); }
+.search-box:focus { outline: none; border-color: var(--accent); }
 
-      .bn-panel .new-note-btn {
+.new-note-btn {
         width: 100%;
         padding: 10px;
         background: var(--accent);
@@ -185,15 +169,15 @@ class BetterNotesPanel extends HTMLElement {
         font-weight: 500;
       }
 
-      .bn-panel .new-note-btn:hover { background: var(--accent-dark); }
+.new-note-btn:hover { background: var(--accent-dark); }
 
-      .bn-panel .notes-list {
+.notes-list {
         flex: 1;
         overflow-y: auto;
         padding: 10px;
       }
 
-      .bn-panel .note-item {
+.note-item {
         position: relative;
         padding: 10px 10px 10px 14px;
         margin-bottom: 8px;
@@ -204,24 +188,24 @@ class BetterNotesPanel extends HTMLElement {
         transition: all 0.15s;
       }
 
-      .bn-panel .note-item:hover { border-color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
-      .bn-panel .note-item.active { background: #bbdefb; border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+.note-item:hover { border-color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+.note-item.active { background: #bbdefb; border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
 
-      .bn-panel .note-color-bar {
+.note-color-bar {
         position: absolute;
         left: 0; top: 0;
         width: 4px; height: 100%;
         border-radius: 8px 0 0 8px;
       }
 
-      .bn-panel .note-item-header {
+.note-item-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 3px;
       }
 
-      .bn-panel .note-item-title {
+.note-item-title {
         font-weight: 600;
         font-size: 14px;
         color: var(--text);
@@ -231,7 +215,7 @@ class BetterNotesPanel extends HTMLElement {
         flex: 1;
       }
 
-      .bn-panel .note-item-preview {
+.note-item-preview {
         font-size: 12px;
         color: var(--text-muted);
         overflow: hidden;
@@ -240,17 +224,17 @@ class BetterNotesPanel extends HTMLElement {
         margin-bottom: 3px;
       }
 
-      .bn-panel .note-item-date { font-size: 11px; color: var(--text-faint); }
-      .bn-panel .pin-icon { font-size: 14px; margin-left: 4px; flex-shrink: 0; }
+.note-item-date { font-size: 11px; color: var(--text-faint); }
+.pin-icon { font-size: 14px; margin-left: 4px; flex-shrink: 0; }
 
-      .bn-panel .empty-list {
+.empty-list {
         padding: 20px;
         text-align: center;
         color: var(--text-faint);
         font-size: 14px;
       }
 
-      .bn-panel .panel-editor {
+.panel-editor {
         flex: 1;
         display: flex;
         flex-direction: column;
@@ -258,7 +242,7 @@ class BetterNotesPanel extends HTMLElement {
         min-width: 0;
       }
 
-      .bn-panel .editor-header {
+.editor-header {
         padding: 12px 16px;
         border-bottom: 1px solid var(--border);
         display: flex;
@@ -266,7 +250,7 @@ class BetterNotesPanel extends HTMLElement {
         gap: 10px;
       }
 
-      .bn-panel .back-btn {
+.back-btn {
         display: none;
         padding: 6px 12px;
         border: 1px solid var(--border);
@@ -276,11 +260,11 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 14px;
       }
 
-      .bn-panel .back-btn:hover { background: #f5f5f5; }
+.back-btn:hover { background: #f5f5f5; }
 
-      .bn-panel .editor-actions { display: flex; gap: 8px; margin-left: auto; }
+.editor-actions { display: flex; gap: 8px; margin-left: auto; }
 
-      .bn-panel .editor-btn {
+.editor-btn {
         padding: 6px 14px;
         border: 1px solid var(--border);
         border-radius: 6px;
@@ -289,18 +273,18 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 14px;
       }
 
-      .bn-panel .editor-btn:hover { background: #f5f5f5; }
-      .bn-panel .editor-btn.danger { background: #f44336; color: #fff; border-color: #f44336; }
-      .bn-panel .editor-btn.danger:hover { background: #d32f2f; }
-      .bn-panel .editor-btn.confirming { background: #ff7043; color: #fff; border-color: #ff7043; }
+.editor-btn:hover { background: #f5f5f5; }
+.editor-btn.danger { background: #f44336; color: #fff; border-color: #f44336; }
+.editor-btn.danger:hover { background: #d32f2f; }
+.editor-btn.confirming { background: #ff7043; color: #fff; border-color: #ff7043; }
 
-      .bn-panel .editor-body {
+.editor-body {
         flex: 1;
         overflow-y: auto;
         padding: 20px 24px;
       }
 
-      .bn-panel .editor-toolbar {
+.editor-toolbar {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
@@ -310,7 +294,7 @@ class BetterNotesPanel extends HTMLElement {
         margin-bottom: 16px;
       }
 
-      .bn-panel .pin-toggle {
+.pin-toggle {
         display: flex;
         align-items: center;
         gap: 6px;
@@ -322,14 +306,14 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 13px;
       }
 
-      .bn-panel .pin-toggle:hover { background: #f5f5f5; }
-      .bn-panel .pin-toggle.active { background: #fff3e0; border-color: #FF9800; color: #FF9800; }
+.pin-toggle:hover { background: #f5f5f5; }
+.pin-toggle.active { background: #fff3e0; border-color: #FF9800; color: #FF9800; }
 
-      .bn-panel .toolbar-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+.toolbar-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
 
-      .bn-panel .color-picker { display: flex; gap: 6px; flex-wrap: wrap; }
+.color-picker { display: flex; gap: 6px; flex-wrap: wrap; }
 
-      .bn-panel .color-dot {
+.color-dot {
         width: 28px; height: 28px;
         border-radius: 50%;
         cursor: pointer;
@@ -337,10 +321,10 @@ class BetterNotesPanel extends HTMLElement {
         transition: all 0.15s;
       }
 
-      .bn-panel .color-dot:hover { transform: scale(1.1); }
-      .bn-panel .color-dot.active { border-color: #333; transform: scale(1.15); }
+.color-dot:hover { transform: scale(1.1); }
+.color-dot.active { border-color: #333; transform: scale(1.15); }
 
-      .bn-panel .note-title-input {
+.note-title-input {
         width: 100%;
         font-size: 28px;
         font-weight: 700;
@@ -351,7 +335,7 @@ class BetterNotesPanel extends HTMLElement {
         font-family: inherit;
       }
 
-      .bn-panel .note-content-input {
+.note-content-input {
         width: 100%;
         min-height: 300px;
         font-size: 15px;
@@ -363,7 +347,7 @@ class BetterNotesPanel extends HTMLElement {
         font-family: inherit;
       }
 
-      .bn-panel .empty-editor {
+.empty-editor {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -372,10 +356,10 @@ class BetterNotesPanel extends HTMLElement {
         color: var(--text-faint);
       }
 
-      .bn-panel .empty-editor-icon { font-size: 56px; margin-bottom: 16px; }
-      .bn-panel .empty-editor-text { font-size: 16px; }
+.empty-editor-icon { font-size: 56px; margin-bottom: 16px; }
+.empty-editor-text { font-size: 16px; }
 
-      .bn-panel .save-toast {
+.save-toast {
         position: fixed;
         bottom: 24px;
         right: 24px;
@@ -390,7 +374,7 @@ class BetterNotesPanel extends HTMLElement {
         z-index: 1000;
       }
 
-      .bn-panel #tiptap-mount .ProseMirror {
+#tiptap-mount .ProseMirror {
         min-height: 300px;
         font-size: 15px;
         line-height: 1.6;
@@ -399,20 +383,20 @@ class BetterNotesPanel extends HTMLElement {
         font-family: inherit;
       }
 
-      .bn-panel #tiptap-mount .ProseMirror p { margin: 0 0 8px; }
-      .bn-panel #tiptap-mount .ProseMirror h1 { font-size: 24px; font-weight: 700; margin: 0 0 8px; }
-      .bn-panel #tiptap-mount .ProseMirror h2 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
-      .bn-panel #tiptap-mount .ProseMirror h3 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
-      .bn-panel #tiptap-mount .ProseMirror ul,
-      .bn-panel #tiptap-mount .ProseMirror ol { margin: 0 0 8px; padding-left: 24px; }
-      .bn-panel #tiptap-mount .ProseMirror li { margin-bottom: 2px; }
-      .bn-panel #tiptap-mount .ProseMirror ul[data-type="taskList"] { list-style: none; padding-left: 0; }
-      .bn-panel #tiptap-mount .ProseMirror ul[data-type="taskList"] li { display: flex; align-items: flex-start; gap: 6px; }
-      .bn-panel #tiptap-mount .ProseMirror ul[data-type="taskList"] li > label { flex-shrink: 0; margin-top: 2px; }
-      .bn-panel #tiptap-mount .ProseMirror mark { background: #fff176; padding: 1px 2px; border-radius: 2px; }
-      .bn-panel #tiptap-mount .ProseMirror a { color: var(--accent); text-decoration: underline; }
-      .bn-panel #tiptap-mount .ProseMirror s { text-decoration: line-through; }
-      .bn-panel #tiptap-mount .ProseMirror p.is-editor-empty:first-child::before {
+#tiptap-mount .ProseMirror p { margin: 0 0 8px; }
+#tiptap-mount .ProseMirror h1 { font-size: 24px; font-weight: 700; margin: 0 0 8px; }
+#tiptap-mount .ProseMirror h2 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+#tiptap-mount .ProseMirror h3 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+#tiptap-mount .ProseMirror ul,
+#tiptap-mount .ProseMirror ol { margin: 0 0 8px; padding-left: 24px; }
+#tiptap-mount .ProseMirror li { margin-bottom: 2px; }
+#tiptap-mount .ProseMirror ul[data-type="taskList"] { list-style: none; padding-left: 0; }
+#tiptap-mount .ProseMirror ul[data-type="taskList"] li { display: flex; align-items: flex-start; gap: 6px; }
+#tiptap-mount .ProseMirror ul[data-type="taskList"] li > label { flex-shrink: 0; margin-top: 2px; }
+#tiptap-mount .ProseMirror mark { background: #fff176; padding: 1px 2px; border-radius: 2px; }
+#tiptap-mount .ProseMirror a { color: var(--accent); text-decoration: underline; }
+#tiptap-mount .ProseMirror s { text-decoration: line-through; }
+#tiptap-mount .ProseMirror p.is-editor-empty:first-child::before {
         content: attr(data-placeholder);
         float: left;
         color: var(--text-faint);
@@ -421,18 +405,18 @@ class BetterNotesPanel extends HTMLElement {
       }
 
       @media (max-width: 767px) {
-        better-notes-panel[data-view="list"] .panel-editor { display: none; }
-        better-notes-panel[data-view="editor"] .panel-list { display: none; }
-        .bn-panel .back-btn { display: block; }
-        .bn-panel .save-toast { bottom: 16px; right: 16px; left: 16px; text-align: center; }
+        :host([data-view="list"]) .panel-editor { display: none; }
+        :host([data-view="editor"]) .panel-list { display: none; }
+  .back-btn { display: block; }
+  .save-toast { bottom: 16px; right: 16px; left: 16px; text-align: center; }
       }
 
       @media (min-width: 768px) {
-        .bn-panel .panel-list { width: 280px; display: flex; }
-        .bn-panel .panel-editor { display: flex; }
+  .panel-list { width: 280px; display: flex; }
+  .panel-editor { display: flex; }
       }
 
-      .bn-panel .formatting-toolbar {
+.formatting-toolbar {
         display: flex;
         flex-wrap: wrap;
         gap: 4px;
@@ -442,9 +426,9 @@ class BetterNotesPanel extends HTMLElement {
         flex-shrink: 0;
       }
 
-      .bn-panel .toolbar-group { position: relative; }
+.toolbar-group { position: relative; }
 
-      .bn-panel .tb-btn {
+.tb-btn {
         padding: 6px 10px;
         border: 1px solid var(--border);
         border-radius: 6px;
@@ -457,12 +441,12 @@ class BetterNotesPanel extends HTMLElement {
         gap: 3px;
         white-space: nowrap;
       }
-      .bn-panel .tb-btn:hover { background: #f5f5f5; }
-      .bn-panel .tb-btn.active { background: #fff3e0; border-color: #FF9800; }
+.tb-btn:hover { background: #f5f5f5; }
+.tb-btn.active { background: #fff3e0; border-color: #FF9800; }
 
-      .bn-panel .tb-caret { font-size: 10px; }
+.tb-caret { font-size: 10px; }
 
-      .bn-panel .tb-dropdown {
+.tb-dropdown {
         display: none;
         position: absolute;
         bottom: calc(100% + 6px);
@@ -475,9 +459,9 @@ class BetterNotesPanel extends HTMLElement {
         min-width: 150px;
         padding: 4px 0;
       }
-      .bn-panel .toolbar-group.open .tb-dropdown { display: block; }
+.toolbar-group.open .tb-dropdown { display: block; }
 
-      .bn-panel .tb-dd-item {
+.tb-dd-item {
         display: block;
         width: 100%;
         padding: 8px 14px;
@@ -488,27 +472,27 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 14px;
         white-space: nowrap;
       }
-      .bn-panel .tb-dd-item:hover { background: #f5f5f5; }
+.tb-dd-item:hover { background: #f5f5f5; }
 
-      .bn-panel .tb-dd-divider { height: 1px; background: var(--border); margin: 4px 0; }
+.tb-dd-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
-      .bn-panel .tb-color-swatches {
+.tb-color-swatches {
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
         padding: 10px;
       }
-      .bn-panel .tb-color-dot {
+.tb-color-dot {
         width: 24px; height: 24px;
         border-radius: 50%;
         cursor: pointer;
         border: 2px solid transparent;
         transition: transform 0.1s;
       }
-      .bn-panel .tb-color-dot:hover { transform: scale(1.1); }
-      .bn-panel .tb-color-dot.active { border-color: #333; }
+.tb-color-dot:hover { transform: scale(1.1); }
+.tb-color-dot.active { border-color: #333; }
 
-      .bn-panel .tb-link-row {
+.tb-link-row {
         display: none;
         align-items: center;
         gap: 6px;
@@ -516,7 +500,7 @@ class BetterNotesPanel extends HTMLElement {
         padding: 6px 0 2px;
         flex-basis: 100%;
       }
-      .bn-panel .tb-link-input {
+.tb-link-input {
         flex: 1;
         padding: 5px 8px;
         border: 1px solid var(--border);
@@ -524,7 +508,7 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 13px;
         min-width: 0;
       }
-      .bn-panel .tb-link-action-btn {
+.tb-link-action-btn {
         padding: 5px 10px;
         border: 1px solid var(--border);
         border-radius: 6px;
@@ -533,43 +517,43 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 13px;
         flex-shrink: 0;
       }
-      .bn-panel .tb-link-action-btn:hover { background: #f5f5f5; }
+.tb-link-action-btn:hover { background: #f5f5f5; }
 
       /* Desktop: toolbar at bottom — natural flex order (last child in panel-editor) */
-      .bn-panel .panel-editor {
+.panel-editor {
         display: flex;
         flex-direction: column;
       }
-      .bn-panel .editor-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
-      .bn-panel .formatting-toolbar { order: 3; }
+.editor-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+.formatting-toolbar { order: 3; }
 
       /* Mobile: toolbar below header, above editor body */
       @media (max-width: 767px) {
-        .bn-panel .editor-body { order: 3; }
-        .bn-panel .formatting-toolbar {
+  .editor-body { order: 3; }
+  .formatting-toolbar {
           order: 2;
           border-top: none;
           border-bottom: 1px solid var(--border);
         }
-        .bn-panel .tb-dropdown {
+  .tb-dropdown {
           top: calc(100% + 6px);
           bottom: auto;
         }
       }
     `;
-    this.appendChild(style);
+    this.shadowRoot.appendChild(style);
 
     const content = document.createElement('div');
     content.id = 'content';
     content.style.cssText = 'display:contents';
-    this.appendChild(content);
+    this.shadowRoot.appendChild(content);
   }
 
   _initDOM() {
-    const content = this.querySelector('#content');
+    const content = this.shadowRoot.querySelector('#content');
     if (!content) return;
     content.innerHTML = `
-      <div class="panel bn-panel">
+      <div class="panel">
         <div class="panel-list" id="panel-list"></div>
         <div class="panel-editor" id="panel-editor">
           <div class="empty-editor" id="editor-empty">
@@ -582,7 +566,7 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   _renderList() {
-    const listEl = this.querySelector('#panel-list');
+    const listEl = this.shadowRoot.querySelector('#panel-list');
     if (!listEl) return;
     this.setAttribute('data-view', this._view);
     const filtered = this._filteredNotes();
@@ -613,7 +597,7 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   _renderEditor(note) {
-    const editorPanel = this.querySelector('#panel-editor');
+    const editorPanel = this.shadowRoot.querySelector('#panel-editor');
     if (!editorPanel) return;
 
     if (!note) {
@@ -636,7 +620,7 @@ class BetterNotesPanel extends HTMLElement {
       this._attachToolbarListeners(note);
       this._initTiptap(note).catch(err => console.error('Failed to init Tiptap:', err));
     } else {
-      const titleInput = this.querySelector('#noteTitle');
+      const titleInput = this.shadowRoot.querySelector('#noteTitle');
       if (titleInput) titleInput.value = note.title || '';
       this._editor.commands.setContent(note.content || '');
       this._editor.commands.focus('end');
@@ -723,42 +707,42 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   _updateToolbarState(note) {
-    const pinBtn = this.querySelector('#tbPin');
+    const pinBtn = this.shadowRoot.querySelector('#tbPin');
     if (pinBtn) pinBtn.classList.toggle('active', !!note.pinned);
 
-    this.querySelectorAll('.tb-color-dot').forEach(dot => {
+    this.shadowRoot.querySelectorAll('.tb-color-dot').forEach(dot => {
       dot.classList.toggle('active', dot.dataset.color === note.color);
     });
   }
 
   _attachListListeners() {
-    this.querySelector('#searchBox')?.addEventListener('input', e => {
+    this.shadowRoot.querySelector('#searchBox')?.addEventListener('input', e => {
       this._searchTerm = e.target.value;
       this._renderList();
     });
-    this.querySelector('#newNoteBtn')?.addEventListener('click', () => this._createNote());
-    this.querySelectorAll('.note-item').forEach(el => {
+    this.shadowRoot.querySelector('#newNoteBtn')?.addEventListener('click', () => this._createNote());
+    this.shadowRoot.querySelectorAll('.note-item').forEach(el => {
       el.addEventListener('click', () => this._selectNote(el.dataset.id));
     });
   }
 
   _attachEditorListeners() {
-    this.querySelector('#backBtn')?.addEventListener('click', () => {
+    this.shadowRoot.querySelector('#backBtn')?.addEventListener('click', () => {
       this._view = 'list';
       this._renderList();
     });
-    this.querySelector('#saveBtn')?.addEventListener('click', () => this._saveNote());
-    this.querySelector('#deleteBtn')?.addEventListener('click', () => this._deleteNote());
+    this.shadowRoot.querySelector('#saveBtn')?.addEventListener('click', () => this._saveNote());
+    this.shadowRoot.querySelector('#deleteBtn')?.addEventListener('click', () => this._deleteNote());
 
     const autoSave = () => {
       clearTimeout(this._saveTimeout);
       this._saveTimeout = setTimeout(() => this._saveNote(), 1000);
     };
-    this.querySelector('#noteTitle')?.addEventListener('input', autoSave);
+    this.shadowRoot.querySelector('#noteTitle')?.addEventListener('input', autoSave);
   }
 
   _attachToolbarListeners(note) {
-    const root = this;
+    const root = this.shadowRoot;
 
     // Dropdown toggle logic
     const dropdownPairs = [
@@ -900,7 +884,7 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   async _initTiptap(note) {
-    const mount = this.querySelector('#tiptap-mount');
+    const mount = this.shadowRoot.querySelector('#tiptap-mount');
     if (!mount) return;
 
     let bundle;
@@ -1026,7 +1010,7 @@ class BetterNotesPanel extends HTMLElement {
       ) ?? (this._notes.length > 0 ? this._notes[0] : null);
       if (newNote) {
         this._selectNote(newNote.note_id);
-        this.querySelector('#noteTitle')?.select();
+        this.shadowRoot.querySelector('#noteTitle')?.select();
       }
     } catch (e) {
       console.error('Better Notes: failed to create note', e);
@@ -1043,11 +1027,11 @@ class BetterNotesPanel extends HTMLElement {
       return;
     }
 
-    const title = overrides.title ?? this.querySelector('#noteTitle')?.value ?? note.title;
+    const title = overrides.title ?? this.shadowRoot.querySelector('#noteTitle')?.value ?? note.title;
     const content = overrides.content ?? (
       this._editor
         ? this._editor.getHTML()
-        : (this.querySelector('#noteContent')?.value ?? note.content)
+        : (this.shadowRoot.querySelector('#noteContent')?.value ?? note.content)
     );
     const color = overrides.color ?? note.color;
     const pinned = overrides.pinned ?? note.pinned;
@@ -1079,7 +1063,7 @@ class BetterNotesPanel extends HTMLElement {
 
     if (!this._pendingDelete) {
       this._pendingDelete = true;
-      const btn = this.querySelector('#deleteBtn');
+      const btn = this.shadowRoot.querySelector('#deleteBtn');
       if (btn) {
         btn.textContent = 'Confirm?';
         btn.classList.add('confirming');
@@ -1120,12 +1104,12 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   _showSavedFeedback() {
-    const existing = this.querySelector('.save-toast');
+    const existing = this.shadowRoot.querySelector('.save-toast');
     if (existing) existing.remove();
     const toast = document.createElement('div');
     toast.className = 'save-toast';
     toast.textContent = 'Saved';
-    this.appendChild(toast);
+    this.shadowRoot.appendChild(toast);
     setTimeout(() => {
       toast.style.opacity = '0';
       setTimeout(() => toast.remove(), 400);
