@@ -39,6 +39,27 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   connectedCallback() {
+    // Stop keyboard events from reaching HA's window-level shortcut handler.
+    // This works in bubble phase: the target (input/editor) processes the event
+    // first, then it bubbles to us, and we stop it before it reaches window.
+    this.addEventListener('keydown', e => e.stopPropagation());
+    this.addEventListener('keypress', e => e.stopPropagation());
+
+    // Prevent focus from leaving the panel when clicking non-input elements
+    // (buttons, note items, panel background). The click still fires normally;
+    // only the focus change is suppressed. composedPath()[0] gives the actual
+    // clicked element inside the shadow root, not the retargeted host.
+    this.addEventListener('mousedown', e => {
+      const target = e.composedPath()[0];
+      if (
+        target.tagName !== 'INPUT' &&
+        target.tagName !== 'TEXTAREA' &&
+        !target.isContentEditable
+      ) {
+        e.preventDefault();
+      }
+    });
+
     if (this._initialized) {
       this._renderList();
       this._renderEditor(this._currentNote());
