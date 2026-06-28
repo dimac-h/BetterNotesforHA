@@ -420,12 +420,12 @@ class BetterNotesPanel extends HTMLElement {
       .toolbar-group { position: relative; }
 
       .tb-btn {
-        padding: 6px 10px;
+        padding: 8px 13px;
         border: 1px solid var(--border);
         border-radius: 6px;
         background: #fff;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 500;
         display: flex;
         align-items: center;
