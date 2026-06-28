@@ -270,6 +270,7 @@ class BetterNotesPanel extends HTMLElement {
         flex-direction: column;
         background: #fff;
         min-width: 0;
+        min-height: 0;
       }
 
       .editor-header {
@@ -310,49 +311,10 @@ class BetterNotesPanel extends HTMLElement {
 
       .editor-body {
         flex: 1;
+        min-height: 0;
         overflow-y: auto;
         padding: 20px 24px;
       }
-
-      .editor-toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        align-items: center;
-        padding-bottom: 16px;
-        border-bottom: 1px solid var(--border);
-        margin-bottom: 16px;
-      }
-
-      .pin-toggle {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 10px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background: #fff;
-        cursor: pointer;
-        font-size: 13px;
-      }
-
-      .pin-toggle:hover { background: #f5f5f5; }
-      .pin-toggle.active { background: #fff3e0; border-color: #FF9800; color: #FF9800; }
-
-      .toolbar-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-
-      .color-picker { display: flex; gap: 6px; flex-wrap: wrap; }
-
-      .color-dot {
-        width: 28px; height: 28px;
-        border-radius: 50%;
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: all 0.15s;
-      }
-
-      .color-dot:hover { transform: scale(1.1); }
-      .color-dot.active { border-color: #333; transform: scale(1.15); }
 
       .note-title-input {
         width: 100%;
@@ -442,8 +404,7 @@ class BetterNotesPanel extends HTMLElement {
       }
 
       @media (min-width: 768px) {
-        .panel-list { width: 280px; display: flex; }
-        .panel-editor { display: flex; }
+        .panel-list { width: 280px; }
       }
 
       .formatting-toolbar {
