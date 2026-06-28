@@ -588,6 +588,13 @@ class BetterNotesPanel extends HTMLElement {
       </div>
     `;
     this._attachListListeners();
+    // Keep a shadow-DOM element focused so HA's shortcut handler sees an input
+    // in composedPath() and skips letter shortcuts while the panel is open.
+    // Only steal focus when no element inside the shadow root already has it.
+    const active = this.shadowRoot.activeElement;
+    if (!active || active === this.shadowRoot.querySelector('#searchBox')) {
+      this.shadowRoot.querySelector('#searchBox')?.focus({ preventScroll: true });
+    }
   }
 
   _renderEditor(note) {
