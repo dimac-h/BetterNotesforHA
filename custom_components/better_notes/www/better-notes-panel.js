@@ -6,7 +6,7 @@ const COLORS = [
 class BetterNotesPanel extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+
     this._hass = null;
     this._notes = [];
     this._currentNoteId = null;
@@ -19,6 +19,7 @@ class BetterNotesPanel extends HTMLElement {
     this._saving = false;
     this._pendingDelete = false;
     this._deleteTimeout = null;
+    this._closeDropdownsHandler = null;
   }
 
   set hass(hass) {
@@ -26,20 +27,33 @@ class BetterNotesPanel extends HTMLElement {
     if (!this._initialized) {
       this._initialized = true;
       this._initStyles();
-      this._render();
+      this._initDOM();
+      this._loadTiptapBundle().catch(err => console.warn('Better Notes: Tiptap failed to load', err));
+      this._renderList();
       this._loadNotes();
       this._subscribeToEvents();
     }
   }
 
   connectedCallback() {
-    if (this._initialized) this._render();
+    if (this._initialized) {
+      this._renderList();
+      this._renderEditor(this._currentNote());
+    }
   }
 
   disconnectedCallback() {
     this._disconnected = true;
     clearTimeout(this._saveTimeout);
     clearTimeout(this._deleteTimeout);
+    if (this._editor) {
+      this._editor.destroy();
+      this._editor = null;
+    }
+    if (this._closeDropdownsHandler) {
+      document.removeEventListener('click', this._closeDropdownsHandler);
+      this._closeDropdownsHandler = null;
+    }
     if (this._unsubscribeEvents) {
       this._unsubscribeEvents();
       this._unsubscribeEvents = null;
@@ -58,7 +72,7 @@ class BetterNotesPanel extends HTMLElement {
       const notes = result?.response?.notes;
       if (Array.isArray(notes)) {
         this._notes = notes;
-        this._render();
+        this._renderList();
       }
     } catch (e) {
       console.error('Better Notes: failed to load notes', e);
@@ -87,9 +101,12 @@ class BetterNotesPanel extends HTMLElement {
   _initStyles() {
     const style = document.createElement('style');
     style.textContent = `
-      :host {
+      better-notes-panel {
         display: block;
         height: 100%;
+      }
+
+      .bn-panel {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         --accent: #2196F3;
         --accent-dark: #1976D2;
@@ -98,18 +115,15 @@ class BetterNotesPanel extends HTMLElement {
         --text: #333;
         --text-muted: #666;
         --text-faint: #999;
-      }
-
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-
-      .panel {
         display: flex;
         height: 100%;
         background: #fff;
         overflow: hidden;
       }
 
-      .panel-list {
+      .bn-panel * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      .bn-panel .panel-list {
         width: 100%;
         background: var(--bg);
         border-right: 1px solid var(--border);
@@ -118,19 +132,19 @@ class BetterNotesPanel extends HTMLElement {
         flex-shrink: 0;
       }
 
-      .panel-list-header {
+      .bn-panel .panel-list-header {
         padding: 16px;
         border-bottom: 1px solid var(--border);
       }
 
-      .panel-list-header h1 {
+      .bn-panel .panel-list-header h1 {
         font-size: 22px;
         font-weight: 600;
         color: var(--text);
         margin-bottom: 12px;
       }
 
-      .search-box {
+      .bn-panel .search-box {
         width: 100%;
         padding: 8px 12px;
         border: 1px solid var(--border);
@@ -140,9 +154,9 @@ class BetterNotesPanel extends HTMLElement {
         margin-bottom: 10px;
       }
 
-      .search-box:focus { outline: none; border-color: var(--accent); }
+      .bn-panel .search-box:focus { outline: none; border-color: var(--accent); }
 
-      .new-note-btn {
+      .bn-panel .new-note-btn {
         width: 100%;
         padding: 10px;
         background: var(--accent);
@@ -154,15 +168,15 @@ class BetterNotesPanel extends HTMLElement {
         font-weight: 500;
       }
 
-      .new-note-btn:hover { background: var(--accent-dark); }
+      .bn-panel .new-note-btn:hover { background: var(--accent-dark); }
 
-      .notes-list {
+      .bn-panel .notes-list {
         flex: 1;
         overflow-y: auto;
         padding: 10px;
       }
 
-      .note-item {
+      .bn-panel .note-item {
         position: relative;
         padding: 10px 10px 10px 14px;
         margin-bottom: 8px;
@@ -173,24 +187,24 @@ class BetterNotesPanel extends HTMLElement {
         transition: all 0.15s;
       }
 
-      .note-item:hover { border-color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
-      .note-item.active { background: #e3f2fd; border-color: var(--accent); }
+      .bn-panel .note-item:hover { border-color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+      .bn-panel .note-item.active { background: #e3f2fd; border-color: var(--accent); }
 
-      .note-color-bar {
+      .bn-panel .note-color-bar {
         position: absolute;
         left: 0; top: 0;
         width: 4px; height: 100%;
         border-radius: 8px 0 0 8px;
       }
 
-      .note-item-header {
+      .bn-panel .note-item-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 3px;
       }
 
-      .note-item-title {
+      .bn-panel .note-item-title {
         font-weight: 600;
         font-size: 14px;
         color: var(--text);
@@ -200,7 +214,7 @@ class BetterNotesPanel extends HTMLElement {
         flex: 1;
       }
 
-      .note-item-preview {
+      .bn-panel .note-item-preview {
         font-size: 12px;
         color: var(--text-muted);
         overflow: hidden;
@@ -209,17 +223,17 @@ class BetterNotesPanel extends HTMLElement {
         margin-bottom: 3px;
       }
 
-      .note-item-date { font-size: 11px; color: var(--text-faint); }
-      .pin-icon { font-size: 14px; margin-left: 4px; flex-shrink: 0; }
+      .bn-panel .note-item-date { font-size: 11px; color: var(--text-faint); }
+      .bn-panel .pin-icon { font-size: 14px; margin-left: 4px; flex-shrink: 0; }
 
-      .empty-list {
+      .bn-panel .empty-list {
         padding: 20px;
         text-align: center;
         color: var(--text-faint);
         font-size: 14px;
       }
 
-      .panel-editor {
+      .bn-panel .panel-editor {
         flex: 1;
         display: flex;
         flex-direction: column;
@@ -227,7 +241,7 @@ class BetterNotesPanel extends HTMLElement {
         min-width: 0;
       }
 
-      .editor-header {
+      .bn-panel .editor-header {
         padding: 12px 16px;
         border-bottom: 1px solid var(--border);
         display: flex;
@@ -235,7 +249,7 @@ class BetterNotesPanel extends HTMLElement {
         gap: 10px;
       }
 
-      .back-btn {
+      .bn-panel .back-btn {
         display: none;
         padding: 6px 12px;
         border: 1px solid var(--border);
@@ -245,11 +259,11 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 14px;
       }
 
-      .back-btn:hover { background: #f5f5f5; }
+      .bn-panel .back-btn:hover { background: #f5f5f5; }
 
-      .editor-actions { display: flex; gap: 8px; margin-left: auto; }
+      .bn-panel .editor-actions { display: flex; gap: 8px; margin-left: auto; }
 
-      .editor-btn {
+      .bn-panel .editor-btn {
         padding: 6px 14px;
         border: 1px solid var(--border);
         border-radius: 6px;
@@ -258,18 +272,18 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 14px;
       }
 
-      .editor-btn:hover { background: #f5f5f5; }
-      .editor-btn.danger { background: #f44336; color: #fff; border-color: #f44336; }
-      .editor-btn.danger:hover { background: #d32f2f; }
-      .editor-btn.confirming { background: #ff7043; color: #fff; border-color: #ff7043; }
+      .bn-panel .editor-btn:hover { background: #f5f5f5; }
+      .bn-panel .editor-btn.danger { background: #f44336; color: #fff; border-color: #f44336; }
+      .bn-panel .editor-btn.danger:hover { background: #d32f2f; }
+      .bn-panel .editor-btn.confirming { background: #ff7043; color: #fff; border-color: #ff7043; }
 
-      .editor-body {
+      .bn-panel .editor-body {
         flex: 1;
         overflow-y: auto;
         padding: 20px 24px;
       }
 
-      .editor-toolbar {
+      .bn-panel .editor-toolbar {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
@@ -279,7 +293,7 @@ class BetterNotesPanel extends HTMLElement {
         margin-bottom: 16px;
       }
 
-      .pin-toggle {
+      .bn-panel .pin-toggle {
         display: flex;
         align-items: center;
         gap: 6px;
@@ -291,14 +305,14 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 13px;
       }
 
-      .pin-toggle:hover { background: #f5f5f5; }
-      .pin-toggle.active { background: #fff3e0; border-color: #FF9800; color: #FF9800; }
+      .bn-panel .pin-toggle:hover { background: #f5f5f5; }
+      .bn-panel .pin-toggle.active { background: #fff3e0; border-color: #FF9800; color: #FF9800; }
 
-      .toolbar-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+      .bn-panel .toolbar-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
 
-      .color-picker { display: flex; gap: 6px; flex-wrap: wrap; }
+      .bn-panel .color-picker { display: flex; gap: 6px; flex-wrap: wrap; }
 
-      .color-dot {
+      .bn-panel .color-dot {
         width: 28px; height: 28px;
         border-radius: 50%;
         cursor: pointer;
@@ -306,10 +320,10 @@ class BetterNotesPanel extends HTMLElement {
         transition: all 0.15s;
       }
 
-      .color-dot:hover { transform: scale(1.1); }
-      .color-dot.active { border-color: #333; transform: scale(1.15); }
+      .bn-panel .color-dot:hover { transform: scale(1.1); }
+      .bn-panel .color-dot.active { border-color: #333; transform: scale(1.15); }
 
-      .note-title-input {
+      .bn-panel .note-title-input {
         width: 100%;
         font-size: 28px;
         font-weight: 700;
@@ -320,7 +334,7 @@ class BetterNotesPanel extends HTMLElement {
         font-family: inherit;
       }
 
-      .note-content-input {
+      .bn-panel .note-content-input {
         width: 100%;
         min-height: 300px;
         font-size: 15px;
@@ -332,7 +346,7 @@ class BetterNotesPanel extends HTMLElement {
         font-family: inherit;
       }
 
-      .empty-editor {
+      .bn-panel .empty-editor {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -341,10 +355,10 @@ class BetterNotesPanel extends HTMLElement {
         color: var(--text-faint);
       }
 
-      .empty-editor-icon { font-size: 56px; margin-bottom: 16px; }
-      .empty-editor-text { font-size: 16px; }
+      .bn-panel .empty-editor-icon { font-size: 56px; margin-bottom: 16px; }
+      .bn-panel .empty-editor-text { font-size: 16px; }
 
-      .save-toast {
+      .bn-panel .save-toast {
         position: fixed;
         bottom: 24px;
         right: 24px;
@@ -359,69 +373,563 @@ class BetterNotesPanel extends HTMLElement {
         z-index: 1000;
       }
 
+      .bn-panel #tiptap-mount .ProseMirror {
+        min-height: 300px;
+        font-size: 15px;
+        line-height: 1.6;
+        outline: none;
+        color: var(--text);
+        font-family: inherit;
+      }
+
+      .bn-panel #tiptap-mount .ProseMirror p { margin: 0 0 8px; }
+      .bn-panel #tiptap-mount .ProseMirror h1 { font-size: 24px; font-weight: 700; margin: 0 0 8px; }
+      .bn-panel #tiptap-mount .ProseMirror h2 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+      .bn-panel #tiptap-mount .ProseMirror h3 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+      .bn-panel #tiptap-mount .ProseMirror ul,
+      .bn-panel #tiptap-mount .ProseMirror ol { margin: 0 0 8px; padding-left: 24px; }
+      .bn-panel #tiptap-mount .ProseMirror li { margin-bottom: 2px; }
+      .bn-panel #tiptap-mount .ProseMirror ul[data-type="taskList"] { list-style: none; padding-left: 0; }
+      .bn-panel #tiptap-mount .ProseMirror ul[data-type="taskList"] li { display: flex; align-items: flex-start; gap: 6px; }
+      .bn-panel #tiptap-mount .ProseMirror ul[data-type="taskList"] li > label { flex-shrink: 0; margin-top: 2px; }
+      .bn-panel #tiptap-mount .ProseMirror mark { background: #fff176; padding: 1px 2px; border-radius: 2px; }
+      .bn-panel #tiptap-mount .ProseMirror a { color: var(--accent); text-decoration: underline; }
+      .bn-panel #tiptap-mount .ProseMirror s { text-decoration: line-through; }
+      .bn-panel #tiptap-mount .ProseMirror p.is-editor-empty:first-child::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: var(--text-faint);
+        pointer-events: none;
+        height: 0;
+      }
+
       @media (max-width: 767px) {
-        :host([data-view="list"]) .panel-editor { display: none; }
-        :host([data-view="editor"]) .panel-list { display: none; }
-        .back-btn { display: block; }
-        .save-toast { bottom: 16px; right: 16px; left: 16px; text-align: center; }
+        better-notes-panel[data-view="list"] .panel-editor { display: none; }
+        better-notes-panel[data-view="editor"] .panel-list { display: none; }
+        .bn-panel .back-btn { display: block; }
+        .bn-panel .save-toast { bottom: 16px; right: 16px; left: 16px; text-align: center; }
       }
 
       @media (min-width: 768px) {
-        .panel-list { width: 280px; display: flex; }
-        .panel-editor { display: flex; }
+        .bn-panel .panel-list { width: 280px; display: flex; }
+        .bn-panel .panel-editor { display: flex; }
+      }
+
+      .bn-panel .formatting-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 8px 12px;
+        background: #fff;
+        border-top: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .bn-panel .toolbar-group { position: relative; }
+
+      .bn-panel .tb-btn {
+        padding: 6px 10px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        white-space: nowrap;
+      }
+      .bn-panel .tb-btn:hover { background: #f5f5f5; }
+      .bn-panel .tb-btn.active { background: #fff3e0; border-color: #FF9800; }
+
+      .bn-panel .tb-caret { font-size: 10px; }
+
+      .bn-panel .tb-dropdown {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 0;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        z-index: 200;
+        min-width: 150px;
+        padding: 4px 0;
+      }
+      .bn-panel .toolbar-group.open .tb-dropdown { display: block; }
+
+      .bn-panel .tb-dd-item {
+        display: block;
+        width: 100%;
+        padding: 8px 14px;
+        text-align: left;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+      .bn-panel .tb-dd-item:hover { background: #f5f5f5; }
+
+      .bn-panel .tb-dd-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+      .bn-panel .tb-color-swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 10px;
+      }
+      .bn-panel .tb-color-dot {
+        width: 24px; height: 24px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: transform 0.1s;
+      }
+      .bn-panel .tb-color-dot:hover { transform: scale(1.1); }
+      .bn-panel .tb-color-dot.active { border-color: #333; }
+
+      .bn-panel .tb-link-row {
+        display: none;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+        padding: 6px 0 2px;
+        flex-basis: 100%;
+      }
+      .bn-panel .tb-link-input {
+        flex: 1;
+        padding: 5px 8px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 13px;
+        min-width: 0;
+      }
+      .bn-panel .tb-link-action-btn {
+        padding: 5px 10px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+        cursor: pointer;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .bn-panel .tb-link-action-btn:hover { background: #f5f5f5; }
+
+      /* Desktop: toolbar at bottom — natural flex order (last child in panel-editor) */
+      .bn-panel .panel-editor {
+        display: flex;
+        flex-direction: column;
+      }
+      .bn-panel .editor-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+      .bn-panel .formatting-toolbar { order: 3; }
+
+      /* Mobile: toolbar below header, above editor body */
+      @media (max-width: 767px) {
+        .bn-panel .editor-body { order: 3; }
+        .bn-panel .formatting-toolbar {
+          order: 2;
+          border-top: none;
+          border-bottom: 1px solid var(--border);
+        }
+        .bn-panel .tb-dropdown {
+          top: calc(100% + 6px);
+          bottom: auto;
+        }
       }
     `;
-    this.shadowRoot.appendChild(style);
+    this.appendChild(style);
 
     const content = document.createElement('div');
     content.id = 'content';
     content.style.cssText = 'display:contents';
-    this.shadowRoot.appendChild(content);
+    this.appendChild(content);
   }
 
-  _render() {
-    this.setAttribute('data-view', this._view);
-    const content = this.shadowRoot.getElementById('content');
+  _initDOM() {
+    const content = this.querySelector('#content');
     if (!content) return;
-    const filtered = this._filteredNotes();
     content.innerHTML = `
-      <div class="panel">
-        <div class="panel-list">
-          <div class="panel-list-header">
-            <h1>Better Notes</h1>
-            <input class="search-box" id="searchBox" type="text" placeholder="Search notes..." value="${this._escapeAttr(this._searchTerm)}">
-            <button class="new-note-btn" id="newNoteBtn">+ New Note</button>
+      <div class="panel bn-panel">
+        <div class="panel-list" id="panel-list"></div>
+        <div class="panel-editor" id="panel-editor">
+          <div class="empty-editor" id="editor-empty">
+            <div class="empty-editor-icon">📝</div>
+            <div class="empty-editor-text">Select a note or create a new one</div>
           </div>
-          <div class="notes-list" id="notesList">
-            ${filtered.length === 0
-              ? `<div class="empty-list">No notes found</div>`
-              : filtered.map(note => `
-                <div class="note-item ${this._currentNoteId === note.note_id ? 'active' : ''}" data-id="${note.note_id}">
-                  <div class="note-color-bar" style="background:${this._safeColor(note.color)}"></div>
-                  <div class="note-item-header">
-                    <div class="note-item-title">${this._escapeHtml(note.title || 'Untitled')}</div>
-                    ${note.pinned ? '<span class="pin-icon">📌</span>' : ''}
-                  </div>
-                  <div class="note-item-preview">${this._escapeHtml((note.content || '').substring(0, 60))}${note.content?.length > 60 ? '…' : ''}</div>
-                  <div class="note-item-date">${this._formatDate(note.modified)}</div>
-                </div>
-              `).join('')
-            }
-          </div>
-        </div>
-
-        <div class="panel-editor">
-          ${this._currentNote()
-            ? this._renderEditor()
-            : `<div class="empty-editor">
-                 <div class="empty-editor-icon">📝</div>
-                 <div class="empty-editor-text">Select a note or create a new one</div>
-               </div>`
-          }
         </div>
       </div>
     `;
-    this._attachListeners();
+  }
+
+  _renderList() {
+    const listEl = this.querySelector('#panel-list');
+    if (!listEl) return;
+    this.setAttribute('data-view', this._view);
+    const filtered = this._filteredNotes();
+    listEl.innerHTML = `
+      <div class="panel-list-header">
+        <h1>Better Notes</h1>
+        <input class="search-box" id="searchBox" type="text" placeholder="Search notes..." value="${this._escapeAttr(this._searchTerm)}">
+        <button class="new-note-btn" id="newNoteBtn">+ New Note</button>
+      </div>
+      <div class="notes-list" id="notesList">
+        ${filtered.length === 0
+          ? `<div class="empty-list">No notes found</div>`
+          : filtered.map(note => `
+            <div class="note-item ${this._currentNoteId === note.note_id ? 'active' : ''}" data-id="${note.note_id}">
+              <div class="note-color-bar" style="background:${this._safeColor(note.color)}"></div>
+              <div class="note-item-header">
+                <div class="note-item-title">${this._escapeHtml(note.title || 'Untitled')}</div>
+                ${note.pinned ? '<span class="pin-icon">📌</span>' : ''}
+              </div>
+              <div class="note-item-preview">${this._escapeHtml(this._stripHtml(note.content || '').substring(0, 60))}${this._stripHtml(note.content || '').length > 60 ? '…' : ''}</div>
+              <div class="note-item-date">${this._formatDate(note.modified)}</div>
+            </div>
+          `).join('')
+        }
+      </div>
+    `;
+    this._attachListListeners();
+  }
+
+  _renderEditor(note) {
+    const editorPanel = this.querySelector('#panel-editor');
+    if (!editorPanel) return;
+
+    if (!note) {
+      if (this._editor) {
+        this._editor.destroy();
+        this._editor = null;
+      }
+      editorPanel.innerHTML = `
+        <div class="empty-editor" id="editor-empty">
+          <div class="empty-editor-icon">📝</div>
+          <div class="empty-editor-text">Select a note or create a new one</div>
+        </div>
+      `;
+      return;
+    }
+
+    if (!this._editor) {
+      editorPanel.innerHTML = this._editorShell(note);
+      this._attachEditorListeners();
+      this._attachToolbarListeners(note);
+      this._initTiptap(note).catch(err => console.error('Failed to init Tiptap:', err));
+    } else {
+      const titleInput = this.querySelector('#noteTitle');
+      if (titleInput) titleInput.value = note.title || '';
+      this._editor.commands.setContent(note.content || '');
+      this._updateToolbarState(note);
+    }
+  }
+
+  _editorShell(note) {
+    return `
+      <div class="editor-header">
+        <button class="back-btn" id="backBtn">← Back</button>
+        <div class="editor-actions">
+          <button class="editor-btn" id="saveBtn">Save</button>
+          <button class="editor-btn danger" id="deleteBtn">Delete</button>
+        </div>
+      </div>
+      <div class="editor-body">
+        <input class="note-title-input" id="noteTitle" type="text"
+               placeholder="Note Title" value="${this._escapeAttr(note.title || '')}">
+        <div id="tiptap-mount"></div>
+      </div>
+      <div class="formatting-toolbar" id="formattingToolbar">
+        ${this._toolbarHtml(note)}
+      </div>
+    `;
+  }
+
+  _toolbarHtml(note) {
+    const colorSwatches = COLORS.map(c => `
+      <div class="tb-color-dot ${note.color === c ? 'active' : ''}"
+           style="background:${this._safeColor(c)}" data-color="${c}"></div>
+    `).join('');
+
+    return `
+      <div class="toolbar-group" id="tbGroupHeading">
+        <button class="tb-btn" id="tbHeading">H <span class="tb-caret">▾</span></button>
+        <div class="tb-dropdown" id="tbDropHeading">
+          <button class="tb-dd-item" data-action="paragraph">Normal</button>
+          <button class="tb-dd-item" data-action="h1">H1</button>
+          <button class="tb-dd-item" data-action="h2">H2</button>
+          <button class="tb-dd-item" data-action="h3">H3</button>
+        </div>
+      </div>
+      <div class="toolbar-group" id="tbGroupFormat">
+        <button class="tb-btn" id="tbFormat">B <span class="tb-caret">▾</span></button>
+        <div class="tb-dropdown" id="tbDropFormat">
+          <button class="tb-dd-item" data-action="bold">Bold</button>
+          <button class="tb-dd-item" data-action="italic">Italic</button>
+          <button class="tb-dd-item" data-action="strike">Strikethrough</button>
+          <button class="tb-dd-item" data-action="highlight">Highlight</button>
+        </div>
+      </div>
+      <div class="toolbar-group" id="tbGroupList">
+        <button class="tb-btn" id="tbList">≡ <span class="tb-caret">▾</span></button>
+        <div class="tb-dropdown" id="tbDropList">
+          <button class="tb-dd-item" data-action="bulletList">Bullet list</button>
+          <button class="tb-dd-item" data-action="orderedList">Numbered list</button>
+          <button class="tb-dd-item" data-action="taskList">Checklist</button>
+          <div class="tb-dd-divider"></div>
+          <button class="tb-dd-item" data-action="indent">Indent</button>
+          <button class="tb-dd-item" data-action="outdent">Outdent</button>
+        </div>
+      </div>
+      <div class="toolbar-group" id="tbGroupColor">
+        <button class="tb-btn" id="tbColor">🎨 <span class="tb-caret">▾</span></button>
+        <div class="tb-dropdown" id="tbDropColor">
+          <div class="tb-color-swatches">${colorSwatches}</div>
+        </div>
+      </div>
+      <button class="tb-btn tb-pin-btn ${note.pinned ? 'active' : ''}" id="tbPin">📌</button>
+      <div class="toolbar-group" id="tbGroupOverflow">
+        <button class="tb-btn" id="tbOverflow">⋮</button>
+        <div class="tb-dropdown" id="tbDropOverflow">
+          <button class="tb-dd-item" data-action="link">Link</button>
+        </div>
+      </div>
+      <div class="tb-link-row" id="tbLinkRow" style="display:none">
+        <input type="url" class="tb-link-input" id="tbLinkUrl" placeholder="https://…">
+        <button class="tb-link-action-btn" id="tbLinkApply">Apply</button>
+        <button class="tb-link-action-btn" id="tbLinkRemove">Remove</button>
+        <button class="tb-link-action-btn" id="tbLinkCancel">✕</button>
+      </div>
+    `;
+  }
+
+  _updateToolbarState(note) {
+    const pinBtn = this.querySelector('#tbPin');
+    if (pinBtn) pinBtn.classList.toggle('active', !!note.pinned);
+
+    this.querySelectorAll('.tb-color-dot').forEach(dot => {
+      dot.classList.toggle('active', dot.dataset.color === note.color);
+    });
+  }
+
+  _attachListListeners() {
+    this.querySelector('#searchBox')?.addEventListener('input', e => {
+      this._searchTerm = e.target.value;
+      this._renderList();
+    });
+    this.querySelector('#newNoteBtn')?.addEventListener('click', () => this._createNote());
+    this.querySelectorAll('.note-item').forEach(el => {
+      el.addEventListener('click', () => this._selectNote(el.dataset.id));
+    });
+  }
+
+  _attachEditorListeners() {
+    this.querySelector('#backBtn')?.addEventListener('click', () => {
+      this._view = 'list';
+      this._renderList();
+    });
+    this.querySelector('#saveBtn')?.addEventListener('click', () => this._saveNote());
+    this.querySelector('#deleteBtn')?.addEventListener('click', () => this._deleteNote());
+
+    const autoSave = () => {
+      clearTimeout(this._saveTimeout);
+      this._saveTimeout = setTimeout(() => this._saveNote(), 1000);
+    };
+    this.querySelector('#noteTitle')?.addEventListener('input', autoSave);
+  }
+
+  _attachToolbarListeners(note) {
+    const root = this;
+
+    // Dropdown toggle logic
+    const dropdownPairs = [
+      ['tbHeading', 'tbGroupHeading'],
+      ['tbFormat', 'tbGroupFormat'],
+      ['tbList', 'tbGroupList'],
+      ['tbColor', 'tbGroupColor'],
+      ['tbOverflow', 'tbGroupOverflow'],
+    ];
+
+    const closeAllDropdowns = () => {
+      dropdownPairs.forEach(([, groupId]) => {
+        root.querySelector(`#${groupId}`)?.classList.remove('open');
+      });
+    };
+
+    dropdownPairs.forEach(([btnId, groupId]) => {
+      root.querySelector(`#${btnId}`)?.addEventListener('click', e => {
+        e.stopPropagation();
+        const group = root.querySelector(`#${groupId}`);
+        const wasOpen = group?.classList.contains('open');
+        closeAllDropdowns();
+        if (!wasOpen) group?.classList.add('open');
+      });
+    });
+
+    document.addEventListener('click', closeAllDropdowns, { once: false });
+    this._closeDropdownsHandler = closeAllDropdowns;
+
+    // Heading actions
+    root.querySelector('[data-action="paragraph"]')?.addEventListener('click', () => {
+      this._editor?.chain().focus().setParagraph().run();
+      closeAllDropdowns();
+    });
+    [1, 2, 3].forEach(level => {
+      root.querySelector(`[data-action="h${level}"]`)?.addEventListener('click', () => {
+        this._editor?.chain().focus().toggleHeading({ level }).run();
+        closeAllDropdowns();
+      });
+    });
+
+    // Format actions
+    root.querySelector('[data-action="bold"]')?.addEventListener('click', () => {
+      this._editor?.chain().focus().toggleBold().run();
+      closeAllDropdowns();
+    });
+    root.querySelector('[data-action="italic"]')?.addEventListener('click', () => {
+      this._editor?.chain().focus().toggleItalic().run();
+      closeAllDropdowns();
+    });
+    root.querySelector('[data-action="strike"]')?.addEventListener('click', () => {
+      this._editor?.chain().focus().toggleStrike().run();
+      closeAllDropdowns();
+    });
+    root.querySelector('[data-action="highlight"]')?.addEventListener('click', () => {
+      this._editor?.chain().focus().toggleHighlight().run();
+      closeAllDropdowns();
+    });
+
+    // List actions
+    root.querySelector('[data-action="bulletList"]')?.addEventListener('click', () => {
+      this._editor?.chain().focus().toggleBulletList().run();
+      closeAllDropdowns();
+    });
+    root.querySelector('[data-action="orderedList"]')?.addEventListener('click', () => {
+      this._editor?.chain().focus().toggleOrderedList().run();
+      closeAllDropdowns();
+    });
+    root.querySelector('[data-action="taskList"]')?.addEventListener('click', () => {
+      this._editor?.chain().focus().toggleTaskList().run();
+      closeAllDropdowns();
+    });
+    root.querySelector('[data-action="indent"]')?.addEventListener('click', () => {
+      this._editor?.chain().focus().sinkListItem('listItem').run();
+      closeAllDropdowns();
+    });
+    root.querySelector('[data-action="outdent"]')?.addEventListener('click', () => {
+      this._editor?.chain().focus().liftListItem('listItem').run();
+      closeAllDropdowns();
+    });
+
+    // Color swatches
+    root.querySelectorAll('.tb-color-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        this._setColor(dot.dataset.color);
+        closeAllDropdowns();
+      });
+    });
+
+    // Pin button
+    root.querySelector('#tbPin')?.addEventListener('click', () => this._togglePin());
+
+    // Link (overflow)
+    root.querySelector('[data-action="link"]')?.addEventListener('click', () => {
+      closeAllDropdowns();
+      const linkRow = root.querySelector('#tbLinkRow');
+      if (linkRow) {
+        linkRow.style.display = 'flex';
+        const existing = this._editor?.getAttributes('link').href || '';
+        root.querySelector('#tbLinkUrl').value = existing;
+        root.querySelector('#tbLinkUrl').focus();
+      }
+    });
+
+    root.querySelector('#tbLinkApply')?.addEventListener('click', () => {
+      const url = root.querySelector('#tbLinkUrl')?.value?.trim();
+      if (url && this._isValidUrl(url)) {
+        this._editor?.chain().focus().setLink({ href: url }).run();
+      }
+      root.querySelector('#tbLinkRow').style.display = 'none';
+    });
+
+    root.querySelector('#tbLinkRemove')?.addEventListener('click', () => {
+      this._editor?.chain().focus().unsetLink().run();
+      root.querySelector('#tbLinkRow').style.display = 'none';
+    });
+
+    root.querySelector('#tbLinkCancel')?.addEventListener('click', () => {
+      root.querySelector('#tbLinkRow').style.display = 'none';
+    });
+  }
+
+  _isValidUrl(str) {
+    try { new URL(str); return true; } catch { return false; }
+  }
+
+  _loadTiptapBundle() {
+    if (window.TiptapBundle) return Promise.resolve(window.TiptapBundle);
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = '/better_notes_panel/tiptap-bundle.js';
+      script.onload = () => {
+        if (window.TiptapBundle) resolve(window.TiptapBundle);
+        else reject(new Error('TiptapBundle not found after script load'));
+      };
+      script.onerror = () => reject(new Error('Failed to load tiptap-bundle.js'));
+      document.head.appendChild(script);
+    });
+  }
+
+  async _initTiptap(note) {
+    const mount = this.querySelector('#tiptap-mount');
+    if (!mount) return;
+
+    let bundle;
+    try {
+      bundle = await this._loadTiptapBundle();
+    } catch (err) {
+      console.warn('Better Notes: Tiptap failed to load, falling back to textarea', err);
+      bundle = null;
+    }
+
+    if (!bundle) {
+      mount.innerHTML = `<textarea class="note-content-input" id="noteContent"
+        placeholder="Start typing...">${this._escapeHtml(note.content || '')}</textarea>`;
+      mount.querySelector('#noteContent')?.addEventListener('input', () => {
+        clearTimeout(this._saveTimeout);
+        this._saveTimeout = setTimeout(() => this._saveNote(), 1000);
+      });
+      return;
+    }
+
+    const { Editor, StarterKit, TaskList, TaskItem, Link, Highlight } = bundle;
+
+    try {
+      this._editor = new Editor({
+        element: mount,
+        extensions: [
+          StarterKit.configure({ heading: { levels: [1, 2, 3] }, link: false }),
+          TaskList,
+          TaskItem.configure({ nested: true }),
+          Link.configure({ openOnClick: false }),
+          Highlight,
+        ],
+        content: note.content || '',
+        onUpdate: () => {
+          clearTimeout(this._saveTimeout);
+          this._saveTimeout = setTimeout(() => this._saveNote(), 1000);
+        },
+      });
+    } catch (err) {
+      console.warn('Better Notes: Tiptap init failed, falling back to textarea', err);
+      mount.innerHTML = `<textarea class="note-content-input" id="noteContent"
+        placeholder="Start typing...">${this._escapeHtml(note.content || '')}</textarea>`;
+      mount.querySelector('#noteContent')?.addEventListener('input', () => {
+        clearTimeout(this._saveTimeout);
+        this._saveTimeout = setTimeout(() => this._saveNote(), 1000);
+      });
+    }
   }
 
   _currentNote() {
@@ -433,43 +941,18 @@ class BetterNotesPanel extends HTMLElement {
     if (!term) return this._notes;
     return this._notes.filter(n =>
       (n.title || '').toLowerCase().includes(term) ||
-      (n.content || '').toLowerCase().includes(term)
+      this._stripHtml(n.content || '').toLowerCase().includes(term)
     );
-  }
-
-  _renderEditor() {
-    const note = this._currentNote();
-    return `
-      <div class="editor-header">
-        <button class="back-btn" id="backBtn">← Back</button>
-        <div class="editor-actions">
-          <button class="editor-btn" id="saveBtn">Save</button>
-          <button class="editor-btn danger" id="deleteBtn">Delete</button>
-        </div>
-      </div>
-      <div class="editor-body">
-        <div class="editor-toolbar">
-          <button class="pin-toggle ${note.pinned ? 'active' : ''}" id="pinToggle">
-            📌 ${note.pinned ? 'Pinned' : 'Pin'}
-          </button>
-          <span class="toolbar-label">Color:</span>
-          <div class="color-picker">
-            ${COLORS.map(c => `
-              <div class="color-dot ${note.color === c ? 'active' : ''}"
-                   style="background:${this._safeColor(c)}" data-color="${c}"></div>
-            `).join('')}
-          </div>
-        </div>
-        <input class="note-title-input" id="noteTitle" type="text"
-               placeholder="Note Title" value="${this._escapeAttr(note.title || '')}">
-        <textarea class="note-content-input" id="noteContent"
-                  placeholder="Start typing...">${this._escapeHtml(note.content || '')}</textarea>
-      </div>
-    `;
   }
 
   _safeColor(color) {
     return /^#[0-9a-fA-F]{6}$|^#[0-9a-fA-F]{3}$/.test(color) ? color : '#FFEB3B';
+  }
+
+  _stripHtml(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return div.textContent || '';
   }
 
   _escapeHtml(text) {
@@ -498,48 +981,14 @@ class BetterNotesPanel extends HTMLElement {
     return date.toLocaleDateString();
   }
 
-  _attachListeners() {
-    const root = this.shadowRoot;
-
-    root.getElementById('searchBox')?.addEventListener('input', e => {
-      this._searchTerm = e.target.value;
-      this._render();
-    });
-
-    root.getElementById('newNoteBtn')?.addEventListener('click', () => this._createNote());
-
-    root.querySelectorAll('.note-item').forEach(el => {
-      el.addEventListener('click', () => this._selectNote(el.dataset.id));
-    });
-
-    root.getElementById('backBtn')?.addEventListener('click', () => {
-      this._view = 'list';
-      this._render();
-    });
-
-    root.getElementById('saveBtn')?.addEventListener('click', () => this._saveNote());
-    root.getElementById('deleteBtn')?.addEventListener('click', () => this._deleteNote());
-    root.getElementById('pinToggle')?.addEventListener('click', () => this._togglePin());
-
-    root.querySelectorAll('.color-dot').forEach(el => {
-      el.addEventListener('click', () => this._setColor(el.dataset.color));
-    });
-
-    const autoSave = () => {
-      clearTimeout(this._saveTimeout);
-      this._saveTimeout = setTimeout(() => this._saveNote(), 1000);
-    };
-    root.getElementById('noteTitle')?.addEventListener('input', autoSave);
-    root.getElementById('noteContent')?.addEventListener('input', autoSave);
-  }
-
   _selectNote(id) {
     clearTimeout(this._saveTimeout);
     clearTimeout(this._deleteTimeout);
     this._pendingDelete = false;
     this._currentNoteId = id;
     this._view = 'editor';
-    this._render();
+    this._renderList();
+    this._renderEditor(this._currentNote());
   }
 
   async _createNote() {
@@ -558,7 +1007,7 @@ class BetterNotesPanel extends HTMLElement {
       ) ?? (this._notes.length > 0 ? this._notes[0] : null);
       if (newNote) {
         this._selectNote(newNote.note_id);
-        this.shadowRoot.getElementById('noteTitle')?.select();
+        this.querySelector('#noteTitle')?.select();
       }
     } catch (e) {
       console.error('Better Notes: failed to create note', e);
@@ -575,8 +1024,12 @@ class BetterNotesPanel extends HTMLElement {
       return;
     }
 
-    const title = overrides.title ?? this.shadowRoot.getElementById('noteTitle')?.value ?? note.title;
-    const content = overrides.content ?? this.shadowRoot.getElementById('noteContent')?.value ?? note.content;
+    const title = overrides.title ?? this.querySelector('#noteTitle')?.value ?? note.title;
+    const content = overrides.content ?? (
+      this._editor
+        ? this._editor.getHTML()
+        : (this.querySelector('#noteContent')?.value ?? note.content)
+    );
     const color = overrides.color ?? note.color;
     const pinned = overrides.pinned ?? note.pinned;
 
@@ -590,9 +1043,9 @@ class BetterNotesPanel extends HTMLElement {
       });
       const savedId = note.note_id;
       await this._loadNotes();
-      this._currentNoteId = this._notes.find(n => n.note_id === savedId)
-        ? savedId
-        : null;
+      const savedNote = this._notes.find(n => n.note_id === savedId);
+      this._currentNoteId = savedNote ? savedId : null;
+      if (savedNote) this._updateToolbarState(savedNote);
       this._showSavedFeedback();
     } catch (e) {
       console.error('Better Notes: failed to save note', e);
@@ -607,14 +1060,14 @@ class BetterNotesPanel extends HTMLElement {
 
     if (!this._pendingDelete) {
       this._pendingDelete = true;
-      const btn = this.shadowRoot.getElementById('deleteBtn');
+      const btn = this.querySelector('#deleteBtn');
       if (btn) {
         btn.textContent = 'Confirm?';
         btn.classList.add('confirming');
       }
       this._deleteTimeout = setTimeout(() => {
         this._pendingDelete = false;
-        this._render();
+        this._renderEditor(this._currentNote());
       }, 3000);
       return;
     }
@@ -629,6 +1082,7 @@ class BetterNotesPanel extends HTMLElement {
       this._currentNoteId = null;
       this._view = 'list';
       await this._loadNotes();
+      this._renderEditor(null);
     } catch (e) {
       console.error('Better Notes: failed to delete note', e);
     }
@@ -647,12 +1101,12 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   _showSavedFeedback() {
-    const existing = this.shadowRoot.querySelector('.save-toast');
+    const existing = this.querySelector('.save-toast');
     if (existing) existing.remove();
     const toast = document.createElement('div');
     toast.className = 'save-toast';
     toast.textContent = 'Saved';
-    this.shadowRoot.appendChild(toast);
+    this.appendChild(toast);
     setTimeout(() => {
       toast.style.opacity = '0';
       setTimeout(() => toast.remove(), 400);
