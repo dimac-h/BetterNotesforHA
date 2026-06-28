@@ -145,9 +145,18 @@ class BetterNotesCard extends HTMLElement {
           font-size: 14px;
           color: rgba(0,0,0,0.6);
           line-height: 1.5;
-          white-space: pre-wrap;
           word-wrap: break-word;
         }
+        .note-content h1 { font-size: 18px; font-weight: 700; margin: 4px 0; }
+        .note-content h2 { font-size: 16px; font-weight: 600; margin: 4px 0; }
+        .note-content h3 { font-size: 14px; font-weight: 600; margin: 4px 0; }
+        .note-content ul, .note-content ol { margin: 4px 0; padding-left: 20px; }
+        .note-content li { margin-bottom: 2px; }
+        .note-content ul[data-type="taskList"] { list-style: none; padding-left: 0; }
+        .note-content ul[data-type="taskList"] li { display: flex; align-items: flex-start; gap: 4px; }
+        .note-content mark { background: #fff176; padding: 1px 2px; border-radius: 2px; }
+        .note-content a { color: inherit; text-decoration: underline; }
+        .note-content s { text-decoration: line-through; }
 
         .note-meta {
           margin-top: 8px;
@@ -216,6 +225,19 @@ class BetterNotesCard extends HTMLElement {
       </ha-card>
     `;
 
+    this.shadowRoot.querySelectorAll('[data-note-content]').forEach(el => {
+      const noteId = el.dataset.noteContent;
+      const n = this._notes.find(note => note.note_id === noteId);
+      if (!n) return;
+      const isListView = !this._config.note_id;
+      if (isListView) {
+        const plain = this._stripHtml(n.content || '');
+        el.textContent = plain.length > 150 ? plain.substring(0, 150) + '…' : plain;
+      } else {
+        el.innerHTML = n.content || '';
+      }
+    });
+
     this.attachEventListeners();
   }
 
@@ -237,7 +259,7 @@ class BetterNotesCard extends HTMLElement {
           <span>${this.escapeHtml(note.title || 'Untitled')}</span>
           ${note.pinned ? '<span class="pinned-badge">📌</span>' : ''}
         </div>
-        <div class="note-content">${this.escapeHtml(note.content)}</div>
+        <div class="note-content" data-note-content="${note.note_id}"></div>
         ${note.tags && note.tags.length > 0 ? `
           <div class="tags">
             ${note.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}
@@ -275,7 +297,7 @@ class BetterNotesCard extends HTMLElement {
             <span>${this.escapeHtml(note.title || 'Untitled')}</span>
             ${note.pinned ? '<span class="pinned-badge">📌</span>' : ''}
           </div>
-          <div class="note-content">${this.truncateText(this.escapeHtml(note.content), 150)}</div>
+          <div class="note-content" data-note-content="${note.note_id}"></div>
           ${note.tags && note.tags.length > 0 ? `
             <div class="tags">
               ${note.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}
@@ -345,6 +367,12 @@ class BetterNotesCard extends HTMLElement {
 
   _safeColor(color) {
     return /^#[0-9a-fA-F]{6}$|^#[0-9a-fA-F]{3}$/.test(color) ? color : '#FFEB3B';
+  }
+
+  _stripHtml(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return div.textContent || '';
   }
 
   getCardSize() {
