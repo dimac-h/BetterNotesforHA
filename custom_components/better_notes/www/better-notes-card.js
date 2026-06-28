@@ -234,7 +234,7 @@ class BetterNotesCard extends HTMLElement {
         const plain = this._stripHtml(n.content || '');
         el.textContent = plain.length > 150 ? plain.substring(0, 150) + '…' : plain;
       } else {
-        el.innerHTML = n.content || '';
+        el.innerHTML = this._sanitizeHtml(n.content || '');
       }
     });
 
@@ -369,6 +369,55 @@ class BetterNotesCard extends HTMLElement {
     return /^#[0-9a-fA-F]{6}$|^#[0-9a-fA-F]{3}$/.test(color) ? color : '#FFEB3B';
   }
 
+  _sanitizeHtml(html) {
+    const ALLOWED_TAGS = new Set([
+      'p', 'br', 'strong', 'b', 'em', 'i', 's', 'u', 'mark',
+      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+      'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre',
+      'input', 'label', 'span', 'div',
+    ]);
+    const ALLOWED_ATTRS_BY_TAG = {
+      a:     ['href', 'target', 'rel'],
+      input: ['type', 'checked', 'disabled'],
+    };
+    const SAFE_PROTOCOLS = /^(https?:|mailto:)/i;
+
+    const sanitizeNode = node => {
+      if (node.nodeType === Node.TEXT_NODE) return;
+      if (node.nodeType !== Node.ELEMENT_NODE) {
+        node.parentNode?.removeChild(node);
+        return;
+      }
+      const tag = node.tagName.toLowerCase();
+      if (!ALLOWED_TAGS.has(tag)) {
+        // Replace disallowed element with its children
+        const parent = node.parentNode;
+        while (node.firstChild) parent.insertBefore(node.firstChild, node);
+        parent.removeChild(node);
+        return;
+      }
+      // Strip disallowed attributes
+      const allowed = ALLOWED_ATTRS_BY_TAG[tag] || [];
+      Array.from(node.attributes).forEach(attr => {
+        if (!allowed.includes(attr.name) && attr.name !== 'data-type' && attr.name !== 'data-checked') {
+          node.removeAttribute(attr.name);
+        }
+      });
+      // Enforce safe href protocols
+      if (tag === 'a') {
+        const href = node.getAttribute('href') || '';
+        if (!SAFE_PROTOCOLS.test(href)) node.removeAttribute('href');
+        node.setAttribute('rel', 'noopener noreferrer');
+      }
+      Array.from(node.childNodes).forEach(sanitizeNode);
+    };
+
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    Array.from(div.childNodes).forEach(sanitizeNode);
+    return div.innerHTML;
+  }
+
   _stripHtml(html) {
     const div = document.createElement('div');
     div.innerHTML = html;
@@ -470,6 +519,18 @@ class BetterNotesCardEditor extends HTMLElement {
         </div>
 
         <div class="option">
+          <label>
+            <input type="checkbox" id="show_all" ${this._config.show_all ? 'checked' : ''}>
+            Show All Notes
+          </label>
+        </div>
+
+        <div class="option">
+          <label for="card_color">Card Background Color (hex)</label>
+          <input type="text" id="card_color" value="${this._escapeAttr(this._config.card_color || '#FFEB3B')}" placeholder="#FFEB3B">
+        </div>
+
+        <div class="option">
           <label for="note_id">Specific Note ID (optional)</label>
           <input type="text" id="note_id" value="${this._escapeAttr(this._config.note_id || '')}" placeholder="Leave empty to show all">
         </div>
@@ -486,6 +547,8 @@ class BetterNotesCardEditor extends HTMLElement {
     });
 
     this.shadowRoot.getElementById('show_pinned_only').addEventListener('change', () => this.configChanged());
+    this.shadowRoot.getElementById('show_all').addEventListener('change', () => this.configChanged());
+    this.shadowRoot.getElementById('card_color').addEventListener('input', () => this.configChanged());
   }
 
   _escapeAttr(text) {
@@ -498,8 +561,10 @@ class BetterNotesCardEditor extends HTMLElement {
     this._config = {
       ...this._config,
       title: this.shadowRoot.getElementById('title').value,
-      max_notes: parseInt(this.shadowRoot.getElementById('max_notes').value),
+      max_notes: parseInt(this.shadowRoot.getElementById('max_notes').value, 10) || 5,
       show_pinned_only: this.shadowRoot.getElementById('show_pinned_only').checked,
+      show_all: this.shadowRoot.getElementById('show_all').checked,
+      card_color: this.shadowRoot.getElementById('card_color').value || '#FFEB3B',
       note_id: this.shadowRoot.getElementById('note_id').value || null
     };
 
