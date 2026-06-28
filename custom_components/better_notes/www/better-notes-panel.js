@@ -133,19 +133,19 @@ class BetterNotesPanel extends HTMLElement {
         flex-shrink: 0;
       }
 
-.panel-list-header {
+      .panel-list-header {
         padding: 16px;
         border-bottom: 1px solid var(--border);
       }
 
-.panel-list-header h1 {
+      .panel-list-header h1 {
         font-size: 22px;
         font-weight: 600;
         color: var(--text);
         margin-bottom: 12px;
       }
 
-.search-box {
+      .search-box {
         width: 100%;
         padding: 8px 12px;
         border: 1px solid var(--border);
@@ -155,9 +155,9 @@ class BetterNotesPanel extends HTMLElement {
         margin-bottom: 10px;
       }
 
-.search-box:focus { outline: none; border-color: var(--accent); }
+      .search-box:focus { outline: none; border-color: var(--accent); }
 
-.new-note-btn {
+      .new-note-btn {
         width: 100%;
         padding: 10px;
         background: var(--accent);
@@ -169,15 +169,15 @@ class BetterNotesPanel extends HTMLElement {
         font-weight: 500;
       }
 
-.new-note-btn:hover { background: var(--accent-dark); }
+      .new-note-btn:hover { background: var(--accent-dark); }
 
-.notes-list {
+      .notes-list {
         flex: 1;
         overflow-y: auto;
         padding: 10px;
       }
 
-.note-item {
+      .note-item {
         position: relative;
         padding: 10px 10px 10px 14px;
         margin-bottom: 8px;
@@ -188,24 +188,24 @@ class BetterNotesPanel extends HTMLElement {
         transition: all 0.15s;
       }
 
-.note-item:hover { border-color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
-.note-item.active { background: #bbdefb; border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+      .note-item:hover { border-color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+      .note-item.active { background: #bbdefb; border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
 
-.note-color-bar {
+      .note-color-bar {
         position: absolute;
         left: 0; top: 0;
         width: 4px; height: 100%;
         border-radius: 8px 0 0 8px;
       }
 
-.note-item-header {
+      .note-item-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 3px;
       }
 
-.note-item-title {
+      .note-item-title {
         font-weight: 600;
         font-size: 14px;
         color: var(--text);
@@ -215,7 +215,7 @@ class BetterNotesPanel extends HTMLElement {
         flex: 1;
       }
 
-.note-item-preview {
+      .note-item-preview {
         font-size: 12px;
         color: var(--text-muted);
         overflow: hidden;
@@ -224,17 +224,17 @@ class BetterNotesPanel extends HTMLElement {
         margin-bottom: 3px;
       }
 
-.note-item-date { font-size: 11px; color: var(--text-faint); }
-.pin-icon { font-size: 14px; margin-left: 4px; flex-shrink: 0; }
+      .note-item-date { font-size: 11px; color: var(--text-faint); }
+      .pin-icon { font-size: 14px; margin-left: 4px; flex-shrink: 0; }
 
-.empty-list {
+      .empty-list {
         padding: 20px;
         text-align: center;
         color: var(--text-faint);
         font-size: 14px;
       }
 
-.panel-editor {
+      .panel-editor {
         flex: 1;
         display: flex;
         flex-direction: column;
@@ -242,7 +242,7 @@ class BetterNotesPanel extends HTMLElement {
         min-width: 0;
       }
 
-.editor-header {
+      .editor-header {
         padding: 12px 16px;
         border-bottom: 1px solid var(--border);
         display: flex;
@@ -250,7 +250,7 @@ class BetterNotesPanel extends HTMLElement {
         gap: 10px;
       }
 
-.back-btn {
+      .back-btn {
         display: none;
         padding: 6px 12px;
         border: 1px solid var(--border);
@@ -260,11 +260,11 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 14px;
       }
 
-.back-btn:hover { background: #f5f5f5; }
+      .back-btn:hover { background: #f5f5f5; }
 
-.editor-actions { display: flex; gap: 8px; margin-left: auto; }
+      .editor-actions { display: flex; gap: 8px; margin-left: auto; }
 
-.editor-btn {
+      .editor-btn {
         padding: 6px 14px;
         border: 1px solid var(--border);
         border-radius: 6px;
@@ -273,18 +273,18 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 14px;
       }
 
-.editor-btn:hover { background: #f5f5f5; }
-.editor-btn.danger { background: #f44336; color: #fff; border-color: #f44336; }
-.editor-btn.danger:hover { background: #d32f2f; }
-.editor-btn.confirming { background: #ff7043; color: #fff; border-color: #ff7043; }
+      .editor-btn:hover { background: #f5f5f5; }
+      .editor-btn.danger { background: #f44336; color: #fff; border-color: #f44336; }
+      .editor-btn.danger:hover { background: #d32f2f; }
+      .editor-btn.confirming { background: #ff7043; color: #fff; border-color: #ff7043; }
 
-.editor-body {
+      .editor-body {
         flex: 1;
         overflow-y: auto;
         padding: 20px 24px;
       }
 
-.editor-toolbar {
+      .editor-toolbar {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
@@ -294,7 +294,7 @@ class BetterNotesPanel extends HTMLElement {
         margin-bottom: 16px;
       }
 
-.pin-toggle {
+      .pin-toggle {
         display: flex;
         align-items: center;
         gap: 6px;
@@ -306,14 +306,14 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 13px;
       }
 
-.pin-toggle:hover { background: #f5f5f5; }
-.pin-toggle.active { background: #fff3e0; border-color: #FF9800; color: #FF9800; }
+      .pin-toggle:hover { background: #f5f5f5; }
+      .pin-toggle.active { background: #fff3e0; border-color: #FF9800; color: #FF9800; }
 
-.toolbar-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+      .toolbar-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
 
-.color-picker { display: flex; gap: 6px; flex-wrap: wrap; }
+      .color-picker { display: flex; gap: 6px; flex-wrap: wrap; }
 
-.color-dot {
+      .color-dot {
         width: 28px; height: 28px;
         border-radius: 50%;
         cursor: pointer;
@@ -321,10 +321,10 @@ class BetterNotesPanel extends HTMLElement {
         transition: all 0.15s;
       }
 
-.color-dot:hover { transform: scale(1.1); }
-.color-dot.active { border-color: #333; transform: scale(1.15); }
+      .color-dot:hover { transform: scale(1.1); }
+      .color-dot.active { border-color: #333; transform: scale(1.15); }
 
-.note-title-input {
+      .note-title-input {
         width: 100%;
         font-size: 28px;
         font-weight: 700;
@@ -335,7 +335,7 @@ class BetterNotesPanel extends HTMLElement {
         font-family: inherit;
       }
 
-.note-content-input {
+      .note-content-input {
         width: 100%;
         min-height: 300px;
         font-size: 15px;
@@ -347,7 +347,7 @@ class BetterNotesPanel extends HTMLElement {
         font-family: inherit;
       }
 
-.empty-editor {
+      .empty-editor {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -356,10 +356,10 @@ class BetterNotesPanel extends HTMLElement {
         color: var(--text-faint);
       }
 
-.empty-editor-icon { font-size: 56px; margin-bottom: 16px; }
-.empty-editor-text { font-size: 16px; }
+      .empty-editor-icon { font-size: 56px; margin-bottom: 16px; }
+      .empty-editor-text { font-size: 16px; }
 
-.save-toast {
+      .save-toast {
         position: fixed;
         bottom: 24px;
         right: 24px;
@@ -374,7 +374,7 @@ class BetterNotesPanel extends HTMLElement {
         z-index: 1000;
       }
 
-#tiptap-mount .ProseMirror {
+      #tiptap-mount .ProseMirror {
         min-height: 300px;
         font-size: 15px;
         line-height: 1.6;
@@ -383,20 +383,20 @@ class BetterNotesPanel extends HTMLElement {
         font-family: inherit;
       }
 
-#tiptap-mount .ProseMirror p { margin: 0 0 8px; }
-#tiptap-mount .ProseMirror h1 { font-size: 24px; font-weight: 700; margin: 0 0 8px; }
-#tiptap-mount .ProseMirror h2 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
-#tiptap-mount .ProseMirror h3 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
-#tiptap-mount .ProseMirror ul,
-#tiptap-mount .ProseMirror ol { margin: 0 0 8px; padding-left: 24px; }
-#tiptap-mount .ProseMirror li { margin-bottom: 2px; }
-#tiptap-mount .ProseMirror ul[data-type="taskList"] { list-style: none; padding-left: 0; }
-#tiptap-mount .ProseMirror ul[data-type="taskList"] li { display: flex; align-items: flex-start; gap: 6px; }
-#tiptap-mount .ProseMirror ul[data-type="taskList"] li > label { flex-shrink: 0; margin-top: 2px; }
-#tiptap-mount .ProseMirror mark { background: #fff176; padding: 1px 2px; border-radius: 2px; }
-#tiptap-mount .ProseMirror a { color: var(--accent); text-decoration: underline; }
-#tiptap-mount .ProseMirror s { text-decoration: line-through; }
-#tiptap-mount .ProseMirror p.is-editor-empty:first-child::before {
+      #tiptap-mount .ProseMirror p { margin: 0 0 8px; }
+      #tiptap-mount .ProseMirror h1 { font-size: 24px; font-weight: 700; margin: 0 0 8px; }
+      #tiptap-mount .ProseMirror h2 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+      #tiptap-mount .ProseMirror h3 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+      #tiptap-mount .ProseMirror ul,
+      #tiptap-mount .ProseMirror ol { margin: 0 0 8px; padding-left: 24px; }
+      #tiptap-mount .ProseMirror li { margin-bottom: 2px; }
+      #tiptap-mount .ProseMirror ul[data-type="taskList"] { list-style: none; padding-left: 0; }
+      #tiptap-mount .ProseMirror ul[data-type="taskList"] li { display: flex; align-items: flex-start; gap: 6px; }
+      #tiptap-mount .ProseMirror ul[data-type="taskList"] li > label { flex-shrink: 0; margin-top: 2px; }
+      #tiptap-mount .ProseMirror mark { background: #fff176; padding: 1px 2px; border-radius: 2px; }
+      #tiptap-mount .ProseMirror a { color: var(--accent); text-decoration: underline; }
+      #tiptap-mount .ProseMirror s { text-decoration: line-through; }
+      #tiptap-mount .ProseMirror p.is-editor-empty:first-child::before {
         content: attr(data-placeholder);
         float: left;
         color: var(--text-faint);
@@ -407,16 +407,16 @@ class BetterNotesPanel extends HTMLElement {
       @media (max-width: 767px) {
         :host([data-view="list"]) .panel-editor { display: none; }
         :host([data-view="editor"]) .panel-list { display: none; }
-  .back-btn { display: block; }
-  .save-toast { bottom: 16px; right: 16px; left: 16px; text-align: center; }
+        .back-btn { display: block; }
+        .save-toast { bottom: 16px; right: 16px; left: 16px; text-align: center; }
       }
 
       @media (min-width: 768px) {
-  .panel-list { width: 280px; display: flex; }
-  .panel-editor { display: flex; }
+        .panel-list { width: 280px; display: flex; }
+        .panel-editor { display: flex; }
       }
 
-.formatting-toolbar {
+      .formatting-toolbar {
         display: flex;
         flex-wrap: wrap;
         gap: 4px;
@@ -426,9 +426,9 @@ class BetterNotesPanel extends HTMLElement {
         flex-shrink: 0;
       }
 
-.toolbar-group { position: relative; }
+      .toolbar-group { position: relative; }
 
-.tb-btn {
+      .tb-btn {
         padding: 6px 10px;
         border: 1px solid var(--border);
         border-radius: 6px;
@@ -441,12 +441,12 @@ class BetterNotesPanel extends HTMLElement {
         gap: 3px;
         white-space: nowrap;
       }
-.tb-btn:hover { background: #f5f5f5; }
-.tb-btn.active { background: #fff3e0; border-color: #FF9800; }
+      .tb-btn:hover { background: #f5f5f5; }
+      .tb-btn.active { background: #fff3e0; border-color: #FF9800; }
 
-.tb-caret { font-size: 10px; }
+      .tb-caret { font-size: 10px; }
 
-.tb-dropdown {
+      .tb-dropdown {
         display: none;
         position: absolute;
         bottom: calc(100% + 6px);
@@ -459,9 +459,9 @@ class BetterNotesPanel extends HTMLElement {
         min-width: 150px;
         padding: 4px 0;
       }
-.toolbar-group.open .tb-dropdown { display: block; }
+      .toolbar-group.open .tb-dropdown { display: block; }
 
-.tb-dd-item {
+      .tb-dd-item {
         display: block;
         width: 100%;
         padding: 8px 14px;
@@ -472,27 +472,27 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 14px;
         white-space: nowrap;
       }
-.tb-dd-item:hover { background: #f5f5f5; }
+      .tb-dd-item:hover { background: #f5f5f5; }
 
-.tb-dd-divider { height: 1px; background: var(--border); margin: 4px 0; }
+      .tb-dd-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
-.tb-color-swatches {
+      .tb-color-swatches {
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
         padding: 10px;
       }
-.tb-color-dot {
+      .tb-color-dot {
         width: 24px; height: 24px;
         border-radius: 50%;
         cursor: pointer;
         border: 2px solid transparent;
         transition: transform 0.1s;
       }
-.tb-color-dot:hover { transform: scale(1.1); }
-.tb-color-dot.active { border-color: #333; }
+      .tb-color-dot:hover { transform: scale(1.1); }
+      .tb-color-dot.active { border-color: #333; }
 
-.tb-link-row {
+      .tb-link-row {
         display: none;
         align-items: center;
         gap: 6px;
@@ -500,7 +500,7 @@ class BetterNotesPanel extends HTMLElement {
         padding: 6px 0 2px;
         flex-basis: 100%;
       }
-.tb-link-input {
+      .tb-link-input {
         flex: 1;
         padding: 5px 8px;
         border: 1px solid var(--border);
@@ -508,7 +508,7 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 13px;
         min-width: 0;
       }
-.tb-link-action-btn {
+      .tb-link-action-btn {
         padding: 5px 10px;
         border: 1px solid var(--border);
         border-radius: 6px;
@@ -517,29 +517,29 @@ class BetterNotesPanel extends HTMLElement {
         font-size: 13px;
         flex-shrink: 0;
       }
-.tb-link-action-btn:hover { background: #f5f5f5; }
+      .tb-link-action-btn:hover { background: #f5f5f5; }
 
       /* Desktop: toolbar at bottom — natural flex order (last child in panel-editor) */
-.panel-editor {
+      .panel-editor {
         display: flex;
         flex-direction: column;
       }
-.editor-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
-.formatting-toolbar { order: 3; }
+      .editor-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+      .formatting-toolbar { order: 3; }
 
       /* Mobile: toolbar below header, above editor body */
       @media (max-width: 767px) {
-  .editor-body { order: 3; }
-  .formatting-toolbar {
-          order: 2;
-          border-top: none;
-          border-bottom: 1px solid var(--border);
-        }
-  .tb-dropdown {
-          top: calc(100% + 6px);
-          bottom: auto;
-        }
-      }
+        .editor-body { order: 3; }
+        .formatting-toolbar {
+                order: 2;
+                border-top: none;
+                border-bottom: 1px solid var(--border);
+              }
+        .tb-dropdown {
+                top: calc(100% + 6px);
+                bottom: auto;
+              }
+            }
     `;
     this.shadowRoot.appendChild(style);
 
