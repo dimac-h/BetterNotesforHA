@@ -7,7 +7,7 @@ A notes panel for Home Assistant with rich text editing, dark mode support, and 
 ## Features
 
 - Rich text editor — headings, bold, italic, lists, checklists, highlights, links
-- 10 note colors with pin support
+- Ten note colors with pin support
 - Real-time search
 - Dashboard card to display notes on any view
 - Auto-save
@@ -34,14 +34,14 @@ Go to **Settings → Devices & Services → Add Integration** and search for *Be
 
 ## Formatting toolbar
 
-| Button | Action |
-|--------|--------|
-| **H▾** | Heading level (Normal / H1 / H2 / H3) |
-| **B▾** | Bold, Italic, Strikethrough, Highlight |
-| **≡▾** | Bullet list, Numbered list, Checklist, Indent, Outdent |
-| **🎨▾** | Note color |
-| **📌** | Pin / unpin |
-| **🔗** | Insert / remove link |
+| Button  | Action                                                 |
+|---------|--------------------------------------------------------|
+| **H▾**  | Heading level (Normal / H1 / H2 / H3)                  |
+| **B▾**  | Bold, Italic, Strikethrough, Highlight                 |
+| **≡▾**  | Bullet list, Numbered list, Checklist, Indent, Outdent |
+| **🎨▾** | Note color                                             |
+| **📌**  | Pin / unpin                                            |
+| **🔗**  | Insert / remove link                                   |
 
 ## Dashboard card
 
@@ -52,7 +52,7 @@ type: custom:better-notes-card
 title: My Notes
 max_notes: 5
 show_pinned_only: false
-# note_id: abc123  # show a single note
+# note_id: abc123 # show a single note
 ```
 
 ## Services
@@ -93,8 +93,8 @@ Returns all notes. Use `return_response: true` in automations to read the result
 
 **Panel not in sidebar** — disable and re-enable the integration in Settings → Devices & Services, then hard-refresh the browser.
 
-**Card not loading** — check the browser console for errors. The card type is `custom:better-notes-card`.
+**Card is not loading** — check the browser console for errors. The card type is `custom:better-notes-card`.
 
 ## License
 
-MIT — contributions welcome via [pull request](https://github.com/dimac-h/BetterNotesforHA/pulls).
+MIT — contributions are welcome via [pull request](https://github.com/dimac-h/BetterNotesforHA/pulls).
