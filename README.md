@@ -6,8 +6,9 @@ An Apple Notes-like integration for Home Assistant that brings a beautiful, intu
 
 - **Apple Notes-Inspired UI** - Clean, modern interface with familiar UX patterns
 - **Rich Text Editing** - WYSIWYG editor with bold, italic, headings, lists, checklists, highlights, and links
+- **Dark Mode** - Automatically adapts to your Home Assistant theme
 - **Sidebar Panel** - Quick access to all your notes from the Home Assistant sidebar
-- **Color Coding** - Choose from 10 beautiful colors to organize your notes
+- **Color Coding** - Choose from 10 colors to organize your notes
 - **Pin Important Notes** - Keep your most important notes at the top
 - **Search & Filter** - Quickly find notes with real-time search
 - **Dashboard Cards** - Pin individual notes or note lists to any dashboard
@@ -69,7 +70,7 @@ The toolbar appears at the bottom of the editor on desktop and at the top on mob
 | **≡▾** | Bullet list, Numbered list, Checklist, Indent, Outdent |
 | **🎨▾** | Note color (10 options) |
 | **📌** | Pin / unpin the note |
-| **⋮** | Insert link |
+| **🔗** | Insert / remove link |
 
 ### Pinning Notes to Dashboard
 
