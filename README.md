@@ -170,54 +170,11 @@ automation:
           color: "#4CAF50"
 ```
 
-## Available Colors
-
-| Color | Hex |
-|-------|-----|
-| Yellow (default) | `#FFEB3B` |
-| Orange | `#FF9800` |
-| Red | `#F44336` |
-| Pink | `#E91E63` |
-| Purple | `#9C27B0` |
-| Indigo | `#3F51B5` |
-| Blue | `#2196F3` |
-| Cyan | `#00BCD4` |
-| Teal | `#009688` |
-| Green | `#4CAF50` |
-
-## Technical Details
-
-### File Structure
-
-```
-custom_components/better_notes/
-├── __init__.py              # Integration initialization
-├── manifest.json            # Integration metadata
-├── const.py                 # Constants and configuration
-├── config_flow.py           # Configuration flow
-├── storage.py               # Notes storage handler
-├── services.yaml            # Service definitions
-├── www/                     # Frontend assets
-│   ├── better-notes-panel.js    # Main panel UI (custom element)
-│   ├── better-notes-card.js     # Lovelace card
-│   └── tiptap-bundle.js         # Bundled rich text editor
-└── translations/
-    └── en.json              # English translations
-```
-
 ### Data Storage
 
 Notes are stored using Home Assistant's built-in storage API at:
 `.storage/better_notes.notes`
 
-Each note contains:
-- `note_id`: Unique identifier (UUID v4)
-- `title`: Note title (plain text)
-- `content`: Note content (HTML)
-- `color`: Hex color code
-- `pinned`: Boolean
-- `created`: ISO 8601 timestamp
-- `modified`: ISO 8601 timestamp
 
 ## Troubleshooting
 
@@ -249,9 +206,3 @@ This project is licensed under the MIT License.
 ## Support
 
 If you encounter any issues or have feature requests, please [open an issue](https://github.com/dimac-h/BetterNotesforHA/issues) on GitHub.
-
-## Acknowledgments
-
-- Inspired by Apple Notes
-- Built for the Home Assistant community
-- Uses Home Assistant's integration framework
