@@ -198,7 +198,7 @@ class BetterNotesPanel extends HTMLElement {
       }
 
       .bn-panel .note-item:hover { border-color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
-      .bn-panel .note-item.active { background: #e3f2fd; border-color: var(--accent); }
+      .bn-panel .note-item.active { background: #bbdefb; border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
 
       .bn-panel .note-color-bar {
         position: absolute;
@@ -632,6 +632,7 @@ class BetterNotesPanel extends HTMLElement {
       const titleInput = this.querySelector('#noteTitle');
       if (titleInput) titleInput.value = note.title || '';
       this._editor.commands.setContent(note.content || '');
+      this._editor.commands.focus('end');
       this._updateToolbarState(note);
     }
   }
@@ -926,6 +927,7 @@ class BetterNotesPanel extends HTMLElement {
           Highlight,
         ],
         content: note.content || '',
+        autofocus: 'end',
         onUpdate: () => {
           clearTimeout(this._saveTimeout);
           this._saveTimeout = setTimeout(() => this._saveNote(), 1000);
