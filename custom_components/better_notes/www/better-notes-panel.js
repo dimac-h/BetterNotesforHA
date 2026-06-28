@@ -20,6 +20,7 @@ class BetterNotesPanel extends HTMLElement {
     this._pendingDelete = false;
     this._deleteTimeout = null;
     this._closeDropdownsHandler = null;
+    this._keyBlocker = null;
   }
 
   set hass(hass) {
@@ -36,11 +37,16 @@ class BetterNotesPanel extends HTMLElement {
   }
 
   connectedCallback() {
-    // Block all keyboard events from reaching HA's global shortcut handler.
-    // The notes panel is a self-contained app — HA shortcuts should not fire
-    // while it is open.
-    this.addEventListener('keydown', e => e.stopPropagation());
-    this.addEventListener('keypress', e => e.stopPropagation());
+    // Register a capture-phase listener on document so we intercept keyboard
+    // events at the same level as HA's shortcut handler but in registration
+    // order (ours first). This replaces the earlier bubble-phase approach which
+    // could not stop capture-phase HA listeners.
+    this._keyBlocker = e => {
+      if (this.contains(e.target)) e.stopPropagation();
+    };
+    document.addEventListener('keydown',  this._keyBlocker, true);
+    document.addEventListener('keypress', this._keyBlocker, true);
+    document.addEventListener('keyup',    this._keyBlocker, true);
     if (this._initialized) {
       this._renderList();
       this._renderEditor(this._currentNote());
@@ -51,6 +57,12 @@ class BetterNotesPanel extends HTMLElement {
     this._disconnected = true;
     clearTimeout(this._saveTimeout);
     clearTimeout(this._deleteTimeout);
+    if (this._keyBlocker) {
+      document.removeEventListener('keydown',  this._keyBlocker, true);
+      document.removeEventListener('keypress', this._keyBlocker, true);
+      document.removeEventListener('keyup',    this._keyBlocker, true);
+      this._keyBlocker = null;
+    }
     if (this._editor) {
       this._editor.destroy();
       this._editor = null;
