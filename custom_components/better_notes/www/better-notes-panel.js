@@ -159,6 +159,7 @@ class BetterNotesPanel extends HTMLElement {
         height: 100%;
         background: var(--surface);
         overflow: hidden;
+        position: relative;
       }
 
       * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -195,9 +196,10 @@ class BetterNotesPanel extends HTMLElement {
         margin-bottom: 10px;
       }
 
-      .search-box:focus { outline: none; border-color: var(--accent); }
+      .search-box:focus { outline: none; }
+      .search-box:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+      .search-box::placeholder { color: var(--text-muted); }
 
-      .search-box:focus-visible,
       .new-note-btn:focus-visible,
       .back-btn:focus-visible,
       .editor-btn:focus-visible,
@@ -220,7 +222,7 @@ class BetterNotesPanel extends HTMLElement {
         transition: background 0.12s;
       }
 
-      .new-note-btn:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+      .new-note-btn:hover { background: rgba(33, 150, 243, 0.1); background: color-mix(in srgb, var(--accent) 10%, transparent); }
 
       .notes-list {
         flex: 1;
@@ -240,7 +242,7 @@ class BetterNotesPanel extends HTMLElement {
       }
 
       .note-item:hover { border-color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
-      .note-item.active { background: color-mix(in srgb, var(--accent) 18%, var(--surface)); border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+      .note-item.active { background: rgba(33, 150, 243, 0.15); background: color-mix(in srgb, var(--accent) 18%, var(--surface)); border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
 
       .note-color-bar {
         position: absolute;
@@ -276,7 +278,7 @@ class BetterNotesPanel extends HTMLElement {
       }
 
       .note-item-date { font-size: 11px; color: var(--text-faint); }
-      .pin-icon { font-size: 14px; margin-left: 4px; flex-shrink: 0; }
+      .pin-icon { display: inline-flex; align-items: center; margin-left: 4px; flex-shrink: 0; color: var(--text-muted); }
 
       .empty-list {
         padding: 20px;
@@ -379,7 +381,7 @@ class BetterNotesPanel extends HTMLElement {
       .empty-editor-text { font-size: 16px; }
 
       .save-toast {
-        position: fixed;
+        position: absolute;
         bottom: 24px;
         right: 24px;
         background: var(--text);
@@ -413,7 +415,7 @@ class BetterNotesPanel extends HTMLElement {
       #tiptap-mount .ProseMirror ul[data-type="taskList"] li { display: flex; align-items: flex-start; gap: 6px; }
       #tiptap-mount .ProseMirror ul[data-type="taskList"] li > label { flex-shrink: 0; margin-top: 2px; }
       #tiptap-mount .ProseMirror input[type="checkbox"] { accent-color: var(--accent); }
-      #tiptap-mount .ProseMirror mark { background: #fff176; padding: 1px 2px; border-radius: 2px; }
+      #tiptap-mount .ProseMirror mark { background: rgba(255, 235, 59, 0.35); background: color-mix(in srgb, #ffeb3b 45%, var(--surface)); color: var(--text); padding: 1px 2px; border-radius: 2px; }
       #tiptap-mount .ProseMirror a { color: var(--accent); text-decoration: underline; }
       #tiptap-mount .ProseMirror s { text-decoration: line-through; }
       #tiptap-mount .ProseMirror p.is-editor-empty:first-child::before {
@@ -463,7 +465,7 @@ class BetterNotesPanel extends HTMLElement {
         transition: background 0.12s;
       }
       .tb-btn:hover { background: var(--bg); }
-      .tb-btn.active { background: color-mix(in srgb, #FF9800 20%, var(--surface)); border-color: #FF9800; color: #FF9800; }
+      .tb-btn.active { background: rgba(255, 152, 0, 0.15); background: color-mix(in srgb, #FF9800 20%, var(--surface)); border-color: #FF9800; color: #FF9800; }
 
       .tb-caret { font-size: 10px; }
 
@@ -549,15 +551,15 @@ class BetterNotesPanel extends HTMLElement {
       @media (max-width: 767px) {
         .editor-body { order: 3; }
         .formatting-toolbar {
-                order: 2;
-                border-top: none;
-                border-bottom: 1px solid var(--border);
-              }
+          order: 2;
+          border-top: none;
+          border-bottom: 1px solid var(--border);
+        }
         .tb-dropdown {
-                top: calc(100% + 6px);
-                bottom: auto;
-              }
-            }
+          top: calc(100% + 6px);
+          bottom: auto;
+        }
+      }
     `;
     this.shadowRoot.appendChild(style);
 
@@ -582,7 +584,7 @@ class BetterNotesPanel extends HTMLElement {
         </div>
         <div class="panel-editor" id="panel-editor">
           <div class="empty-editor" id="editor-empty">
-            <svg class="empty-editor-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+            <svg class="empty-editor-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
             <div class="empty-editor-text">Select a note or create one</div>
           </div>
         </div>
@@ -603,7 +605,7 @@ class BetterNotesPanel extends HTMLElement {
             <div class="note-color-bar" style="background:${this._safeColor(note.color)}"></div>
             <div class="note-item-header">
               <div class="note-item-title">${this._escapeHtml(note.title || 'Untitled')}</div>
-              ${note.pinned ? '<span class="pin-icon">📌</span>' : ''}
+              ${note.pinned ? '<span class="pin-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg></span>' : ''}
             </div>
             <div class="note-item-preview">${this._escapeHtml(this._stripHtml(note.content || '').substring(0, 60))}${this._stripHtml(note.content || '').length > 60 ? '…' : ''}</div>
             <div class="note-item-date">${this._formatDate(note.modified)}</div>
@@ -632,7 +634,7 @@ class BetterNotesPanel extends HTMLElement {
       }
       editorPanel.innerHTML = `
         <div class="empty-editor" id="editor-empty">
-          <svg class="empty-editor-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+          <svg class="empty-editor-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
           <div class="empty-editor-text">Select a note or create one</div>
         </div>
       `;
@@ -1168,7 +1170,8 @@ class BetterNotesPanel extends HTMLElement {
     const toast = document.createElement('div');
     toast.className = 'save-toast';
     toast.textContent = 'Saved';
-    this.shadowRoot.appendChild(toast);
+    const panel = this.shadowRoot.querySelector('.panel') || this.shadowRoot;
+    panel.appendChild(toast);
     setTimeout(() => {
       toast.style.opacity = '0';
       setTimeout(() => toast.remove(), 400);
