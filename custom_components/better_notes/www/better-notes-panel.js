@@ -569,7 +569,14 @@ class BetterNotesPanel extends HTMLElement {
     if (!content) return;
     content.innerHTML = `
       <div class="panel">
-        <div class="panel-list" id="panel-list"></div>
+        <div class="panel-list" id="panel-list">
+          <div class="panel-list-header">
+            <h1>Better Notes</h1>
+            <input class="search-box" id="searchBox" type="text" placeholder="Search notes...">
+            <button class="new-note-btn" id="newNoteBtn">+ New Note</button>
+          </div>
+          <div class="notes-list" id="notesList"></div>
+        </div>
         <div class="panel-editor" id="panel-editor">
           <div class="empty-editor" id="editor-empty">
             <div class="empty-editor-icon">📝</div>
@@ -578,50 +585,33 @@ class BetterNotesPanel extends HTMLElement {
         </div>
       </div>
     `;
+    this._attachHeaderListeners();
   }
 
   _renderList() {
-    const listEl = this.shadowRoot.querySelector('#panel-list');
-    if (!listEl) return;
+    const notesList = this.shadowRoot.querySelector('#notesList');
+    if (!notesList) return;
     this.setAttribute('data-view', this._view);
     const filtered = this._filteredNotes();
-    listEl.innerHTML = `
-      <div class="panel-list-header">
-        <h1>Better Notes</h1>
-        <input class="search-box" id="searchBox" type="text" placeholder="Search notes..." value="${this._escapeAttr(this._searchTerm)}">
-        <button class="new-note-btn" id="newNoteBtn">+ New Note</button>
-      </div>
-      <div class="notes-list" id="notesList">
-        ${filtered.length === 0
-          ? `<div class="empty-list">No notes found</div>`
-          : filtered.map(note => `
-            <div class="note-item ${this._currentNoteId === note.note_id ? 'active' : ''}" data-id="${note.note_id}">
-              <div class="note-color-bar" style="background:${this._safeColor(note.color)}"></div>
-              <div class="note-item-header">
-                <div class="note-item-title">${this._escapeHtml(note.title || 'Untitled')}</div>
-                ${note.pinned ? '<span class="pin-icon">📌</span>' : ''}
-              </div>
-              <div class="note-item-preview">${this._escapeHtml(this._stripHtml(note.content || '').substring(0, 60))}${this._stripHtml(note.content || '').length > 60 ? '…' : ''}</div>
-              <div class="note-item-date">${this._formatDate(note.modified)}</div>
+    notesList.innerHTML = filtered.length === 0
+      ? `<div class="empty-list">No notes found</div>`
+      : filtered.map(note => `
+          <div class="note-item ${this._currentNoteId === note.note_id ? 'active' : ''}" data-id="${note.note_id}">
+            <div class="note-color-bar" style="background:${this._safeColor(note.color)}"></div>
+            <div class="note-item-header">
+              <div class="note-item-title">${this._escapeHtml(note.title || 'Untitled')}</div>
+              ${note.pinned ? '<span class="pin-icon">📌</span>' : ''}
             </div>
-          `).join('')
-        }
-      </div>
-    `;
-    this._attachListListeners();
+            <div class="note-item-preview">${this._escapeHtml(this._stripHtml(note.content || '').substring(0, 60))}${this._stripHtml(note.content || '').length > 60 ? '…' : ''}</div>
+            <div class="note-item-date">${this._formatDate(note.modified)}</div>
+          </div>
+        `).join('');
+    this._attachNoteListeners();
     // Only auto-focus the search box when no note is open.
-    // When a note is open, the Tiptap editor owns focus — do not steal it.
-    // We avoid shadowRoot.activeElement here because Firefox returns null for
-    // contenteditable elements inside shadow DOM (known Firefox bug).
+    // Avoid shadowRoot.activeElement: Firefox returns null for contenteditable
+    // elements inside shadow DOM, which would incorrectly steal focus from Tiptap.
     if (!this._currentNoteId) {
-      const searchBox = this.shadowRoot.querySelector('#searchBox');
-      if (searchBox) {
-        searchBox.focus({ preventScroll: true });
-        // Restore cursor to end so typing doesn't jump to position 0 after
-        // _renderList() rebuilds the input element on every keystroke.
-        const len = searchBox.value.length;
-        searchBox.setSelectionRange(len, len);
-      }
+      this.shadowRoot.querySelector('#searchBox')?.focus({ preventScroll: true });
     }
   }
 
@@ -744,12 +734,15 @@ class BetterNotesPanel extends HTMLElement {
     });
   }
 
-  _attachListListeners() {
+  _attachHeaderListeners() {
     this.shadowRoot.querySelector('#searchBox')?.addEventListener('input', e => {
       this._searchTerm = e.target.value;
       this._renderList();
     });
     this.shadowRoot.querySelector('#newNoteBtn')?.addEventListener('click', () => this._createNote());
+  }
+
+  _attachNoteListeners() {
     this.shadowRoot.querySelectorAll('.note-item').forEach(el => {
       el.addEventListener('click', () => this._selectNote(el.dataset.id));
     });
