@@ -216,7 +216,7 @@ class BetterNotesCard extends HTMLElement {
         }
       </style>
 
-      <ha-card>
+      <ha-card style="background: ${this._safeColor(this._config.card_color || '#fff')}">
         <div class="card-header">
           <span>📝</span>
           <span>${this.escapeHtml(this._config.title)}</span>
@@ -279,7 +279,9 @@ class BetterNotesCard extends HTMLElement {
       notes = notes.filter(n => n.pinned);
     }
 
-    notes = notes.slice(0, this._config.max_notes);
+    if (!this._config.show_all) {
+      notes = notes.slice(0, this._config.max_notes);
+    }
 
     if (notes.length === 0) {
       return `
@@ -412,10 +414,9 @@ class BetterNotesCard extends HTMLElement {
       Array.from(node.childNodes).forEach(sanitizeNode);
     };
 
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    Array.from(div.childNodes).forEach(sanitizeNode);
-    return div.innerHTML;
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    Array.from(doc.body.childNodes).forEach(sanitizeNode);
+    return doc.body.innerHTML;
   }
 
   _stripHtml(html) {
