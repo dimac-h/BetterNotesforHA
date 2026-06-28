@@ -19,7 +19,7 @@ class BetterNotesCard extends HTMLElement {
       show_all: config.show_all || false,
       max_notes: config.max_notes || 5,
       show_pinned_only: config.show_pinned_only || false,
-      card_color: config.card_color || '#FFEB3B',
+      card_color: config.card_color || null,
       ...config
     };
 
@@ -88,6 +88,10 @@ class BetterNotesCard extends HTMLElement {
     const content = this._config.note_id
       ? this.renderSingleNote()
       : this.renderNotesList();
+
+    const cardStyle = this._config.card_color
+      ? `style="background: ${this._safeColor(this._config.card_color)}"`
+      : '';
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -216,7 +220,7 @@ class BetterNotesCard extends HTMLElement {
         }
       </style>
 
-      <ha-card style="background: ${this._safeColor(this._config.card_color || '#fff')}">
+      <ha-card ${cardStyle}>
         <div class="card-header">
           <span>📝</span>
           <span>${this.escapeHtml(this._config.title)}</span>
@@ -420,9 +424,7 @@ class BetterNotesCard extends HTMLElement {
   }
 
   _stripHtml(html) {
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    return div.textContent || '';
+    return new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
   }
 
   getCardSize() {
