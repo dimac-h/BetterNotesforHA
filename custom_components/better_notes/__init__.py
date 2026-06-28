@@ -34,13 +34,16 @@ from .storage import NotesStorage
 
 _LOGGER = logging.getLogger(__name__)
 
+# Module-level set to track registered static paths (persists across reloads)
+_REGISTERED_STATIC_PATHS: set[str] = set()
+
 # Service schemas
 CREATE_NOTE_SCHEMA = vol.Schema({
     vol.Required(ATTR_TITLE): cv.string,
     vol.Optional(ATTR_CONTENT, default=""): cv.string,
     vol.Optional(ATTR_COLOR, default=DEFAULT_COLOR): vol.Match(r'^#[0-9a-fA-F]{3}$|^#[0-9a-fA-F]{6}$'),
     vol.Optional(ATTR_PINNED, default=False): cv.boolean,
-    vol.Optional(ATTR_TAGS, default=[]): [cv.string],
+    vol.Optional(ATTR_TAGS, default=list): [cv.string],
 })
 
 UPDATE_NOTE_SCHEMA = vol.Schema({
@@ -67,7 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN]["storage"] = storage
 
     # Register frontend panel
-    if not hass.data[DOMAIN].get("resources_registered"):
+    if "/better_notes_panel" not in _REGISTERED_STATIC_PATHS:
         await hass.http.async_register_static_paths([
             StaticPathConfig(
                 url_path="/better_notes_panel",
@@ -75,7 +78,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 cache_headers=False,
             )
         ])
-        hass.data[DOMAIN]["resources_registered"] = True
+        _REGISTERED_STATIC_PATHS.add("/better_notes_panel")
 
     await async_register_panel(
         hass,
