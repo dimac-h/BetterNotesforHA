@@ -11,7 +11,7 @@ The panel (`www/better-notes-panel.js`) and Lovelace card (`www/better-notes-car
 
 ## Reference precedent
 
-`~/WebstormProjects/home-upkeep-addon` (sibling HA custom integration) already solves "Lit without a CDN": TypeScript + `lit` + `@mdi/js` as real npm dependencies, bundled by Vite to a single ES module, served as a static path. Its gap — `frontend/dist/` is gitignored and no CI step builds it before the GitHub Release zip is created (confirmed by reading `tonyroberts/home-upkeep-component`'s `release.yml`, which just zips the checked-out tree) — means that project's HACS release is very likely missing its frontend. We are deliberately not replicating that gap: our release workflow builds the frontend before zipping, and `hacs.json` points HACS at that built zip asset (`zip_release`) rather than raw repo content.
+`~/WebstormProjects/home-upkeep-addon` (sibling HA custom integration) already solves "Lit without a CDN": TypeScript + `lit` + `@mdi/js` as real npm dependencies, bundled by Vite to a single ES module, served as a static path. Its own upstream, `tonyroberts/home-upkeep-component`, ships a `release.yml` that never builds the frontend before zipping (`frontend/dist/` is gitignored, so the release asset would ship without it) — a real distribution gap, not a pattern to copy. The `dimac-h/home-upkeep-component` fork has since fixed exactly this on its `auto-migration-and-domain-fix` branch: `release.yml` now runs `npm ci && npm run build` before zipping (excluding frontend source/tooling from the shipped zip), and `hacs.json` sets `"zip_release": true`. We reuse that fixed workflow directly (see §5 below) rather than re-deriving our own.
 
 ## Architecture
 
@@ -73,7 +73,9 @@ The rich-text body editor continues to use the existing `tiptap-bundle.js` (self
 
 ### 5. CI / release
 
-New `.github/workflows/validate.yml` (hassfest + HACS validation, on push/PR to `main` — modeled on the upstream reference repo's version):
+The sibling `home-upkeep-component` repo (the separate, non-addon HACS integration in that project's ecosystem) has since fixed exactly this gap on its `auto-migration-and-domain-fix` branch — its `release.yml` now builds the frontend before zipping, and its `hacs.json` sets `zip_release`. We reuse that pattern directly rather than re-deriving it.
+
+New `.github/workflows/validate.yml` (unchanged from the upstream/reference version — hassfest + HACS validation, on push/PR to `main` and a daily schedule):
 
 ```yaml
 on: [push, pull_request, workflow_dispatch]
@@ -82,21 +84,22 @@ jobs:
   hacs: ...       # hacs/action, category: integration
 ```
 
-New `.github/workflows/release.yml` (on GitHub Release `published`):
+New `.github/workflows/release.yml` (on GitHub Release `published`), adapted from `home-upkeep-component`'s fixed version:
 
 1. Checkout.
-2. `cd custom_components/better_notes/frontend && npm ci && npm run build`.
-3. Copy `frontend/dist/*.js` into `custom_components/better_notes/www/`.
-4. Patch `manifest.json`'s `version` to the release tag (same `sed` pattern as the reference repo).
-5. `zip -r better_notes.zip custom_components/better_notes/`.
-6. Upload the zip as a release asset (`softprops/action-gh-release`).
+2. `actions/setup-node@v4` (node 20, npm cache keyed on `custom_components/better_notes/frontend/package-lock.json`).
+3. `cd custom_components/better_notes/frontend && npm ci && npm run build` — output lands in `frontend/dist/`.
+4. Copy `frontend/dist/*.js` into `custom_components/better_notes/www/` (our static path already serves `www/` — see `__init__.py`; no Python change needed).
+5. Patch `manifest.json`'s `version` to the release tag via `home-assistant/actions/helpers/version` + `sed`.
+6. `zip -r better_notes.zip custom_components/better_notes/ -x 'frontend/node_modules/*' -x 'frontend/src/*' -x 'frontend/package.json' -x 'frontend/package-lock.json' -x 'frontend/tsconfig.json' -x 'frontend/vite.config.ts'` — ships the built `www/` output but not frontend source/tooling.
+7. Upload the zip as a release asset (`softprops/action-gh-release`).
 
 `hacs.json` gains:
 ```json
 "zip_release": true,
 "filename": "better_notes.zip"
 ```
-so HACS installs from the built release asset instead of raw repo content — this is what actually fixes the gap identified in the upstream reference project.
+so HACS installs from the built release asset instead of raw repo content — this, combined with step 3 actually running in CI (unlike the still-unfixed `tonyroberts/home-upkeep-component` upstream), is what closes the gap.
 
 ### 6. Docs
 
