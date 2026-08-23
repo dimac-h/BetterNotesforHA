@@ -8,7 +8,6 @@ The panel (`www/better-notes-panel.js`) and Lovelace card (`www/better-notes-car
 
 - No change to `storage.py`, `config_flow.py`, the note data schema, or any of the four services/events.
 - No adoption of Web Awesome (`wa-*`) components — not public/stable outside HA core frontend yet.
-- No change to how backend-only changes are tested (still: copy `custom_components/better_notes/` into a live HA instance and restart).
 
 ## Reference precedent
 
@@ -102,15 +101,34 @@ so HACS installs from the built release asset instead of raw repo content — th
 ### 6. Docs
 
 `CLAUDE.md` changes:
-- Replace "No Build System" section with: backend-only changes still need no build step (copy `custom_components/better_notes/` and restart HA); frontend source changes (`frontend/src/`) require `cd custom_components/better_notes/frontend && npm run build` before the copy-and-restart step, or rely on a GitHub Release for the CI-built artifact.
+- Replace "No Build System" section with: backend-only changes still need no build step; frontend source changes (`frontend/src/`) require `cd custom_components/better_notes/frontend && npm run build` before restarting the dev instance.
+- Document `dev/docker-compose.yml` as the standard local dev/test loop (see §7 below), replacing the old "copy into a live HA instance" instructions.
 - Note the new `frontend/` directory and its role in the Architecture section.
 - Note the release process (tag → GitHub Release → CI builds & attaches zip → HACS installs from that zip) under a new "Releasing" section.
 
+### 7. Local dev instance (`dev/docker-compose.yml`)
+
+Replaces "copy into a live HA instance and restart" with a disposable, bind-mounted HA container — modeled directly on `home-upkeep-addon/dev/docker-compose.yml`:
+
+```yaml
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    ports: ["8123:8123"]
+    volumes:
+      - ./config:/config
+      - ../custom_components/better_notes:/config/custom_components/better_notes:ro
+```
+
+`custom_components/better_notes` is bind-mounted read-only, so edits appear without any copy step — a `docker compose restart` (HA doesn't hot-reload custom integrations) picks them up. `dev/config/` is gitignored (matches the reference project). Already added as part of this design's setup, independent of the rest of the implementation.
+
+Because the mount is read-only from the *host* checkout, frontend changes still need `npm run build` (or `vite build --watch`) run on the host so `www/` contains fresh output before the container restart — the container itself never runs the build.
+
 ## Testing
 
-No automated test suite exists in this repo today (per `CLAUDE.md`) and this change doesn't introduce one. Verification is manual:
+No automated test suite exists in this repo today (per `CLAUDE.md`) and this change doesn't introduce one. Verification is manual, using the `dev/docker-compose.yml` instance:
 - `npm run build` succeeds with no TypeScript errors.
-- Copy the built integration into a live HA instance; confirm the panel renders, matches HA's light and dark themes, and all four operations (create/update/delete/pin) still work end-to-end via the existing events.
+- Start `dev/docker-compose.yml`, confirm the panel renders, matches HA's light and dark themes, and all four operations (create/update/delete/pin) still work end-to-end via the existing events.
 - Confirm the Lovelace card still accepts existing `custom:better-notes-card` YAML configs unchanged.
 - `hassfest` and `hacs/action` validations pass in CI.
 - A test GitHub Release produces a zip asset containing a non-empty `www/` with built JS.
