@@ -21,7 +21,7 @@ New directory, structured like `home-upkeep-addon/frontend/`:
 
 ```
 frontend/
-  package.json          # deps: lit, @mdi/js; devDeps: typescript, vite
+  package.json          # deps: lit, @mdi/js; devDeps: typescript, vite; "engines": { "node": ">=24" }
   tsconfig.json
   vite.config.ts        # base: "/better_notes_panel/", lib entry per output
   src/
@@ -43,15 +43,15 @@ frontend/
 
 ### 2. Visual design — native HA elements and tokens
 
-Rather than inventing a design system (as `home-upkeep-addon` did with its own `--hu-*` palette), components use HA's real building blocks, which are already registered as custom elements on the page when running inside HA — no import needed, just use the tags:
+Rather than inventing a design system (as `home-upkeep-addon` did with its own `--hu-*` palette), components use HA's real building blocks, which are already registered as custom elements on the page when running inside HA — no import needed, just use the tags. **Important caveat:** HA's own developer docs state plainly that these components are not an officially supported public API for custom cards/panels and "can always change" — confirmed by real churn between 2024 and 2026 (`ha-fab` removed, `ha-textfield` removed in 2026.5 in favor of `ha-input`, dialogs/buttons/inputs/switches/checkboxes migrated wholesale from Material Design Components to WebAwesome). We accept that risk deliberately, in exchange for looking genuinely native — see "Component API churn" under Migration/rollout risk. Given the target baseline is HA 2026.8+ (per `hacs.json`), we target the *current* (2026.5+) element set, not the older MDC-era ones:
 
 - `<ha-card>` — card/panel surface (replaces custom `div.note-card`)
-- `<ha-textfield>` — title input, tag input
+- `<ha-input>` — title input, tag input (replaces the removed `ha-textfield`)
 - `<ha-icon-button>` + `<ha-icon>` (mdi icons) — pin/delete/edit/close actions
-- `<ha-dialog>` — note editor modal (replaces custom modal overlay)
-- `<ha-fab>` — "new note" floating action button
-- `mwc-button` — dialog save/cancel actions
-- CSS custom properties: `--primary-color`, `--card-background-color`, `--divider-color`, `--primary-text-color`, `--secondary-text-color`, `--mdc-theme-*` — so light/dark theme switching is automatic, matching whatever HA theme the user has active.
+- `<ha-dialog>` — note editor modal (replaces custom modal overlay); internally WebAwesome-backed since 2026.3 — set width via prop (not CSS override) and use `autofocus` (not the removed `dialogInitialFocus`)
+- `<ha-button>` — all buttons, including what would have been a FAB or `mwc-button` (both removed/deprecated; `ha-button` covers primary/plain/warning variants and handles its own positioning)
+- `<ha-progress-bar>` — loading state (replaces a hand-rolled CSS spinner; new in 2026.5, fully themeable)
+- CSS custom properties: `--primary-color`, `--card-background-color`, `--divider-color`, `--primary-text-color`, `--secondary-text-color`, plus the newer semantic tokens introduced in 2026.4/2026.5 (`--ha-box-shadow-s/m/l`, the six new surface-color tokens, `--ha-color-form-background*`) — so light/dark theme switching is automatic, matching whatever HA theme the user has active.
 
 `DEFAULT_COLORS` (the 10 note accent colors in `const.py`) stay as user-facing note colors — those are content, not chrome, and are intentionally vivid/distinct from the neutral HA theme surface.
 
@@ -87,7 +87,7 @@ jobs:
 New `.github/workflows/release.yml` (on GitHub Release `published`), adapted from `home-upkeep-component`'s fixed version:
 
 1. Checkout.
-2. `actions/setup-node@v4` (node 20, npm cache keyed on `custom_components/better_notes/frontend/package-lock.json`).
+2. `actions/setup-node@v4` (node 24 — Active LTS as of this writing, vs. the node 20 the reference workflow still uses; npm cache keyed on `custom_components/better_notes/frontend/package-lock.json`).
 3. `cd custom_components/better_notes/frontend && npm ci && npm run build` — output lands in `frontend/dist/`.
 4. Copy `frontend/dist/*.js` into `custom_components/better_notes/www/` (our static path already serves `www/` — see `__init__.py`; no Python change needed).
 5. Patch `manifest.json`'s `version` to the release tag via `home-assistant/actions/helpers/version` + `sed`.
@@ -139,3 +139,7 @@ No automated test suite exists in this repo today (per `CLAUDE.md`) and this cha
 ## Migration / rollout risk
 
 This is a full frontend rewrite behind the same public contracts (services, events, panel URL, card config schema) — so it's an atomic swap, not incremental. Rollback is a plain `git revert` of the frontend commit(s) since the backend is untouched.
+
+**Component API churn.** HA's own frontend developer docs explicitly disclaim that `ha-*` built-in components are not a stable public API for third-party use. Between 2024 and 2026 alone: `mwc-button`/`ha-fab` were removed in favor of `ha-button`; `ha-textfield` was removed in 2026.5 in favor of `ha-input`; dialogs, switches, checkboxes, and text areas were migrated wholesale from Material Design Components to WebAwesome, each with its own token/prop breaking changes. Choosing native elements over a self-contained design system (as `home-upkeep-addon` did) means this integration inherits that churn — a future HA release could rename or restyle a component we depend on. Mitigation: keep the component choices and their HA-version-introduced-in dates listed in §2 above as a single place to check against future HA changelogs; since the min supported version is being bumped to 2026.8+, there's no need to support the older MDC-era equivalents in parallel.
+
+**HA baseline.** Bumping `hacs.json`'s `homeassistant` minimum to `2026.8.0` (already done) is a prerequisite for this design, not just a version bump — it's what makes targeting the current (`ha-input`/`ha-button`/`ha-progress-bar`) component set valid instead of the removed/deprecated ones.
