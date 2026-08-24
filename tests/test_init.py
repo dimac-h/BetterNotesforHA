@@ -1,48 +1,116 @@
-"""Tests for __init__.py service setup."""
+"""Tests for Better Notes setup, services, and events."""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import pytest
 import voluptuous as vol
-from unittest.mock import AsyncMock, MagicMock
-from homeassistant.core import ServiceCall, SupportsResponse
+from homeassistant.exceptions import HomeAssistantError
 
 from custom_components.better_notes.__init__ import (
     CREATE_NOTE_SCHEMA,
-    UPDATE_NOTE_SCHEMA,
     DELETE_NOTE_SCHEMA,
+    UPDATE_NOTE_SCHEMA,
 )
+from custom_components.better_notes.const import DOMAIN
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+    from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 
-# ---------------------------------------------------------------------------
-# SupportsResponse contract
-# ---------------------------------------------------------------------------
-
-def test_get_notes_service_supports_response():
-    """get_notes handler must be registered with SupportsResponse.ONLY."""
-    assert SupportsResponse.ONLY is not None
-    assert SupportsResponse.ONLY.value == "only"
+async def test_setup_registers_all_services(hass: HomeAssistant, setup_integration: MockConfigEntry) -> None:
+    assert hass.services.has_service(DOMAIN, "create_note")
+    assert hass.services.has_service(DOMAIN, "update_note")
+    assert hass.services.has_service(DOMAIN, "delete_note")
+    assert hass.services.has_service(DOMAIN, "get_notes")
 
 
-@pytest.mark.asyncio
-async def test_handle_get_notes_returns_dict():
-    """handle_get_notes must return a dict with 'notes' key, not fire an event."""
-    notes_data = [{"note_id": "abc", "title": "Test", "content": "", "color": "#FFEB3B",
-                   "pinned": False, "created": "2024-01-01T00:00:00+00:00",
-                   "modified": "2024-01-01T00:00:00+00:00", "tags": []}]
+async def test_create_note_service_fires_event_and_returns_response(
+    hass: HomeAssistant, setup_integration: MockConfigEntry
+) -> None:
+    events = []
+    hass.bus.async_listen(f"{DOMAIN}_note_created", events.append)
 
-    mock_storage = MagicMock()
-    mock_storage.async_get_all_notes = AsyncMock(return_value=notes_data)
-    mock_hass = MagicMock()
-    mock_hass.data = {"better_notes": {"storage": mock_storage}}
+    result = await hass.services.async_call(
+        DOMAIN, "create_note", {"title": "Test note"}, blocking=True, return_response=True,
+    )
+    await hass.async_block_till_done()
 
-    async def handle_get_notes(call: ServiceCall):
-        notes = await mock_storage.async_get_all_notes()
-        return {"notes": notes}
+    assert result["title"] == "Test note"
+    assert len(events) == 1
+    assert events[0].data["title"] == "Test note"
 
-    call = MagicMock(spec=ServiceCall)
-    result = await handle_get_notes(call)
 
-    assert "notes" in result
-    assert result["notes"] == notes_data
-    mock_hass.bus.async_fire.assert_not_called()
+async def test_get_notes_service_returns_created_notes(
+    hass: HomeAssistant, setup_integration: MockConfigEntry
+) -> None:
+    await hass.services.async_call(DOMAIN, "create_note", {"title": "A"}, blocking=True, return_response=True)
+    result = await hass.services.async_call(DOMAIN, "get_notes", {}, blocking=True, return_response=True)
+    assert [n["title"] for n in result["notes"]] == ["A"]
+
+
+async def test_get_notes_service_does_not_fire_event(
+    hass: HomeAssistant, setup_integration: MockConfigEntry
+) -> None:
+    """get_notes returns its result directly via SupportsResponse.ONLY and fires no bus event."""
+    events = []
+    hass.bus.async_listen(f"{DOMAIN}_notes_list", events.append)
+
+    await hass.services.async_call(DOMAIN, "get_notes", {}, blocking=True, return_response=True)
+    await hass.async_block_till_done()
+
+    assert events == []
+
+
+async def test_update_note_service_fires_event(hass: HomeAssistant, setup_integration: MockConfigEntry) -> None:
+    created = await hass.services.async_call(
+        DOMAIN, "create_note", {"title": "A"}, blocking=True, return_response=True,
+    )
+    events = []
+    hass.bus.async_listen(f"{DOMAIN}_note_updated", events.append)
+
+    await hass.services.async_call(
+        DOMAIN, "update_note", {"note_id": created["note_id"], "title": "B"}, blocking=True,
+    )
+    await hass.async_block_till_done()
+
+    assert events[0].data["title"] == "B"
+
+
+async def test_update_note_service_missing_note_raises(
+    hass: HomeAssistant, setup_integration: MockConfigEntry
+) -> None:
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            DOMAIN, "update_note", {"note_id": "missing", "title": "B"}, blocking=True,
+        )
+
+
+async def test_delete_note_service_fires_event(hass: HomeAssistant, setup_integration: MockConfigEntry) -> None:
+    created = await hass.services.async_call(
+        DOMAIN, "create_note", {"title": "A"}, blocking=True, return_response=True,
+    )
+    events = []
+    hass.bus.async_listen(f"{DOMAIN}_note_deleted", events.append)
+
+    await hass.services.async_call(DOMAIN, "delete_note", {"note_id": created["note_id"]}, blocking=True)
+    await hass.async_block_till_done()
+
+    assert events[0].data["note_id"] == created["note_id"]
+
+
+async def test_delete_note_service_missing_note_raises(
+    hass: HomeAssistant, setup_integration: MockConfigEntry
+) -> None:
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(DOMAIN, "delete_note", {"note_id": "missing"}, blocking=True)
+
+
+async def test_unload_removes_services(hass: HomeAssistant, setup_integration: MockConfigEntry) -> None:
+    assert await hass.config_entries.async_unload(setup_integration.entry_id)
+    await hass.async_block_till_done()
+    assert not hass.services.has_service(DOMAIN, "create_note")
 
 
 # ---------------------------------------------------------------------------

@@ -1,12 +1,13 @@
 {
   "domain": "better_notes",
   "name": "Better Notes",
-  "codeowners": ["@CameronVerrells"],
+  "codeowners": ["@dimac-h"],
   "config_flow": true,
-  "dependencies": [],
-  "documentation": "https://github.com/CameronVerrells/BetterNotesforHA",
+  "dependencies": ["http"],
+  "documentation": "https://github.com/dimac-h/BetterNotesforHA",
   "integration_type": "service",
   "iot_class": "local_push",
+  "issue_tracker": "https://github.com/dimac-h/BetterNotesforHA/issues",
   "requirements": [],
   "version": "1.0.0"
 }

@@ -1,21 +1,7 @@
-# Disposable Home Assistant instance for local panel/backend development.
-#
-#   docker compose -f dev/docker-compose.yml up -d     # start
-#   docker compose -f dev/docker-compose.yml logs -f   # watch logs
-#   docker compose -f dev/docker-compose.yml restart   # pick up changes (HA doesn't hot-reload custom_components)
-#   docker compose -f dev/docker-compose.yml down      # stop
-#   rm -rf dev/config                                  # full reset
-#
-# Url: http://localhost:8123
 services:
   homeassistant:
-    container_name: better-notes-hass
     image: ghcr.io/home-assistant/home-assistant:stable
-    restart: unless-stopped
-    ports:
-      - "8123:8123"
+    ports: ["8123:8123"]
     volumes:
       - ./config:/config
       - ../custom_components/better_notes:/config/custom_components/better_notes:ro
-    environment:
-      - TZ=Europe/Amsterdam

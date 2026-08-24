@@ -1,0 +1,26 @@
+{
+  "name": "better-notes-frontend",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mdi/js": "^7.4.47",
+    "lit": "^3.3.3",
+    "@tiptap/core": "3.30.3",
+    "@tiptap/starter-kit": "3.30.3",
+    "@tiptap/extension-task-list": "3.30.3",
+    "@tiptap/extension-task-item": "3.30.3",
+    "@tiptap/extension-list-item": "3.30.3",
+    "@tiptap/extension-link": "3.30.3",
+    "@tiptap/extension-highlight": "3.30.3"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^7.3.6"
+  }
+}
