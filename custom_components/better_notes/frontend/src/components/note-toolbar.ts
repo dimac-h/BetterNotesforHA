@@ -76,8 +76,8 @@ export class BetterNotesToolbar extends LitElement {
   }
 
   private _applyLink(): void {
-    const input = this.renderRoot.querySelector('.link-row input') as HTMLInputElement | null;
-    const url = input?.value.trim();
+    const input = this.renderRoot.querySelector('.link-row ha-input') as (HTMLElement & { value?: string }) | null;
+    const url = input?.value?.trim();
     if (url && this._isValidUrl(url)) this._dispatchAction('setLink', { href: url });
     this._linkOpen = false;
   }
@@ -85,7 +85,7 @@ export class BetterNotesToolbar extends LitElement {
   render() {
     return html`
       <div class="group ${this._openGroup === 'heading' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('heading')}>H ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup('heading')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>H ▾</ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction('paragraph')}>Normal</button>
           <button class="item" @click=${() => this._dispatchAction('h1')}>H1</button>
@@ -94,7 +94,7 @@ export class BetterNotesToolbar extends LitElement {
         </div>
       </div>
       <div class="group ${this._openGroup === 'format' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('format')}>B ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup('format')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>B ▾</ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction('bold')}>Bold</button>
           <button class="item" @click=${() => this._dispatchAction('italic')}>Italic</button>
@@ -103,7 +103,7 @@ export class BetterNotesToolbar extends LitElement {
         </div>
       </div>
       <div class="group ${this._openGroup === 'list' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('list')}>≡ ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup('list')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>≡ ▾</ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction('bulletList')}>Bullet list</button>
           <button class="item" @click=${() => this._dispatchAction('orderedList')}>Numbered list</button>
@@ -114,7 +114,7 @@ export class BetterNotesToolbar extends LitElement {
         </div>
       </div>
       <div class="group ${this._openGroup === 'color' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('color')}>Color ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup('color')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>Color ▾</ha-button>
         <div class="dropdown">
           <div class="swatches">
             ${NOTE_COLORS.map(c => html`
@@ -124,10 +124,10 @@ export class BetterNotesToolbar extends LitElement {
           </div>
         </div>
       </div>
-      <ha-button size="small" class=${this.pinned ? 'active' : ''} @click=${() => this._togglePin()}>
+      <ha-button size="small" class=${this.pinned ? 'active' : ''} @click=${() => this._togglePin()} @mousedown=${(e: MouseEvent) => e.preventDefault()}>
         ${this.pinned ? 'Pinned' : 'Pin'}
       </ha-button>
-      <ha-button size="small" @click=${() => this._openLink()}>Link</ha-button>
+      <ha-button size="small" @click=${() => this._openLink()} @mousedown=${(e: MouseEvent) => e.preventDefault()}>Link</ha-button>
       ${this._linkOpen ? html`
         <div class="link-row">
           <ha-input type="url" placeholder="https://…" .value=${this.linkHref} @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
