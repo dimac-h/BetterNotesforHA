@@ -1,0 +1,18 @@
+[project]
+name = "better-notes-integration"
+version = "0.1.0"
+description = "Better Notes Home Assistant custom integration"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest-homeassistant-custom-component>=0.13.316",
+]
+
+[tool.setuptools]
+packages = []
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
