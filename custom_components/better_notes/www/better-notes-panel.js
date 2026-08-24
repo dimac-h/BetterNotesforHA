@@ -1,6 +1,6 @@
 import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as h, N as T, h as E, s as D, g as S, j as A, u as I, k as j } from "./colors-CMfYGb1F.js";
 const H = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
-function y(t, e) {
+function w(t, e) {
   return (i, s, o) => {
     const n = (r) => r.renderRoot?.querySelector(t) ?? null;
     return H(i, s, { get() {
@@ -76,7 +76,7 @@ $([
 x = $([
   _("better-notes-list-item")
 ], x);
-var G = Object.defineProperty, M = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
+var G = Object.defineProperty, M = Object.getOwnPropertyDescriptor, y = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? M(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && G(e, i, o), o;
@@ -123,16 +123,16 @@ u.styles = b`
     .items { flex: 1; overflow-y: auto; padding: 10px; }
     .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
   `;
-w([
+y([
   l({ attribute: !1 })
 ], u.prototype, "notes", 2);
-w([
+y([
   l({ type: String })
 ], u.prototype, "selectedNoteId", 2);
-w([
+y([
   l({ type: String })
 ], u.prototype, "searchTerm", 2);
-u = w([
+u = y([
   _("better-notes-list")
 ], u);
 var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
@@ -432,6 +432,7 @@ k.styles = b`
     .ProseMirror ul[data-type="taskList"] li {
       display: flex;
       align-items: flex-start;
+      margin: 1em 0;
     }
     .ProseMirror ul[data-type="taskList"] li > label {
       flex: 0 0 auto;
@@ -441,6 +442,9 @@ k.styles = b`
     .ProseMirror ul[data-type="taskList"] li > div {
       flex: 1 1 auto;
     }
+    .ProseMirror ul[data-type="taskList"] li > div > p {
+      margin: 0;
+    }
     .ProseMirror ul[data-type="taskList"] input[type="checkbox"] {
       cursor: pointer;
     }
@@ -449,7 +453,7 @@ C([
   l({ attribute: !1 })
 ], k.prototype, "content", 2);
 C([
-  y("#mount")
+  w("#mount")
 ], k.prototype, "_mount", 2);
 k = C([
   _("better-notes-tiptap-editor")
@@ -574,10 +578,10 @@ g([
   h()
 ], d.prototype, "_justSaved", 2);
 g([
-  y("better-notes-tiptap-editor")
+  w("better-notes-tiptap-editor")
 ], d.prototype, "_tiptap", 2);
 g([
-  y(".title-input")
+  w(".title-input")
 ], d.prototype, "_titleInput", 2);
 d = g([
   _("better-notes-editor")

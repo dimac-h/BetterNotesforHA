@@ -33,6 +33,7 @@ export class BetterNotesTiptapEditor extends LitElement {
     .ProseMirror ul[data-type="taskList"] li {
       display: flex;
       align-items: flex-start;
+      margin: 1em 0;
     }
     .ProseMirror ul[data-type="taskList"] li > label {
       flex: 0 0 auto;
@@ -41,6 +42,9 @@ export class BetterNotesTiptapEditor extends LitElement {
     }
     .ProseMirror ul[data-type="taskList"] li > div {
       flex: 1 1 auto;
+    }
+    .ProseMirror ul[data-type="taskList"] li > div > p {
+      margin: 0;
     }
     .ProseMirror ul[data-type="taskList"] input[type="checkbox"] {
       cursor: pointer;
