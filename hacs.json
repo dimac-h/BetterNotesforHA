@@ -2,6 +2,8 @@
   "name": "Better Notes",
   "render_readme": true,
   "domains": ["better_notes"],
-  "homeassistant": "2024.1.0",
-  "iot_class": "Local Polling"
+  "homeassistant": "2026.8.0",
+  "iot_class": "Local Polling",
+  "zip_release": true,
+  "filename": "better_notes.zip"
 }

@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: custom_components/better_notes/frontend/package-lock.json
+
+      - name: Build frontend
+        working-directory: custom_components/better_notes/frontend
+        run: |
+          npm ci
+          npm run build
+          cp dist/*.js ../www/
+
+      - name: Get version
+        id: version
+        uses: home-assistant/actions/helpers/version@master
+
+      - name: Patch manifest and zip
+        run: |
+          sed -i -E 's/"version": "[^"]*"/"version": "${{ steps.version.outputs.version }}"/' custom_components/better_notes/manifest.json
+          cd custom_components/better_notes/
+          zip ../../better_notes.zip -r ./ \
+            -x 'frontend/node_modules/*' \
+            -x 'frontend/src/*' \
+            -x 'frontend/package.json' \
+            -x 'frontend/package-lock.json' \
+            -x 'frontend/tsconfig.json' \
+            -x 'frontend/vite.config.ts'
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            better_notes.zip
