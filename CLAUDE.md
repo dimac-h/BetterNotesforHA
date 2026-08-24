@@ -45,6 +45,27 @@ Publishing a GitHub Release triggers `.github/workflows/release.yml`, which buil
 
 The panel communicates with HA backend by calling HA services via the HA WebSocket API / REST API from the browser.
 
+## Frontend Design Language
+
+This project's frontend targets Home Assistant's own look by using native `ha-*` components and theme tokens
+instead of a custom design system. Home Assistant's own frontend team documents exactly how to do this
+correctly in `home-assistant/frontend`'s `AGENTS.md` (https://raw.githubusercontent.com/home-assistant/frontend/dev/AGENTS.md)
+and its referenced project skills. Two of those skills have been adapted into this repo — **load them before
+touching any `ha-*` component usage or CSS in `frontend/`**:
+
+- `.claude/skills/ha-frontend-components/SKILL.md` — `ha-button` axes (`variant`/`appearance`/`size`), icons
+  (`ha-svg-icon` vs `ha-icon`), forms, alerts, dialogs, the Shadow-DOM keyboard-shortcut-leakage gotcha, and
+  reading a native element's value across a shadow boundary.
+- `.claude/skills/ha-frontend-styling/SKILL.md` — theme CSS custom properties, `--ha-space-*` spacing tokens,
+  mobile-first/RTL layout guidance.
+
+The single most common mistake found during this redesign: assuming a bare `<ha-button>` (or any other
+native component) looks subtle/native with no attributes set. It doesn't — `ha-button` defaults to
+`appearance="filled" variant="brand"` (a solid, prominent blue button) unless told otherwise, and an invalid
+`size` value (the string `"small"` isn't one — valid values are `xs`/`s`/`m`/`l`/`xl`) silently falls back to
+the default size rather than erroring. Always check a component's actual default before assuming "native
+component = no styling needed."
+
 ## Event-Based Service Results
 
 Services don't return values directly. Results are communicated by firing HA bus events:
