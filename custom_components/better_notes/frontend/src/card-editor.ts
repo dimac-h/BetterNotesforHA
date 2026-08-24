@@ -26,12 +26,14 @@ export class BetterNotesCardEditor extends LitElement {
       <div class="option">
         <label for="title">Title</label>
         <ha-input id="title" .value=${this._config.title ?? 'Notes'}
-          @input=${(e: Event) => this._update({ title: (e.target as HTMLInputElement).value })}></ha-input>
+          @input=${(e: Event) => this._update({ title: (e.target as HTMLInputElement).value })}
+          @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
       </div>
       <div class="option">
         <label for="max_notes">Max Notes to Display</label>
         <ha-input id="max_notes" type="number" min="1" max="20" .value=${String(this._config.max_notes ?? 5)}
-          @input=${(e: Event) => this._update({ max_notes: parseInt((e.target as HTMLInputElement).value, 10) || 5 })}></ha-input>
+          @input=${(e: Event) => this._update({ max_notes: parseInt((e.target as HTMLInputElement).value, 10) || 5 })}
+          @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
       </div>
       <div class="option">
         <ha-formfield label="Show Pinned Notes Only">
@@ -48,12 +50,14 @@ export class BetterNotesCardEditor extends LitElement {
       <div class="option">
         <label for="card_color">Card Background Color (hex)</label>
         <ha-input id="card_color" .value=${this._config.card_color ?? '#FFEB3B'} placeholder="#FFEB3B"
-          @input=${(e: Event) => this._update({ card_color: (e.target as HTMLInputElement).value })}></ha-input>
+          @input=${(e: Event) => this._update({ card_color: (e.target as HTMLInputElement).value })}
+          @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
       </div>
       <div class="option">
         <label for="note_id">Specific Note ID (optional)</label>
         <ha-input id="note_id" .value=${this._config.note_id ?? ''} placeholder="Leave empty to show all"
-          @input=${(e: Event) => this._update({ note_id: (e.target as HTMLInputElement).value || null })}></ha-input>
+          @input=${(e: Event) => this._update({ note_id: (e.target as HTMLInputElement).value || null })}
+          @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
       </div>
     `;
   }

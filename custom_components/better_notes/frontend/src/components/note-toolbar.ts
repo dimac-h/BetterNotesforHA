@@ -43,6 +43,22 @@ export class BetterNotesToolbar extends LitElement {
   @state() private _openGroup: string | null = null;
   @state() private _linkOpen = false;
 
+  private _onDocumentClick = (e: MouseEvent): void => {
+    if (this._openGroup && !e.composedPath().includes(this)) {
+      this._closeAll();
+    }
+  };
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    document.addEventListener('click', this._onDocumentClick);
+  }
+
+  disconnectedCallback(): void {
+    document.removeEventListener('click', this._onDocumentClick);
+    super.disconnectedCallback();
+  }
+
   private _toggleGroup(name: string): void {
     this._openGroup = this._openGroup === name ? null : name;
   }

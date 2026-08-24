@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, type PropertyValues } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { mdiCheck } from '@mdi/js';
 import './note-toolbar';
@@ -52,6 +52,28 @@ export class BetterNotesEditor extends LitElement {
     clearTimeout(this._saveTimeout);
     clearTimeout(this._deleteTimeout);
     clearTimeout(this._toastTimeout);
+  }
+
+  willUpdate(changedProperties: PropertyValues): void {
+    if (!changedProperties.has('note')) return;
+    const oldNote = changedProperties.get('note') as Note | null | undefined;
+    if (oldNote && oldNote.note_id !== this.note?.note_id) {
+      this._flushPendingSave(oldNote);
+    }
+  }
+
+  private _flushPendingSave(note: Note): void {
+    if (!this._saveTimeout) return;
+    clearTimeout(this._saveTimeout);
+    this._saveTimeout = undefined;
+    const detail = {
+      note_id: note.note_id,
+      title: this._titleInput?.value ?? note.title,
+      content: this._tiptap?.getHTML() ?? note.content,
+      color: note.color,
+      pinned: note.pinned,
+    };
+    this.dispatchEvent(new CustomEvent('note-save', { detail, bubbles: true, composed: true }));
   }
 
   private _scheduleSave(): void {

@@ -1,4 +1,4 @@
-import { i as v, n as l, a as _, d as P, c as T, m as L, b as a, f as S, t as m, r as h, N as E, h as O, s as D, g as A, j as I, u as z, k as B } from "./colors-CMfYGb1F.js";
+import { i as v, n as l, a as _, d as E, c as N, m as L, b as a, f as S, t as m, r as h, N as P, h as O, s as D, g as A, j as I, u as z, k as B } from "./colors-CMfYGb1F.js";
 const j = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
@@ -30,9 +30,9 @@ let x = class extends _ {
     super.disconnectedCallback(), this.removeEventListener("click", this._select);
   }
   render() {
-    const t = P(this.note.content || ""), e = t.length > 60 ? `${t.slice(0, 60)}…` : t;
+    const t = E(this.note.content || ""), e = t.length > 60 ? `${t.slice(0, 60)}…` : t;
     return a`
-      <div class="bar" style="background:${T(this.note.color)}"></div>
+      <div class="bar" style="background:${N(this.note.color)}"></div>
       <div class="header">
         <div class="title">${this.note.title || "Untitled"}</div>
         ${this.note.pinned ? a`<ha-svg-icon .path=${L}></ha-svg-icon>` : ""}
@@ -95,7 +95,7 @@ let b = class extends _ {
   get _filtered() {
     const t = this.searchTerm.toLowerCase();
     return t ? this.notes.filter(
-      (e) => (e.title || "").toLowerCase().includes(t) || P(e.content || "").toLowerCase().includes(t)
+      (e) => (e.title || "").toLowerCase().includes(t) || E(e.content || "").toLowerCase().includes(t)
     ) : this.notes;
   }
   render() {
@@ -146,7 +146,15 @@ var R = Object.defineProperty, U = Object.getOwnPropertyDescriptor, g = (t, e, i
 };
 let d = class extends _ {
   constructor() {
-    super(...arguments), this.pinned = !1, this.color = "", this.linkHref = "", this._openGroup = null, this._linkOpen = !1;
+    super(...arguments), this.pinned = !1, this.color = "", this.linkHref = "", this._openGroup = null, this._linkOpen = !1, this._onDocumentClick = (t) => {
+      this._openGroup && !t.composedPath().includes(this) && this._closeAll();
+    };
+  }
+  connectedCallback() {
+    super.connectedCallback(), document.addEventListener("click", this._onDocumentClick);
+  }
+  disconnectedCallback() {
+    document.removeEventListener("click", this._onDocumentClick), super.disconnectedCallback();
   }
   _toggleGroup(t) {
     this._openGroup = this._openGroup === t ? null : t;
@@ -217,7 +225,7 @@ let d = class extends _ {
         <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup("color")} @mousedown=${(t) => t.preventDefault()}>Color<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <div class="swatches">
-            ${E.map((t) => a`
+            ${P.map((t) => a`
               <div class="dot ${this.color === t ? "active" : ""}" style="background:${t}"
                    @click=${() => this._selectColor(t)}></div>
             `)}
@@ -291,7 +299,7 @@ d = g([
 ], d);
 async function V() {
   const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }, { ListItem: r }] = await Promise.all([
-    import("./index-pa5U7i3D.js").then((N) => N.O),
+    import("./index-pa5U7i3D.js").then((T) => T.O),
     import("./index-Yys9n5GD.js"),
     import("./index-B0TKEn8L.js"),
     import("./index-D6ncd5DV.js"),
@@ -519,6 +527,23 @@ let p = class extends _ {
   disconnectedCallback() {
     super.disconnectedCallback(), clearTimeout(this._saveTimeout), clearTimeout(this._deleteTimeout), clearTimeout(this._toastTimeout);
   }
+  willUpdate(t) {
+    if (!t.has("note")) return;
+    const e = t.get("note");
+    e && e.note_id !== this.note?.note_id && this._flushPendingSave(e);
+  }
+  _flushPendingSave(t) {
+    if (!this._saveTimeout) return;
+    clearTimeout(this._saveTimeout), this._saveTimeout = void 0;
+    const e = {
+      note_id: t.note_id,
+      title: this._titleInput?.value ?? t.title,
+      content: this._tiptap?.getHTML() ?? t.content,
+      color: t.color,
+      pinned: t.pinned
+    };
+    this.dispatchEvent(new CustomEvent("note-save", { detail: e, bubbles: !0, composed: !0 }));
+  }
   _scheduleSave() {
     clearTimeout(this._saveTimeout), this._saveTimeout = setTimeout(() => this._save(), 1e3);
   }
@@ -683,7 +708,7 @@ let c = class extends _ {
     if (!this._creatingNote) {
       this._creatingNote = !0;
       try {
-        const t = await I(this.hass, { title: "New Note", content: "", color: E[0], pinned: !1 });
+        const t = await I(this.hass, { title: "New Note", content: "", color: P[0], pinned: !1 });
         await this._loadNotes(), t && this._enterEditor(t);
       } finally {
         this._creatingNote = !1;

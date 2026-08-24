@@ -19,12 +19,14 @@ let c = class extends f {
       <div class="option">
         <label for="title">Title</label>
         <ha-input id="title" .value=${this._config.title ?? "Notes"}
-          @input=${(t) => this._update({ title: t.target.value })}></ha-input>
+          @input=${(t) => this._update({ title: t.target.value })}
+          @keydown=${(t) => t.stopPropagation()}></ha-input>
       </div>
       <div class="option">
         <label for="max_notes">Max Notes to Display</label>
         <ha-input id="max_notes" type="number" min="1" max="20" .value=${String(this._config.max_notes ?? 5)}
-          @input=${(t) => this._update({ max_notes: parseInt(t.target.value, 10) || 5 })}></ha-input>
+          @input=${(t) => this._update({ max_notes: parseInt(t.target.value, 10) || 5 })}
+          @keydown=${(t) => t.stopPropagation()}></ha-input>
       </div>
       <div class="option">
         <ha-formfield label="Show Pinned Notes Only">
@@ -41,12 +43,14 @@ let c = class extends f {
       <div class="option">
         <label for="card_color">Card Background Color (hex)</label>
         <ha-input id="card_color" .value=${this._config.card_color ?? "#FFEB3B"} placeholder="#FFEB3B"
-          @input=${(t) => this._update({ card_color: t.target.value })}></ha-input>
+          @input=${(t) => this._update({ card_color: t.target.value })}
+          @keydown=${(t) => t.stopPropagation()}></ha-input>
       </div>
       <div class="option">
         <label for="note_id">Specific Note ID (optional)</label>
         <ha-input id="note_id" .value=${this._config.note_id ?? ""} placeholder="Leave empty to show all"
-          @input=${(t) => this._update({ note_id: t.target.value || null })}></ha-input>
+          @input=${(t) => this._update({ note_id: t.target.value || null })}
+          @keydown=${(t) => t.stopPropagation()}></ha-input>
       </div>
     `;
   }
@@ -62,7 +66,7 @@ b([
 c = b([
   g("better-notes-card-editor")
 ], c);
-const O = /* @__PURE__ */ new Set([
+const P = /* @__PURE__ */ new Set([
   "p",
   "br",
   "strong",
@@ -89,10 +93,10 @@ const O = /* @__PURE__ */ new Set([
   "label",
   "span",
   "div"
-]), A = {
+]), O = {
   a: ["href", "target", "rel"],
   input: ["type", "checked", "disabled"]
-}, P = /^(https?:|mailto:)/i;
+}, k = /^(https?:|mailto:)/i;
 function m(t) {
   if (t.nodeType === Node.TEXT_NODE) return;
   if (t.nodeType !== Node.ELEMENT_NODE) {
@@ -100,29 +104,29 @@ function m(t) {
     return;
   }
   const e = t, i = e.tagName.toLowerCase();
-  if (!O.has(i)) {
+  if (!P.has(i)) {
     const o = e.parentNode;
     for (; e.firstChild; ) o?.insertBefore(e.firstChild, e);
     o?.removeChild(e);
     return;
   }
-  const n = A[i] || [];
+  const n = O[i] || [];
   if (Array.from(e.attributes).forEach((o) => {
     !n.includes(o.name) && o.name !== "data-type" && o.name !== "data-checked" && e.removeAttribute(o.name);
   }), i === "a") {
     const o = e.getAttribute("href") || "";
-    P.test(o) || e.removeAttribute("href"), e.setAttribute("rel", "noopener noreferrer");
+    k.test(o) || e.removeAttribute("href"), e.setAttribute("rel", "noopener noreferrer");
   }
   Array.from(e.childNodes).forEach(m);
 }
-function B(t) {
+function A(t) {
   const e = new DOMParser().parseFromString(t, "text/html");
   return Array.from(e.body.childNodes).forEach(m), e.body.innerHTML;
 }
-var S = Object.defineProperty, k = Object.getOwnPropertyDescriptor, d = (t, e, i, n) => {
-  for (var o = n > 1 ? void 0 : n ? k(e, i) : e, a = t.length - 1, r; a >= 0; a--)
+var B = Object.defineProperty, S = Object.getOwnPropertyDescriptor, d = (t, e, i, n) => {
+  for (var o = n > 1 ? void 0 : n ? S(e, i) : e, a = t.length - 1, r; a >= 0; a--)
     (r = t[a]) && (o = (n ? r(e, i, o) : r(o)) || o);
-  return n && o && S(e, i, o), o;
+  return n && o && B(e, i, o), o;
 };
 let l = class extends f {
   constructor() {
@@ -170,7 +174,7 @@ let l = class extends f {
           <span>${t.title || "Untitled"}</span>
           ${t.pinned ? s`<ha-svg-icon .path=${x}></ha-svg-icon>` : ""}
         </div>
-        ${e ? s`<div class="note-content" .innerHTML=${B(t.content || "")}></div>` : s`<div class="note-content">${(() => {
+        ${e ? s`<div class="note-content" .innerHTML=${A(t.content || "")}></div>` : s`<div class="note-content">${(() => {
       const i = y(t.content || "");
       return i.length > 150 ? `${i.slice(0, 150)}…` : i;
     })()}</div>`}
