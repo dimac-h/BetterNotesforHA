@@ -16,7 +16,8 @@ export class BetterNotesEditor extends LitElement {
     .back-btn { display: none; }
     @media (max-width: 767px) { .back-btn { display: inline-flex; } }
     .actions { display: flex; gap: 8px; margin-left: auto; }
-    .body { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 24px; }
+    .body { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; }
+    better-notes-tiptap-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     .title-input {
       width: 100%; font-size: 28px; font-weight: 700; border: none; outline: none; margin-bottom: 16px;
       color: var(--primary-text-color); background: transparent; font-family: inherit;
