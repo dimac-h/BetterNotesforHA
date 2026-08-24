@@ -1543,8 +1543,10 @@ git commit -m "feat: implement card and card config editor components"
 ```bash
 cd custom_components/better_notes/frontend
 npm run build
-cp dist/better-notes-panel.js dist/better-notes-card.js ../www/
+cp dist/*.js ../www/
 ```
+
+`dist/*.js` (not just the two named entries) because the dynamic `import()` in `tiptap-editor.ts` makes Vite emit Tiptap as a separate lazy-loaded chunk file alongside `better-notes-panel.js` and `better-notes-card.js` — leaving it out would 404 the first time a note is opened.
 
 - [ ] **Step 2: Start the dev instance**
 
@@ -1570,8 +1572,7 @@ In the running instance, add the Better Notes integration (Settings → Devices 
 
 ```bash
 docker compose -f dev/docker-compose.yml down
-git add custom_components/better_notes/www/better-notes-panel.js \
-        custom_components/better_notes/www/better-notes-card.js
+git add custom_components/better_notes/www/*.js
 git commit -m "feat: wire built HA-native frontend into www/"
 ```
 
