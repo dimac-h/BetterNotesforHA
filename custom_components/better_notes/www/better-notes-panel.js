@@ -291,7 +291,7 @@ async function U() {
       e.configure({ heading: { levels: [1, 2, 3] }, link: !1 }),
       i,
       s.configure({ nested: !0 }),
-      o.configure({ openOnClick: !1 }),
+      o.configure({ openOnClick: !0 }),
       n
     ]
   };
