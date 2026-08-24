@@ -475,8 +475,8 @@ k.styles = b`
       cursor: pointer;
     }
     .ProseMirror pre {
-      background-color: var(--markdown-code-background-color, var(--primary-text-color));
-      color: var(--markdown-code-text-color, var(--card-background-color));
+      background-color: var(--primary-text-color);
+      color: var(--card-background-color);
       border-radius: var(--ha-border-radius-sm, 8px);
       padding: var(--ha-space-4, 16px);
       white-space: pre-wrap;
