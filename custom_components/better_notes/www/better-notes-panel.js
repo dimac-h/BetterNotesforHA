@@ -1,4 +1,4 @@
-import { i as b, n as l, a as v, d as P, c as L, m as O, b as a, f as E, t as m, r as h, N, h as D, s as S, g as A, j as I, u as z, k as B } from "./colors-CMfYGb1F.js";
+import { i as v, n as l, a as _, d as P, c as T, m as L, b as a, f as S, t as m, r as h, N as E, h as O, s as D, g as A, j as I, u as z, k as B } from "./colors-CMfYGb1F.js";
 const j = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
@@ -13,7 +13,7 @@ var H = Object.defineProperty, M = Object.getOwnPropertyDescriptor, $ = (t, e, i
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && H(e, i, o), o;
 };
-let x = class extends v {
+let x = class extends _ {
   constructor() {
     super(...arguments), this.active = !1, this._select = () => {
       this.dispatchEvent(new CustomEvent("note-select", {
@@ -32,17 +32,17 @@ let x = class extends v {
   render() {
     const t = P(this.note.content || ""), e = t.length > 60 ? `${t.slice(0, 60)}…` : t;
     return a`
-      <div class="bar" style="background:${L(this.note.color)}"></div>
+      <div class="bar" style="background:${T(this.note.color)}"></div>
       <div class="header">
         <div class="title">${this.note.title || "Untitled"}</div>
-        ${this.note.pinned ? a`<ha-svg-icon .path=${O}></ha-svg-icon>` : ""}
+        ${this.note.pinned ? a`<ha-svg-icon .path=${L}></ha-svg-icon>` : ""}
       </div>
       <div class="preview">${e}</div>
-      <div class="date">${E(this.note.modified)}</div>
+      <div class="date">${S(this.note.modified)}</div>
     `;
   }
 };
-x.styles = b`
+x.styles = v`
     :host {
       position: relative; display: block; padding: 10px 10px 10px 14px; margin-bottom: 8px;
       background: var(--card-background-color); border: 1px solid var(--divider-color);
@@ -81,7 +81,7 @@ var G = Object.defineProperty, q = Object.getOwnPropertyDescriptor, w = (t, e, i
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && G(e, i, o), o;
 };
-let u = class extends v {
+let b = class extends _ {
   constructor() {
     super(...arguments), this.notes = [], this.selectedNoteId = null, this.searchTerm = "";
   }
@@ -117,7 +117,7 @@ let u = class extends v {
     `;
   }
 };
-u.styles = b`
+b.styles = v`
     :host { display: flex; flex-direction: column; height: 100%; background: var(--secondary-background-color); }
     .header { padding: 16px; border-bottom: 1px solid var(--divider-color); }
     .title-row { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
@@ -129,22 +129,22 @@ u.styles = b`
   `;
 w([
   l({ attribute: !1 })
-], u.prototype, "notes", 2);
+], b.prototype, "notes", 2);
 w([
   l({ type: String })
-], u.prototype, "selectedNoteId", 2);
+], b.prototype, "selectedNoteId", 2);
 w([
   l({ type: String })
-], u.prototype, "searchTerm", 2);
-u = w([
+], b.prototype, "searchTerm", 2);
+b = w([
   m("better-notes-list")
-], u);
-var R = Object.defineProperty, U = Object.getOwnPropertyDescriptor, _ = (t, e, i, s) => {
+], b);
+var R = Object.defineProperty, U = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? U(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && R(e, i, o), o;
 };
-let c = class extends v {
+let d = class extends _ {
   constructor() {
     super(...arguments), this.pinned = !1, this.color = "", this.linkHref = "", this._openGroup = null, this._linkOpen = !1;
   }
@@ -217,7 +217,7 @@ let c = class extends v {
         <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup("color")} @mousedown=${(t) => t.preventDefault()}>Color<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <div class="swatches">
-            ${N.map((t) => a`
+            ${E.map((t) => a`
               <div class="dot ${this.color === t ? "active" : ""}" style="background:${t}"
                    @click=${() => this._selectColor(t)}></div>
             `)}
@@ -241,7 +241,7 @@ let c = class extends v {
     `;
   }
 };
-c.styles = b`
+d.styles = v`
     :host {
       display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 8px 12px;
       background: var(--card-background-color); border: 1px solid var(--divider-color);
@@ -271,27 +271,27 @@ c.styles = b`
     .link-row { display: flex; align-items: center; gap: 6px; width: 100%; padding: 6px 0 2px; flex-basis: 100%; }
     .link-row ha-input { flex: 1; }
   `;
-_([
+g([
   l({ type: Boolean })
-], c.prototype, "pinned", 2);
-_([
+], d.prototype, "pinned", 2);
+g([
   l({ type: String })
-], c.prototype, "color", 2);
-_([
+], d.prototype, "color", 2);
+g([
   l({ type: String })
-], c.prototype, "linkHref", 2);
-_([
+], d.prototype, "linkHref", 2);
+g([
   h()
-], c.prototype, "_openGroup", 2);
-_([
+], d.prototype, "_openGroup", 2);
+g([
   h()
-], c.prototype, "_linkOpen", 2);
-c = _([
+], d.prototype, "_linkOpen", 2);
+d = g([
   m("better-notes-toolbar")
-], c);
+], d);
 async function V() {
   const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }, { ListItem: r }] = await Promise.all([
-    import("./index-pa5U7i3D.js").then((T) => T.O),
+    import("./index-pa5U7i3D.js").then((N) => N.O),
     import("./index-Yys9n5GD.js"),
     import("./index-B0TKEn8L.js"),
     import("./index-D6ncd5DV.js"),
@@ -322,7 +322,7 @@ var K = Object.defineProperty, F = Object.getOwnPropertyDescriptor, C = (t, e, i
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && K(e, i, o), o;
 };
-let k = class extends v {
+let k = class extends _ {
   constructor() {
     super(...arguments), this.content = "", this._editor = null, this._fallback = !1, this._lastEmitted = "";
   }
@@ -439,7 +439,7 @@ let k = class extends v {
       ></textarea>` : a`<div id="mount" @keydown=${(t) => t.stopPropagation()}></div>`;
   }
 };
-k.styles = b`
+k.styles = v`
     :host { display: flex; flex-direction: column; min-height: 0; flex: 1; }
     .fallback {
       width: 100%; min-height: 300px; font-size: 15px; line-height: 1.6;
@@ -507,12 +507,12 @@ C([
 k = C([
   m("better-notes-tiptap-editor")
 ], k);
-var J = Object.defineProperty, Q = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
+var J = Object.defineProperty, Q = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? Q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && J(e, i, o), o;
 };
-let d = class extends v {
+let p = class extends _ {
   constructor() {
     super(...arguments), this.note = null, this._pendingDelete = !1, this._justSaved = !1;
   }
@@ -567,7 +567,7 @@ let d = class extends v {
           <ha-button size="s" appearance="plain" variant="neutral" @click=${() => {
       clearTimeout(this._saveTimeout), this._save();
     }}>
-            ${this._justSaved ? a`<ha-svg-icon .path=${D}></ha-svg-icon>` : "Save"}
+            ${this._justSaved ? a`<ha-svg-icon .path=${O}></ha-svg-icon>` : "Save"}
           </ha-button>
           <ha-button size="s" appearance="plain" variant="danger" @click=${() => this._onDelete()}>${this._pendingDelete ? "Confirm?" : "Delete"}</ha-button>
         </div>
@@ -597,7 +597,7 @@ let d = class extends v {
     ` : a`<div class="empty">Select a note or create one</div>`;
   }
 };
-d.styles = b`
+p.styles = v`
     :host {
       display: flex; flex-direction: column; height: 100%; background: var(--card-background-color);
       min-width: 0; min-height: 0; position: relative;
@@ -623,25 +623,25 @@ d.styles = b`
       height: 100%; color: var(--secondary-text-color);
     }
   `;
-g([
+f([
   l({ attribute: !1 })
-], d.prototype, "note", 2);
-g([
+], p.prototype, "note", 2);
+f([
   h()
-], d.prototype, "_pendingDelete", 2);
-g([
+], p.prototype, "_pendingDelete", 2);
+f([
   h()
-], d.prototype, "_justSaved", 2);
-g([
+], p.prototype, "_justSaved", 2);
+f([
   y("better-notes-tiptap-editor")
-], d.prototype, "_tiptap", 2);
-g([
+], p.prototype, "_tiptap", 2);
+f([
   y(".title-input")
-], d.prototype, "_titleInput", 2);
-d = g([
+], p.prototype, "_titleInput", 2);
+p = f([
   m("better-notes-editor")
-], d);
-var W = Object.defineProperty, X = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
+], p);
+var W = Object.defineProperty, X = Object.getOwnPropertyDescriptor, u = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? X(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && W(e, i, o), o;
@@ -649,21 +649,29 @@ var W = Object.defineProperty, X = Object.getOwnPropertyDescriptor, f = (t, e, i
 function Y(t) {
   return [...t].sort((e, i) => e.pinned !== i.pinned ? e.pinned ? -1 : 1 : new Date(i.modified).getTime() - new Date(e.modified).getTime());
 }
-let p = class extends v {
+let c = class extends _ {
   constructor() {
-    super(...arguments), this._notes = [], this._selectedId = null, this._searchTerm = "", this._view = "list", this._creatingNote = !1;
+    super(...arguments), this.narrow = !1, this._notes = [], this._selectedId = null, this._searchTerm = "", this._view = "list", this._creatingNote = !1, this._pushedEditorState = !1, this._onPopState = () => {
+      this._pushedEditorState && (this._pushedEditorState = !1, this._view = "list");
+    };
   }
   connectedCallback() {
-    super.connectedCallback(), this.hass && this._init();
+    super.connectedCallback(), this.hass && this._init(), window.addEventListener("popstate", this._onPopState);
   }
   disconnectedCallback() {
-    super.disconnectedCallback(), this._unsubscribe?.(), this._unsubscribe = void 0;
+    super.disconnectedCallback(), this._unsubscribe?.(), this._unsubscribe = void 0, window.removeEventListener("popstate", this._onPopState);
+  }
+  _enterEditor(t) {
+    this._selectedId = t, this.narrow && this._view !== "editor" && (history.pushState({ betterNotesEditor: !0 }, "", location.href), this._pushedEditorState = !0), this._view = "editor";
+  }
+  _leaveEditor() {
+    this._pushedEditorState ? (this._pushedEditorState = !1, history.back()) : this._view = "list";
   }
   updated(t) {
     t.has("hass") && this.hass && !this._unsubscribe && this._init(), t.has("_view") && this.setAttribute("data-view", this._view);
   }
   async _init() {
-    await this._loadNotes(), this._unsubscribe = await S(this.hass, () => this._loadNotes());
+    await this._loadNotes(), this._unsubscribe = await D(this.hass, () => this._loadNotes());
   }
   async _loadNotes() {
     this._notes = Y(await A(this.hass));
@@ -675,15 +683,15 @@ let p = class extends v {
     if (!this._creatingNote) {
       this._creatingNote = !0;
       try {
-        const t = await I(this.hass, { title: "New Note", content: "", color: N[0], pinned: !1 });
-        await this._loadNotes(), t && (this._selectedId = t, this._view = "editor");
+        const t = await I(this.hass, { title: "New Note", content: "", color: E[0], pinned: !1 });
+        await this._loadNotes(), t && this._enterEditor(t);
       } finally {
         this._creatingNote = !1;
       }
     }
   }
   _onNoteSelect(t) {
-    this._selectedId = t.detail.noteId, this._view = "editor";
+    this._enterEditor(t.detail.noteId);
   }
   _onSearchChanged(t) {
     this._searchTerm = t.detail.value;
@@ -692,10 +700,10 @@ let p = class extends v {
     await z(this.hass, t.detail), await this._loadNotes();
   }
   async _onNoteDelete(t) {
-    await B(this.hass, t.detail.noteId), this._selectedId = null, this._view = "list", await this._loadNotes();
+    await B(this.hass, t.detail.noteId), this._selectedId = null, this._leaveEditor(), await this._loadNotes();
   }
   _onEditorBack() {
-    this._view = "list";
+    this._leaveEditor();
   }
   render() {
     return a`
@@ -722,7 +730,7 @@ let p = class extends v {
     `;
   }
 };
-p.styles = b`
+c.styles = v`
     :host { display: block; height: 100%; }
     .layout { display: flex; height: 100%; background: var(--card-background-color); overflow: hidden; }
     .list-pane { flex-shrink: 0; }
@@ -734,24 +742,27 @@ p.styles = b`
       :host([data-view="editor"]) .list-pane { display: none; }
     }
   `;
-f([
+u([
   l({ attribute: !1 })
-], p.prototype, "hass", 2);
-f([
+], c.prototype, "hass", 2);
+u([
+  l({ type: Boolean })
+], c.prototype, "narrow", 2);
+u([
   h()
-], p.prototype, "_notes", 2);
-f([
+], c.prototype, "_notes", 2);
+u([
   h()
-], p.prototype, "_selectedId", 2);
-f([
+], c.prototype, "_selectedId", 2);
+u([
   h()
-], p.prototype, "_searchTerm", 2);
-f([
+], c.prototype, "_searchTerm", 2);
+u([
   h()
-], p.prototype, "_view", 2);
-p = f([
+], c.prototype, "_view", 2);
+c = u([
   m("better-notes-panel")
-], p);
+], c);
 export {
-  p as BetterNotesPanel
+  c as BetterNotesPanel
 };
