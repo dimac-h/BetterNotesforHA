@@ -484,7 +484,7 @@ let d = class extends v {
     };
     this.dispatchEvent(new CustomEvent("note-save", { detail: e, bubbles: !0, composed: !0 })), this._justSaved = !0, clearTimeout(this._toastTimeout), this._toastTimeout = setTimeout(() => {
       this._justSaved = !1;
-    }, 500);
+    }, 1e3);
   }
   _onToolbarAction(t) {
     this._tiptap?.runAction(t.detail.action, t.detail.payload);

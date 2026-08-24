@@ -65,7 +65,7 @@ export class BetterNotesEditor extends LitElement {
     this.dispatchEvent(new CustomEvent('note-save', { detail, bubbles: true, composed: true }));
     this._justSaved = true;
     clearTimeout(this._toastTimeout);
-    this._toastTimeout = setTimeout(() => { this._justSaved = false; }, 500);
+    this._toastTimeout = setTimeout(() => { this._justSaved = false; }, 1000);
   }
 
   private _onToolbarAction(e: CustomEvent<{ action: ToolbarAction; payload?: { href?: string } }>): void {
