@@ -7,8 +7,13 @@ import type { ToolbarAction } from './tiptap-editor';
 export class BetterNotesToolbar extends LitElement {
   static styles = css`
     :host {
-      display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 12px;
-      background: var(--card-background-color); border-top: 1px solid var(--divider-color);
+      display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 8px 12px;
+      background: var(--card-background-color); border: 1px solid var(--divider-color);
+      border-radius: 16px; box-shadow: var(--ha-box-shadow-m, 0 4px 16px rgba(0,0,0,0.2));
+    }
+    @media (max-width: 767px) {
+      :host { gap: 2px; padding: 4px 6px; border-radius: 12px; }
+      .caret { display: none; }
     }
     .group { position: relative; }
     .dropdown {
@@ -85,7 +90,7 @@ export class BetterNotesToolbar extends LitElement {
   render() {
     return html`
       <div class="group ${this._openGroup === 'heading' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('heading')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>H ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup('heading')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>H<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction('paragraph')}>Normal</button>
           <button class="item" @click=${() => this._dispatchAction('h1')}>H1</button>
@@ -94,7 +99,7 @@ export class BetterNotesToolbar extends LitElement {
         </div>
       </div>
       <div class="group ${this._openGroup === 'format' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('format')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>B ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup('format')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>B<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction('bold')}>Bold</button>
           <button class="item" @click=${() => this._dispatchAction('italic')}>Italic</button>
@@ -103,7 +108,7 @@ export class BetterNotesToolbar extends LitElement {
         </div>
       </div>
       <div class="group ${this._openGroup === 'list' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('list')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>≡ ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup('list')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>≡<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction('bulletList')}>Bullet list</button>
           <button class="item" @click=${() => this._dispatchAction('orderedList')}>Numbered list</button>
@@ -114,7 +119,7 @@ export class BetterNotesToolbar extends LitElement {
         </div>
       </div>
       <div class="group ${this._openGroup === 'color' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('color')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>Color ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup('color')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>Color<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <div class="swatches">
             ${NOTE_COLORS.map(c => html`

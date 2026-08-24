@@ -1,17 +1,17 @@
 import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as h, N as T, h as E, s as D, g as S, j as A, u as I, k as j } from "./colors-CMfYGb1F.js";
-const H = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
-function w(t, e) {
+const z = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
+function y(t, e) {
   return (i, s, o) => {
     const n = (r) => r.renderRoot?.querySelector(t) ?? null;
-    return H(i, s, { get() {
+    return z(i, s, { get() {
       return n(this);
     } });
   };
 }
-var z = Object.defineProperty, B = Object.getOwnPropertyDescriptor, $ = (t, e, i, s) => {
+var H = Object.defineProperty, B = Object.getOwnPropertyDescriptor, $ = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? B(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && z(e, i, o), o;
+  return s && o && H(e, i, o), o;
 };
 let x = class extends v {
   constructor() {
@@ -76,7 +76,7 @@ $([
 x = $([
   _("better-notes-list-item")
 ], x);
-var G = Object.defineProperty, M = Object.getOwnPropertyDescriptor, y = (t, e, i, s) => {
+var G = Object.defineProperty, M = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? M(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && G(e, i, o), o;
@@ -123,16 +123,16 @@ u.styles = b`
     .items { flex: 1; overflow-y: auto; padding: 10px; }
     .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
   `;
-y([
+w([
   l({ attribute: !1 })
 ], u.prototype, "notes", 2);
-y([
+w([
   l({ type: String })
 ], u.prototype, "selectedNoteId", 2);
-y([
+w([
   l({ type: String })
 ], u.prototype, "searchTerm", 2);
-u = y([
+u = w([
   _("better-notes-list")
 ], u);
 var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
@@ -177,7 +177,7 @@ let c = class extends v {
   render() {
     return a`
       <div class="group ${this._openGroup === "heading" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("heading")} @mousedown=${(t) => t.preventDefault()}>H ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup("heading")} @mousedown=${(t) => t.preventDefault()}>H<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction("paragraph")}>Normal</button>
           <button class="item" @click=${() => this._dispatchAction("h1")}>H1</button>
@@ -186,7 +186,7 @@ let c = class extends v {
         </div>
       </div>
       <div class="group ${this._openGroup === "format" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("format")} @mousedown=${(t) => t.preventDefault()}>B ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup("format")} @mousedown=${(t) => t.preventDefault()}>B<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction("bold")}>Bold</button>
           <button class="item" @click=${() => this._dispatchAction("italic")}>Italic</button>
@@ -195,7 +195,7 @@ let c = class extends v {
         </div>
       </div>
       <div class="group ${this._openGroup === "list" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("list")} @mousedown=${(t) => t.preventDefault()}>≡ ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup("list")} @mousedown=${(t) => t.preventDefault()}>≡<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction("bulletList")}>Bullet list</button>
           <button class="item" @click=${() => this._dispatchAction("orderedList")}>Numbered list</button>
@@ -206,7 +206,7 @@ let c = class extends v {
         </div>
       </div>
       <div class="group ${this._openGroup === "color" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("color")} @mousedown=${(t) => t.preventDefault()}>Color ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup("color")} @mousedown=${(t) => t.preventDefault()}>Color<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <div class="swatches">
             ${T.map((t) => a`
@@ -235,8 +235,13 @@ let c = class extends v {
 };
 c.styles = b`
     :host {
-      display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 12px;
-      background: var(--card-background-color); border-top: 1px solid var(--divider-color);
+      display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 8px 12px;
+      background: var(--card-background-color); border: 1px solid var(--divider-color);
+      border-radius: 16px; box-shadow: var(--ha-box-shadow-m, 0 4px 16px rgba(0,0,0,0.2));
+    }
+    @media (max-width: 767px) {
+      :host { gap: 2px; padding: 4px 6px; border-radius: 12px; }
+      .caret { display: none; }
     }
     .group { position: relative; }
     .dropdown {
@@ -453,7 +458,7 @@ C([
   l({ attribute: !1 })
 ], k.prototype, "content", 2);
 C([
-  w("#mount")
+  y("#mount")
 ], k.prototype, "_mount", 2);
 k = C([
   _("better-notes-tiptap-editor")
@@ -557,8 +562,14 @@ d.styles = b`
     .back-btn { display: none; }
     @media (max-width: 767px) { .back-btn { display: inline-flex; } }
     .actions { display: flex; gap: 8px; margin-left: auto; }
-    .body { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; }
+    .body {
+      flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column;
+      padding: 20px 24px calc(20px + 56px);
+    }
     better-notes-tiptap-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    better-notes-toolbar {
+      position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 10;
+    }
     .title-input {
       width: 100%; font-size: 28px; font-weight: 700; border: none; outline: none; margin-bottom: 16px;
       color: var(--primary-text-color); background: transparent; font-family: inherit;
@@ -578,10 +589,10 @@ g([
   h()
 ], d.prototype, "_justSaved", 2);
 g([
-  w("better-notes-tiptap-editor")
+  y("better-notes-tiptap-editor")
 ], d.prototype, "_tiptap", 2);
 g([
-  w(".title-input")
+  y(".title-input")
 ], d.prototype, "_titleInput", 2);
 d = g([
   _("better-notes-editor")
