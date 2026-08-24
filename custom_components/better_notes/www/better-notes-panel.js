@@ -300,7 +300,7 @@ async function V() {
       // so toggling a list item to a heading is invalid at that level and
       // ProseMirror climbs up through every ancestor list to find a place
       // it IS valid, collapsing all nested indentation in the process.
-      e.configure({ heading: { levels: [1, 2, 3] }, link: !1, listItem: !1 }),
+      e.configure({ heading: { levels: [1, 2, 3] }, link: !1, listItem: !1, hardBreak: !1 }),
       r.extend({ content: "(paragraph|heading) block*" }),
       i,
       s.configure({ nested: !0 }),
