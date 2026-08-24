@@ -21,7 +21,7 @@ export async function loadTiptapExtensions() {
       // so toggling a list item to a heading is invalid at that level and
       // ProseMirror climbs up through every ancestor list to find a place
       // it IS valid, collapsing all nested indentation in the process.
-      StarterKit.configure({ heading: { levels: [1, 2, 3] }, link: false, listItem: false }),
+      StarterKit.configure({ heading: { levels: [1, 2, 3] }, link: false, listItem: false, hardBreak: false }),
       ListItem.extend({ content: '(paragraph|heading) block*' }),
       TaskList,
       TaskItem.configure({ nested: true }),
