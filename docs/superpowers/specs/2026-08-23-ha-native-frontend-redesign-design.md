@@ -59,13 +59,16 @@ The rich-text body editor continues to use the existing `tiptap-bundle.js` (self
 
 ### 3. Component split
 
-- `panel.ts` (root `<better-notes-panel>`): owns `hass`/`narrow`/`route` properties (per HA panel contract), note list state, event subscriptions (`better_notes_note_created/updated/deleted`), and dispatches to child components via properties/events — mirrors `home-upkeep-addon/frontend/src/entrypoint.ts`'s state-holder-at-root pattern.
-- `components/note-list.ts`: renders pinned-first / modified-desc sorted notes, filtering/search if present today.
-- `components/note-card-item.ts`: one note tile, emits `note-edit`/`note-delete`/`note-pin-toggle` events.
-- `components/note-editor-dialog.ts`: create/edit form (title, tags, color picker, Tiptap body), emits `dialog-save`/`dialog-close`.
-- `components/color-picker.ts`: swatch grid over `DEFAULT_COLORS`.
-- `components/tag-chips.ts`: tag input/display.
-- `card.ts` (`<better-notes-card>`): thin LitElement wrapping `ha-card`, reuses `note-list.ts`/`note-card-item.ts` for rendering, keeps existing `setConfig`/`hass` setter contract so existing user Lovelace YAML configs keep working unchanged.
+Corrected against the actual current UX (read from `www/better-notes-panel.js` and `www/better-notes-card.js` in full, not assumed): the panel is an **inline Apple-Notes-style split view** — a list pane and an editor pane side by side (mobile: one or the other, toggled via a `data-view` attribute) — not a modal dialog. There's also a second, previously-missed custom element: `better-notes-card-editor`, the Lovelace visual config editor for the card. Tags exist in the schema and are *displayed* (as read-only chips) by the card, but are not editable anywhere in the current UI — that stays out of scope; no tag-editing UI is being added.
+
+- `panel.ts` (root `<better-notes-panel>`): owns `hass`/`narrow`/`route` properties (per HA panel contract), the notes array, search term, selected note id, mobile view state, event subscriptions (`better_notes_note_created/updated/deleted`), and the create/save/delete/pin/color service calls — mirrors `home-upkeep-addon/frontend/src/entrypoint.ts`'s state-holder-at-root pattern. Renders `note-list.ts` and `note-editor.ts` side by side.
+- `components/note-list.ts`: search `ha-input`, "New Note" `ha-button`, and the pinned-first/modified-desc sorted/filtered list of `note-list-item.ts`.
+- `components/note-list-item.ts`: one row (color bar, title, pin icon, content preview, relative date), emits a `note-select` event.
+- `components/note-editor.ts`: the inline editor pane — title `ha-input` (debounced autosave), mobile `ha-icon-button` back action, save/delete `ha-button`s (delete uses a pending-confirm state, same 3s two-click-confirm behavior as today), save-toast feedback, and mounts `tiptap-editor.ts` for the body.
+- `components/note-toolbar.ts`: the formatting toolbar — heading/format/list dropdown groups, the `DEFAULT_COLORS` swatch dropdown, pin toggle, and the link editor row (URL `ha-input` + apply/remove/cancel) — emits toolbar-action events that `note-editor.ts` forwards to the Tiptap editor instance.
+- `components/tiptap-editor.ts`: isolates the existing lazy-load-`tiptap-bundle.js`-with-textarea-fallback logic and the `Editor` lifecycle (create/update/destroy), so `note-editor.ts` doesn't need to know Tiptap's API directly.
+- `card.ts` (`<better-notes-card>`): thin LitElement wrapping `ha-card`, reuses `note-list-item.ts`-equivalent rendering for the list and single-note views, read-only tag chip display, keeps the existing `setConfig`/`hass` setter contract, `getCardSize()`, `getConfigElement()`, `getStubConfig()`, and `window.customCards` registration so existing user Lovelace YAML configs and the card picker keep working unchanged.
+- `card-editor.ts` (`<better-notes-card-editor>`): the card's visual config editor (title, max_notes, show_pinned_only, show_all, card_color, note_id fields), dispatching the same `config-changed` custom event Lovelace's card editor contract expects.
 
 ### 4. Backend wiring changes
 
