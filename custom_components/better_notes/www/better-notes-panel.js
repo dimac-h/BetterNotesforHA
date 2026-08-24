@@ -135,7 +135,7 @@ k([
 u = k([
   _("better-notes-list")
 ], u);
-var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
+var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && R(e, i, o), o;
@@ -258,22 +258,22 @@ c.styles = b`
     .link-row { display: flex; align-items: center; gap: 6px; width: 100%; padding: 6px 0 2px; flex-basis: 100%; }
     .link-row ha-input { flex: 1; }
   `;
-g([
+m([
   l({ type: Boolean })
 ], c.prototype, "pinned", 2);
-g([
+m([
   l({ type: String })
 ], c.prototype, "color", 2);
-g([
+m([
   l({ type: String })
 ], c.prototype, "linkHref", 2);
-g([
+m([
   p()
 ], c.prototype, "_openGroup", 2);
-g([
+m([
   p()
 ], c.prototype, "_linkOpen", 2);
-c = g([
+c = m([
   _("better-notes-toolbar")
 ], c);
 async function M() {
@@ -410,16 +410,20 @@ let w = class extends v {
   }
 };
 w.styles = b`
-    :host { display: block; }
+    :host { display: flex; flex-direction: column; min-height: 0; flex: 1; }
     .fallback {
       width: 100%; min-height: 300px; font-size: 15px; line-height: 1.6;
       border: none; outline: none; resize: none; color: var(--primary-text-color);
       background: transparent; font-family: inherit;
     }
+    #mount { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     .ProseMirror,
     .ProseMirror:focus,
     .ProseMirror:focus-visible {
       outline: none;
+    }
+    .ProseMirror {
+      flex: 1; min-height: 100%; cursor: text;
     }
   `;
 T([
@@ -431,7 +435,7 @@ T([
 w = T([
   _("better-notes-tiptap-editor")
 ], w);
-var K = Object.defineProperty, F = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
+var K = Object.defineProperty, F = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? F(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && K(e, i, o), o;
@@ -529,7 +533,8 @@ d.styles = b`
     .back-btn { display: none; }
     @media (max-width: 767px) { .back-btn { display: inline-flex; } }
     .actions { display: flex; gap: 8px; margin-left: auto; }
-    .body { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 24px; }
+    .body { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; }
+    better-notes-tiptap-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     .title-input {
       width: 100%; font-size: 28px; font-weight: 700; border: none; outline: none; margin-bottom: 16px;
       color: var(--primary-text-color); background: transparent; font-family: inherit;
@@ -544,22 +549,22 @@ d.styles = b`
       pointer-events: none; z-index: 1000;
     }
   `;
-m([
+g([
   l({ attribute: !1 })
 ], d.prototype, "note", 2);
-m([
+g([
   p()
 ], d.prototype, "_pendingDelete", 2);
-m([
+g([
   p()
 ], d.prototype, "_showToast", 2);
-m([
+g([
   y("better-notes-tiptap-editor")
 ], d.prototype, "_tiptap", 2);
-m([
+g([
   y(".title-input")
 ], d.prototype, "_titleInput", 2);
-d = m([
+d = g([
   _("better-notes-editor")
 ], d);
 var J = Object.defineProperty, Q = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {

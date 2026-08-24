@@ -11,16 +11,20 @@ export type ToolbarAction =
 @customElement('better-notes-tiptap-editor')
 export class BetterNotesTiptapEditor extends LitElement {
   static styles = css`
-    :host { display: block; }
+    :host { display: flex; flex-direction: column; min-height: 0; flex: 1; }
     .fallback {
       width: 100%; min-height: 300px; font-size: 15px; line-height: 1.6;
       border: none; outline: none; resize: none; color: var(--primary-text-color);
       background: transparent; font-family: inherit;
     }
+    #mount { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     .ProseMirror,
     .ProseMirror:focus,
     .ProseMirror:focus-visible {
       outline: none;
+    }
+    .ProseMirror {
+      flex: 1; min-height: 100%; cursor: text;
     }
   `;
 
