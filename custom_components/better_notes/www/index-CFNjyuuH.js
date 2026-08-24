@@ -1,4 +1,4 @@
-import { N as T, r as O, m as I, w as g, s as J, u as z, E, P as Y, v as A, x as Q, F as x, T as tt, y as et, z as nt, A as st, B as rt } from "./index-DpIQkkjT.js";
+import { N as T, z as O, m as I, w as g, A as Z, B as z, E, P as Y, C as v, G as Q, F as x, T as tt, H as et, J as nt, K as st, L as rt } from "./index-pa5U7i3D.js";
 const it = "listItem", D = "textStyle", P = /^\s*([-+*])\s$/, ot = T.create({
   name: "bulletList",
   addOptions() {
@@ -114,7 +114,7 @@ const it = "listItem", D = "textStyle", P = /^\s*([-+*])\s$/, ot = T.create({
   [5, "v"],
   [4, "iv"],
   [1, "i"]
-], v = "abcdefghijklmnopqrstuvwxyz", V = String.raw`\d+|[ivxlcdmIVXLCDM]+|${"[a-zA-Z]{1,2}"}`;
+], A = "abcdefghijklmnopqrstuvwxyz", V = String.raw`\d+|[ivxlcdmIVXLCDM]+|${"[a-zA-Z]{1,2}"}`;
 function M(t) {
   let e = t, n = "";
   for (const [s, r] of X) for (; e >= s; )
@@ -152,9 +152,9 @@ function dt(t) {
   return 0;
 }
 function w(t) {
-  if (t <= 26) return v[t - 1];
+  if (t <= 26) return A[t - 1];
   const e = Math.floor((t - 1) / 26) - 1, n = (t - 1) % 26;
-  return e < 0 ? v[n] : v[e] + v[n];
+  return e < 0 ? A[n] : A[e] + A[n];
 }
 function C(t) {
   if (!(!t || /^\d+$/.test(t))) {
@@ -334,7 +334,7 @@ const bt = T.create({
 }, H = (t, e, n) => {
   if (t.commands.undoInputRule()) return !0;
   if (t.state.selection.from !== t.state.selection.to) return !1;
-  if (!A(t.state, e) && gt(t.state, e, n)) {
+  if (!v(t.state, e) && gt(t.state, e, n)) {
     const { $anchor: i } = t.state.selection, a = t.state.doc.resolve(i.before() - 1), o = [];
     a.node().descendants((d, c) => {
       d.type.name === e && o.push({
@@ -350,7 +350,7 @@ const bt = T.create({
       to: i.end() + 1
     }, h.end()).joinForward().run();
   }
-  if (!A(t.state, e) || !et(t.state)) return !1;
+  if (!v(t.state, e) || !et(t.state)) return !1;
   const { $from: s } = t.state.selection, r = s.depth - 1;
   return s.node(r).type !== t.schema.nodes[e] || s.index(r) !== 0 ? !1 : t.chain().liftListItem(e).run();
 }, Tt = (t, e) => {
@@ -360,14 +360,14 @@ const bt = T.create({
   const n = q(t, e), s = R(t, e);
   return !s || !n ? !1 : n < s.depth;
 }, B = (t, e) => {
-  if (!A(t.state, e) || !nt(t.state, e)) return !1;
+  if (!v(t.state, e) || !nt(t.state, e)) return !1;
   const { selection: n } = t.state, { $from: s, $to: r } = n;
   return !n.empty && s.sameParent(r) ? !1 : Tt(e, t.state) ? t.chain().focus(t.state.selection.from + 4).lift(e).joinBackward().run() : It(e, t.state) ? t.chain().joinForward().joinBackward().run() : t.commands.joinItemForward();
-}, vt = (t, e, n) => {
+}, At = (t, e, n) => {
   const { state: s } = t, { selection: r } = s;
   if (!r.empty) return !1;
   const { $from: i } = r;
-  if (i.parentOffset !== 0 || !i.parent.isTextblock || A(s, e)) return !1;
+  if (i.parentOffset !== 0 || !i.parent.isTextblock || v(s, e)) return !1;
   const a = Q(i);
   if (!a || !n.includes(a.type.name)) return !1;
   const o = a.lastChild;
@@ -376,7 +376,7 @@ const bt = T.create({
   if (!o.canReplace(o.childCount, o.childCount, x.from(u))) return !1;
   const h = i.before(), d = i.after(), c = h - 2;
   return t.commands.command(({ tr: l, dispatch: p }) => (p && (l.delete(h, d).insert(c, x.from(u)), l.setSelection(tt.create(l.doc, c + 1)), l.scrollIntoView()), !0));
-}, At = E.create({
+}, vt = E.create({
   name: "listKeymap",
   addOptions() {
     return { listTypes: [{
@@ -415,7 +415,7 @@ const bt = T.create({
       },
       Tab: ({ editor: t }) => {
         for (const { itemName: e, wrapperNames: n } of this.options.listTypes)
-          if (t.state.schema.nodes[e] !== void 0 && vt(t, e, n))
+          if (t.state.schema.nodes[e] !== void 0 && At(t, e, n))
             return !0;
         return !1;
       }
@@ -476,8 +476,8 @@ function Et(t) {
       if (L.trim() === "")
         k.push(L), f.push(""), y = !0, m += 1;
       else if (L.match(wt)) {
-        const G = L.length - L.trimStart().length, Z = d + o.length + 1;
-        k.push(L), f.push(L.slice(Math.min(G, Z))), m += 1;
+        const G = L.length - L.trimStart().length, J = d + o.length + 1;
+        k.push(L), f.push(L.slice(Math.min(G, J))), m += 1;
       } else {
         if (y || xt(L)) break;
         k.push(L), f.push(L), m += 1;
@@ -859,7 +859,7 @@ const Dt = T.create({
         update: (c) => {
           if (c.type !== this.type) return !1;
           r.dataset.checked = c.attrs.checked, o.checked = c.attrs.checked, h(c);
-          const l = s.extensionManager.attributes, p = J(c, l), f = new Set(Object.keys(p)), m = this.options.HTMLAttributes;
+          const l = s.extensionManager.attributes, p = Z(c, l), f = new Set(Object.keys(p)), m = this.options.HTMLAttributes;
           return d.forEach((k) => {
             f.has(k) || (k in m ? r.setAttribute(k, m[k]) : r.removeAttribute(k));
           }), Object.entries(p).forEach(([k, y]) => {
@@ -981,7 +981,7 @@ E.create({
   name: "listKit",
   addExtensions() {
     const t = [];
-    return this.options.bulletList !== !1 && t.push(ot.configure(this.options.bulletList)), this.options.listItem !== !1 && t.push(bt.configure(this.options.listItem)), this.options.listKeymap !== !1 && t.push(At.configure(this.options.listKeymap)), this.options.orderedList !== !1 && t.push(Dt.configure(this.options.orderedList)), this.options.taskItem !== !1 && t.push(_t.configure(this.options.taskItem)), this.options.taskList !== !1 && t.push(jt.configure(this.options.taskList)), t;
+    return this.options.bulletList !== !1 && t.push(ot.configure(this.options.bulletList)), this.options.listItem !== !1 && t.push(bt.configure(this.options.listItem)), this.options.listKeymap !== !1 && t.push(vt.configure(this.options.listKeymap)), this.options.orderedList !== !1 && t.push(Dt.configure(this.options.orderedList)), this.options.taskItem !== !1 && t.push(_t.configure(this.options.taskItem)), this.options.taskList !== !1 && t.push(jt.configure(this.options.taskList)), t;
   }
 });
 export {
@@ -989,6 +989,6 @@ export {
   bt as L,
   Dt as O,
   jt as T,
-  At as a,
+  vt as a,
   _t as b
 };

@@ -1,4 +1,4 @@
-import { M as Ie, a as me, m as ae, P as qt, c as Jt, q as Ne, C as He, G as xe, H as Me, I as De, J as Ue, b as je, K as ze } from "./index-DpIQkkjT.js";
+import { M as Ie, a as me, m as ae, P as qt, c as Vt, q as Ne, r as He, s as xe, u as Me, v as De, x as Ue, b as je, I as ze } from "./index-pa5U7i3D.js";
 const Be = "aaa1rp3bb0ott3vie4c1le2ogado5udhabi7c0ademy5centure6ountant0s9o1tor4d0s1ult4e0g1ro2tna4f0l1rica5g0akhan5ency5i0g1rbus3force5tel5kdn3l0ibaba4pay4lfinanz6state5y2sace3tom5m0azon4ericanexpress7family11x2fam3ica3sterdam8nalytics7droid5quan4z2o0l2partments8p0le4q0uarelle8r0ab1mco4chi3my2pa2t0e3s0da2ia2sociates9t0hleta5torney7u0ction5di0ble3o3spost5thor3o0s4w0s2x0a2z0ure5ba0by2idu3namex4d1k2r0celona5laycard4s5efoot5gains6seball5ketball8uhaus5yern5b0c1t1va3cg1n2d1e0ats2uty4er2rlin4st0buy5t2f1g1h0arti5i0ble3d1ke2ng0o3o1z2j1lack0friday9ockbuster8g1omberg7ue3m0s1w2n0pparibas9o0ats3ehringer8fa2m1nd2o0k0ing5sch2tik2on4t1utique6x2r0adesco6idgestone9oadway5ker3ther5ussels7s1t1uild0ers6siness6y1zz3v1w1y1z0h3ca0b1fe2l0l1vinklein9m0era3p2non3petown5ital0one8r0avan4ds2e0er0s4s2sa1e1h1ino4t0ering5holic7ba1n1re3c1d1enter4o1rn3f0a1d2g1h0anel2nel4rity4se2t2eap3intai5ristmas6ome4urch5i0priani6rcle4sco3tadel4i0c2y3k1l0aims4eaning6ick2nic1que6othing5ud3ub0med6m1n1o0ach3des3ffee4llege4ogne5m0mbank4unity6pany2re3uter5sec4ndos3struction8ulting7tact3ractors9oking4l1p2rsica5untry4pon0s4rses6pa2r0edit0card4union9icket5own3s1uise0s6u0isinella9v1w1x1y0mru3ou3z2dad1nce3ta1e1ing3sun4y2clk3ds2e0al0er2s3gree4livery5l1oitte5ta3mocrat6ntal2ist5si0gn4v2hl2iamonds6et2gital5rect0ory7scount3ver5h2y2j1k1m1np2o0cs1tor4g1mains5t1wnload7rive4tv2ubai3pont4rban5vag2r2z2earth3t2c0o2deka3u0cation8e1g1mail3erck5nergy4gineer0ing9terprises10pson4quipment8r0icsson6ni3s0q1tate5t1u0rovision8s2vents5xchange6pert3osed4ress5traspace10fage2il1rwinds6th3mily4n0s2rm0ers5shion4t3edex3edback6rrari3ero6i0delity5o2lm2nal1nce1ial7re0stone6mdale6sh0ing5t0ness6j1k1lickr3ghts4r2orist4wers5y2m1o0o0d1tball6rd1ex2sale4um3undation8x2r0ee1senius7l1ogans4ntier7tr2ujitsu5n0d2rniture7tbol5yi3ga0l0lery3o1up4me0s3p1rden4y2b0iz3d0n2e0a1nt0ing5orge5f1g0ee3h1i0ft0s3ves2ing5l0ass3e1obal2o4m0ail3bh2o1x2n1odaddy5ld0point6f2odyear5g0le4p1t1v2p1q1r0ainger5phics5tis4een3ipe3ocery4up4s1t1u0cci3ge2ide2tars5ru3w1y2hair2mburg5ngout5us3bo2dfc0bank7ealth0care8lp1sinki6re1mes5iphop4samitsu7tachi5v2k0t2m1n1ockey4ldings5iday5medepot5goods5s0ense7nda3rse3spital5t0ing5t0els3mail5use3w2r1sbc3t1u0ghes5yatt3undai7ibm2cbc2e1u2d1e0ee3fm2kano4l1m0amat4db2mo0bilien9n0c1dustries8finiti5o2g1k1stitute6urance4e4t0ernational10uit4vestments10o1piranga7q1r0ish4s0maili5t0anbul7t0au2v3jaguar4va3cb2e0ep2tzt3welry6io2ll2m0p2nj2o0bs1urg4t1y2p0morgan6rs3uegos4niper7kaufen5ddi3e0rryhotels6properties14fh2g1h1i0a1ds2m1ndle4tchen5wi3m1n1oeln3matsu5sher5p0mg2n2r0d1ed3uokgroup8w1y0oto4z2la0caixa5mborghini8er3nd0rover6xess5salle5t0ino3robe5w0yer5b1c1ds2ease3clerc5frak4gal2o2xus4gbt3i0dl2fe0insurance9style7ghting6ke2lly3mited4o2ncoln4k2ve1ing5k1lc1p2oan0s3cker3us3l1ndon4tte1o3ve3pl0financial11r1s1t0d0a3u0ndbeck6xe1ury5v1y2ma0drid4if1son4keup4n0agement7go3p1rket0ing3s4riott5shalls7ttel5ba2c0kinsey7d1e0d0ia3et2lbourne7me1orial6n0u2rck0msd7g1h1iami3crosoft7l1ni1t2t0subishi9k1l0b1s2m0a2n1o0bi0le4da2e1i1m1nash3ey2ster5rmon3tgage6scow4to0rcycles9v0ie4p1q1r1s0d2t0n1r2u0seum3ic4v1w1x1y1z2na0b1goya4me2vy3ba2c1e0c1t0bank4flix4work5ustar5w0s2xt0direct7us4f0l2g0o2hk2i0co2ke1on3nja3ssan1y5l1o0kia3rton4w0ruz3tv4p1r0a1w2tt2u1yc2z2obi1server7ffice5kinawa6layan0group9lo3m0ega4ne1g1l0ine5oo2pen3racle3nge4g0anic5igins6saka4tsuka4t2vh3pa0ge2nasonic7ris2s1tners4s1y3y2ccw3e0t2f0izer5g1h0armacy6d1ilips5one2to0graphy6s4ysio5ics1tet2ures6d1n0g1k2oneer5zza4k1l0ace2y0station9umbing5s3m1n0c2ohl2ker3litie5rn2st3r0axi3ess3ime3o0d0uctions8f1gressive8mo2perties3y5tection8u0dential9s1t1ub2w0c2y2qa1pon3uebec3st5racing4dio4e0ad1lestate6tor2y4cipes5d0umbrella9hab3ise0n3t2liance6n0t0als5pair3ort3ublican8st0aurant8view0s5xroth6ich0ardli6oh3l1o1p2o0cks3deo3gers4om3s0vp3u0gby3hr2n2w0e2yukyu6sa0arland6fe0ty4kura4le1on3msclub4ung5ndvik0coromant12ofi4p1rl2s1ve2xo3b0i1s2c0b1haeffler7midt4olarships8ol3ule3warz5ience5ot3d1e0arch3t2cure1ity6ek2lect4ner3rvices6ven3w1x0y3fr2g1h0angrila6rp3ell3ia1ksha5oes2p0ping5uji3w3i0lk2na1gles5te3j1k0i0n2y0pe4l0ing4m0art3ile4n0cf3o0ccer3ial4ftbank4ware6hu2lar2utions7ng1y2y2pa0ce3ort2t3r0l2s1t0ada2ples4r1tebank4farm7c0group6ockholm6rage3e3ream4udio2y3yle4u0cks3pplies3y2ort5rf1gery5zuki5v1watch4iss4x1y0dney4stems6z2tab1ipei4lk2obao4rget4tamotors6r2too4x0i3c0i2d0k2eam2ch0nology8l1masek5nnis4va3f1g1h0d1eater2re6iaa2ckets5enda4ps2res2ol4j0maxx4x2k0maxx5l1m0all4n1o0day3kyo3ols3p1ray3shiba5tal3urs3wn2yota3s3r0ade1ing4ining5vel0ers0insurance16ust3v2t1ube2i1nes3shu4v0s2w1z2ua1bank3s2g1k1nicom3versity8o2ol2ps2s1y1z2va0cations7na1guard7c1e0gas3ntures6risign5mögensberater2ung14sicherung10t2g1i0ajes4deo3g1king4llas4n1p1rgin4sa1ion4va1o3laanderen9n1odka3lvo3te1ing3o2yage5u2wales2mart4ter4ng0gou5tch0es6eather0channel12bcam3er2site5d0ding5ibo2r3f1hoswho6ien2ki2lliamhill9n0dows4e1ners6me2oodside6rk0s2ld3w2s1tc1f3xbox3erox4ihuan4n2xx2yz3yachts4hoo3maxun5ndex5e1odobashi7ga2kohama6u0tube6t1un3za0ppos4ra3ero3ip2m1one3uerich6w2", _e = "ελ1υ2бг1ел3дети4ею2католик6ом3мкд2он1сква6онлайн5рг3рус2ф2сайт3рб3укр3қаз3հայ3ישראל5קום3ابوظبي5رامكو5لاردن4بحرين5جزائر5سعودية6عليان5مغرب5مارات5یران5بارت2زار4يتك3ھارت5تونس4سودان3رية5شبكة4عراق2ب2مان4فلسطين6قطر3كاثوليك6وم3مصر2ليسيا5وريتانيا7قع4همراه5پاکستان7ڀارت4कॉम3नेट3भारत0म्3ोत5संगठन5বাংলা5ভারত2ৰত4ਭਾਰਤ4ભારત4ଭାରତ4இந்தியா6லங்கை6சிங்கப்பூர்11భారత్5ಭಾರತ4ഭാരതം5ලංකා4คอม3ไทย3ລາວ3გე2みんな3アマゾン4クラウド4グーグル4コム2ストア3セール3ファッション6ポイント4世界2中信1国1國1文网3亚马逊3企业2佛山2信息2健康2八卦2公司1益2台湾1灣2商城1店1标2嘉里0大酒店5在线2大拿2天主教3娱乐2家電2广东2微博2慈善2我爱你3手机2招聘2政务1府2新加坡2闻2时尚2書籍2机构2淡马锡3游戏2澳門2点看2移动2组织机构4网址1店1站1络2联通2谷歌2购物2通販2集团2電訊盈科4飞利浦3食品2餐厅2香格里拉3港2닷넷1컴2삼성2한국2", Bt = "numeric", _t = "ascii", $t = "alpha", W = "asciinumeric", $ = "alphanumeric", Wt = "domain", ge = "emoji", $e = "scheme", We = "slashscheme", xt = "whitespace";
 function Ke(t, n) {
   return t in n || (n[t] = []), n[t];
@@ -140,7 +140,7 @@ T.prototype = {
     return s.j[t] = r, r;
   }
 };
-const h = (t, n, e, o, s) => t.ta(n, e, o, s), E = (t, n, e, o, s) => t.tr(n, e, o, s), ce = (t, n, e, o, s) => t.ts(n, e, o, s), l = (t, n, e, o, s) => t.tt(n, e, o, s), I = "WORD", Kt = "UWORD", Ee = "ASCIINUMERICAL", Ae = "ALPHANUMERICAL", J = "LOCALHOST", Ft = "TLD", Gt = "UTLD", et = "SCHEME", z = "SLASH_SCHEME", Vt = "NUM", Qt = "WS", Yt = "NL", K = "OPENBRACE", F = "CLOSEBRACE", nt = "OPENBRACKET", ot = "CLOSEBRACKET", st = "OPENPAREN", it = "CLOSEPAREN", rt = "OPENANGLEBRACKET", lt = "CLOSEANGLEBRACKET", at = "FULLWIDTHLEFTPAREN", ct = "FULLWIDTHRIGHTPAREN", ut = "LEFTCORNERBRACKET", dt = "RIGHTCORNERBRACKET", ht = "LEFTWHITECORNERBRACKET", ft = "RIGHTWHITECORNERBRACKET", pt = "FULLWIDTHLESSTHAN", mt = "FULLWIDTHGREATERTHAN", gt = "AMPERSAND", Et = "APOSTROPHE", At = "ASTERISK", H = "AT", kt = "BACKSLASH", Lt = "BACKTICK", Tt = "CARET", D = "COLON", Xt = "COMMA", Ct = "DOLLAR", b = "DOT", Rt = "EQUALS", Zt = "EXCLAMATION", R = "HYPHEN", G = "PERCENT", yt = "PIPE", Ot = "PLUS", bt = "POUND", Q = "QUERY", te = "QUOTE", ke = "FULLWIDTHMIDDLEDOT", ee = "SEMI", v = "SLASH", q = "TILDE", vt = "UNDERSCORE", Le = "EMOJI", St = "SYM";
+const h = (t, n, e, o, s) => t.ta(n, e, o, s), E = (t, n, e, o, s) => t.tr(n, e, o, s), ce = (t, n, e, o, s) => t.ts(n, e, o, s), l = (t, n, e, o, s) => t.tt(n, e, o, s), I = "WORD", Kt = "UWORD", Ee = "ASCIINUMERICAL", Ae = "ALPHANUMERICAL", V = "LOCALHOST", Ft = "TLD", Gt = "UTLD", et = "SCHEME", z = "SLASH_SCHEME", Jt = "NUM", Qt = "WS", Yt = "NL", K = "OPENBRACE", F = "CLOSEBRACE", nt = "OPENBRACKET", ot = "CLOSEBRACKET", st = "OPENPAREN", it = "CLOSEPAREN", rt = "OPENANGLEBRACKET", lt = "CLOSEANGLEBRACKET", at = "FULLWIDTHLEFTPAREN", ct = "FULLWIDTHRIGHTPAREN", ut = "LEFTCORNERBRACKET", dt = "RIGHTCORNERBRACKET", ht = "LEFTWHITECORNERBRACKET", ft = "RIGHTWHITECORNERBRACKET", pt = "FULLWIDTHLESSTHAN", mt = "FULLWIDTHGREATERTHAN", gt = "AMPERSAND", Et = "APOSTROPHE", At = "ASTERISK", H = "AT", kt = "BACKSLASH", Lt = "BACKTICK", Tt = "CARET", D = "COLON", Xt = "COMMA", Rt = "DOLLAR", b = "DOT", Ct = "EQUALS", Zt = "EXCLAMATION", C = "HYPHEN", G = "PERCENT", yt = "PIPE", Ot = "PLUS", bt = "POUND", Q = "QUERY", te = "QUOTE", ke = "FULLWIDTHMIDDLEDOT", ee = "SEMI", v = "SLASH", q = "TILDE", vt = "UNDERSCORE", Le = "EMOJI", St = "SYM";
 var Te = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   ALPHANUMERICAL: Ae,
@@ -158,22 +158,22 @@ var Te = /* @__PURE__ */ Object.freeze({
   CLOSEPAREN: it,
   COLON: D,
   COMMA: Xt,
-  DOLLAR: Ct,
+  DOLLAR: Rt,
   DOT: b,
   EMOJI: Le,
-  EQUALS: Rt,
+  EQUALS: Ct,
   EXCLAMATION: Zt,
   FULLWIDTHGREATERTHAN: mt,
   FULLWIDTHLEFTPAREN: at,
   FULLWIDTHLESSTHAN: pt,
   FULLWIDTHMIDDLEDOT: ke,
   FULLWIDTHRIGHTPAREN: ct,
-  HYPHEN: R,
+  HYPHEN: C,
   LEFTCORNERBRACKET: ut,
   LEFTWHITECORNERBRACKET: ht,
-  LOCALHOST: J,
+  LOCALHOST: V,
   NL: Yt,
-  NUM: Vt,
+  NUM: Jt,
   OPENANGLEBRACKET: rt,
   OPENBRACE: K,
   OPENBRACKET: nt,
@@ -206,8 +206,8 @@ function qe(t = []) {
   const n = {};
   T.groups = n;
   const e = new T();
-  X == null && (X = de(Be)), Z == null && (Z = de(_e)), l(e, "'", Et), l(e, "{", K), l(e, "}", F), l(e, "[", nt), l(e, "]", ot), l(e, "(", st), l(e, ")", it), l(e, "<", rt), l(e, ">", lt), l(e, "（", at), l(e, "）", ct), l(e, "「", ut), l(e, "」", dt), l(e, "『", ht), l(e, "』", ft), l(e, "＜", pt), l(e, "＞", mt), l(e, "&", gt), l(e, "*", At), l(e, "@", H), l(e, "`", Lt), l(e, "^", Tt), l(e, ":", D), l(e, ",", Xt), l(e, "$", Ct), l(e, ".", b), l(e, "=", Rt), l(e, "!", Zt), l(e, "-", R), l(e, "%", G), l(e, "|", yt), l(e, "+", Ot), l(e, "#", bt), l(e, "?", Q), l(e, '"', te), l(e, "/", v), l(e, ";", ee), l(e, "~", q), l(e, "_", vt), l(e, "\\", kt), l(e, "・", ke);
-  const o = E(e, P, Vt, {
+  X == null && (X = de(Be)), Z == null && (Z = de(_e)), l(e, "'", Et), l(e, "{", K), l(e, "}", F), l(e, "[", nt), l(e, "]", ot), l(e, "(", st), l(e, ")", it), l(e, "<", rt), l(e, ">", lt), l(e, "（", at), l(e, "）", ct), l(e, "「", ut), l(e, "」", dt), l(e, "『", ht), l(e, "』", ft), l(e, "＜", pt), l(e, "＞", mt), l(e, "&", gt), l(e, "*", At), l(e, "@", H), l(e, "`", Lt), l(e, "^", Tt), l(e, ":", D), l(e, ",", Xt), l(e, "$", Rt), l(e, ".", b), l(e, "=", Ct), l(e, "!", Zt), l(e, "-", C), l(e, "%", G), l(e, "|", yt), l(e, "+", Ot), l(e, "#", bt), l(e, "?", Q), l(e, '"', te), l(e, "/", v), l(e, ";", ee), l(e, "~", q), l(e, "_", vt), l(e, "\\", kt), l(e, "・", ke);
+  const o = E(e, P, Jt, {
     [Bt]: !0
   });
   E(o, P, o);
@@ -263,7 +263,7 @@ function qe(t = []) {
     };
     k.indexOf("-") >= 0 ? x[Wt] = !0 : S.test(k) ? P.test(k) ? x[W] = !0 : x[_t] = !0 : x[Bt] = !0, ce(e, k, k, x);
   }
-  return ce(e, "localhost", J, {
+  return ce(e, "localhost", V, {
     ascii: !0
   }), e.jd = new T(St), {
     start: e,
@@ -272,8 +272,8 @@ function qe(t = []) {
     }, Te)
   };
 }
-function Ce(t, n) {
-  const e = Je(n.replace(/[A-Z]/g, (a) => a.toLowerCase())), o = e.length, s = [];
+function Re(t, n) {
+  const e = Ve(n.replace(/[A-Z]/g, (a) => a.toLowerCase())), o = e.length, s = [];
   let i = 0, r = 0;
   for (; r < o; ) {
     let a = t, c = null, d = 0, f = null, p = -1, g = -1;
@@ -292,7 +292,7 @@ function Ce(t, n) {
   }
   return s;
 }
-function Je(t) {
+function Ve(t) {
   const n = [], e = t.length;
   let o = 0;
   for (; o < e; ) {
@@ -327,7 +327,7 @@ function de(t) {
   }
   return n;
 }
-const V = {
+const J = {
   defaultProtocol: "http",
   events: null,
   format: he,
@@ -344,7 +344,7 @@ const V = {
   render: null
 };
 function ne(t, n = null) {
-  let e = Object.assign({}, V);
+  let e = Object.assign({}, J);
   t && (e = Object.assign(e, t instanceof ne ? t.o : t));
   const o = e.ignoreTags, s = [];
   for (let i = 0; i < o.length; i++)
@@ -352,7 +352,7 @@ function ne(t, n = null) {
   this.o = e, n && (this.defaultRender = n), this.ignoreTags = s;
 }
 ne.prototype = {
-  o: V,
+  o: J,
   /**
    * @type string[]
    */
@@ -388,7 +388,7 @@ ne.prototype = {
   get(t, n, e) {
     const o = n != null;
     let s = this.o[t];
-    return s && (typeof s == "object" ? (s = e.t in s ? s[e.t] : V[t], typeof s == "function" && o && (s = s(n, e))) : typeof s == "function" && o && (s = s(n, e.t, e)), s);
+    return s && (typeof s == "object" ? (s = e.t in s ? s[e.t] : J[t], typeof s == "function" && o && (s = s(n, e))) : typeof s == "function" && o && (s = s(n, e.t, e)), s);
   },
   /**
    * @template {keyof Opts} L
@@ -416,10 +416,10 @@ ne.prototype = {
 function he(t) {
   return t;
 }
-function Re(t, n) {
+function Ce(t, n) {
   this.t = "token", this.v = t, this.tk = n;
 }
-Re.prototype = {
+Ce.prototype = {
   isLink: !1,
   /**
    * Return the string this token represents.
@@ -477,7 +477,7 @@ Re.prototype = {
   		@method toObject
   	@param {string} [protocol] `'http'` by default
   */
-  toObject(t = V.defaultProtocol) {
+  toObject(t = J.defaultProtocol) {
     return {
       type: this.t,
       value: this.toString(),
@@ -524,7 +524,7 @@ Re.prototype = {
   }
 };
 function Pt(t, n) {
-  class e extends Re {
+  class e extends Ce {
     constructor(s, i) {
       super(s, i), this.t = t;
     }
@@ -533,7 +533,7 @@ function Pt(t, n) {
     e.prototype[o] = n[o];
   return e.t = t, e;
 }
-const Ve = Pt("email", {
+const Je = Pt("email", {
   isLink: !0,
   toHref() {
     return "mailto:" + this.toString();
@@ -547,7 +547,7 @@ const Ve = Pt("email", {
   		@param {string} [scheme] default scheme (e.g., 'https')
   	@return {string} the full href
   */
-  toHref(t = V.defaultProtocol) {
+  toHref(t = J.defaultProtocol) {
     return this.hasProtocol() ? this.v : `${t}://${this.v}`;
   },
   /**
@@ -556,38 +556,38 @@ const Ve = Pt("email", {
    */
   hasProtocol() {
     const t = this.tk;
-    return t.length >= 2 && t[0].t !== J && t[1].t === D;
+    return t.length >= 2 && t[0].t !== V && t[1].t === D;
   }
-}), C = (t) => new T(t);
+}), R = (t) => new T(t);
 function Xe({
   groups: t
 }) {
-  const n = t.domain.concat([gt, At, H, kt, Lt, Tt, Ct, Rt, R, Vt, G, yt, Ot, bt, v, St, q, vt]), e = [Et, D, Xt, b, Zt, G, Q, te, ee, rt, lt, K, F, ot, nt, st, it, at, ct, ut, dt, ht, ft, pt, mt], o = [gt, Et, At, kt, Lt, Tt, Ct, Rt, R, K, F, G, yt, Ot, bt, Q, v, St, q, vt], s = C(), i = l(s, q);
+  const n = t.domain.concat([gt, At, H, kt, Lt, Tt, Rt, Ct, C, Jt, G, yt, Ot, bt, v, St, q, vt]), e = [Et, D, Xt, b, Zt, G, Q, te, ee, rt, lt, K, F, ot, nt, st, it, at, ct, ut, dt, ht, ft, pt, mt], o = [gt, Et, At, kt, Lt, Tt, Rt, Ct, C, K, F, G, yt, Ot, bt, Q, v, St, q, vt], s = R(), i = l(s, q);
   h(i, o, i), h(i, t.domain, i);
-  const r = C(), a = C(), c = C();
+  const r = R(), a = R(), c = R();
   h(s, t.domain, r), h(s, t.scheme, a), h(s, t.slashscheme, c), h(r, o, i), h(r, t.domain, r);
   const d = l(r, H);
   l(i, H, d), l(a, H, d), l(c, H, d);
   const f = l(i, b);
   h(f, o, i), h(f, t.domain, i);
-  const p = C();
+  const p = R();
   h(d, t.domain, p), h(p, t.domain, p);
   const g = l(p, b);
   h(g, t.domain, p);
-  const A = C(Ve);
-  h(g, t.tld, A), h(g, t.utld, A), l(d, J, A);
-  const y = l(p, R);
-  l(y, R, y), h(y, t.domain, p), h(A, t.domain, p), l(A, b, g), l(A, R, y);
-  const u = l(r, R), k = l(r, b);
-  l(u, R, u), h(u, t.domain, r), h(k, o, i), h(k, t.domain, r);
-  const O = C(tt);
-  h(k, t.tld, O), h(k, t.utld, O), h(O, t.domain, r), h(O, o, i), l(O, b, k), l(O, R, u), l(O, H, d);
-  const x = l(O, D), ie = C(tt);
+  const A = R(Je);
+  h(g, t.tld, A), h(g, t.utld, A), l(d, V, A);
+  const y = l(p, C);
+  l(y, C, y), h(y, t.domain, p), h(A, t.domain, p), l(A, b, g), l(A, C, y);
+  const u = l(r, C), k = l(r, b);
+  l(u, C, u), h(u, t.domain, r), h(k, o, i), h(k, t.domain, r);
+  const O = R(tt);
+  h(k, t.tld, O), h(k, t.utld, O), h(O, t.domain, r), h(O, o, i), l(O, b, k), l(O, C, u), l(O, H, d);
+  const x = l(O, D), ie = R(tt);
   h(x, t.numeric, ie);
-  const L = C(tt), B = C();
+  const L = R(tt), B = R();
   h(L, n, L), h(L, e, B), h(B, n, L), h(B, e, B), l(O, v, L), l(ie, v, L);
   const wt = l(a, D), Pe = l(c, D), we = l(Pe, v), It = l(we, v);
-  h(a, t.domain, r), l(a, b, k), l(a, R, u), h(c, t.domain, r), l(c, b, k), l(c, R, u), h(wt, t.domain, L), l(wt, v, L), l(wt, Q, L), h(It, t.domain, L), h(It, n, L), l(It, v, L);
+  h(a, t.domain, r), l(a, b, k), l(a, C, u), h(c, t.domain, r), l(c, b, k), l(c, C, u), h(wt, t.domain, L), l(wt, v, L), l(wt, Q, L), h(It, t.domain, L), h(It, n, L), l(It, v, L);
   const re = [
     [K, F],
     // {}
@@ -609,12 +609,12 @@ function Xe({
   for (let Nt = 0; Nt < re.length; Nt++) {
     const [le, Ht] = re[Nt], Y = l(L, le);
     l(B, le, Y);
-    const U = C(tt);
+    const U = R(tt);
     h(Y, n, U);
-    const j = C();
+    const j = R();
     h(Y, e, j), l(Y, Ht, L), h(U, n, U), h(U, e, j), h(j, n, U), h(j, e, j), l(U, Ht, L), l(j, Ht, L);
   }
-  return l(s, J, O), l(s, Yt, Ye), {
+  return l(s, V, O), l(s, Yt, Ye), {
     start: s,
     tokens: Te
   };
@@ -676,9 +676,9 @@ function on() {
   return m.initialized = !0, m;
 }
 function oe(t) {
-  return m.initialized || on(), Ze(m.parser.start, t, Ce(m.scanner.start, t));
+  return m.initialized || on(), Ze(m.parser.start, t, Re(m.scanner.start, t));
 }
-oe.scan = Ce;
+oe.scan = Re;
 function ye(t, n = null, e = null) {
   if (n && typeof n == "object") {
     if (e)
@@ -698,7 +698,7 @@ function an(t) {
 }
 function cn(t) {
   return new qt({
-    key: new Jt("autolink"),
+    key: new Vt("autolink"),
     appendTransaction: (n, e, o) => {
       const s = n.some((a) => a.docChanged) && !e.doc.eq(o.doc), i = n.some((a) => a.getMeta("preventAutolink"));
       if (!s || i) return;
@@ -735,7 +735,7 @@ function cn(t) {
 }
 function un(t) {
   return new qt({
-    key: new Jt("handleClickLink"),
+    key: new Vt("handleClickLink"),
     props: { handleClick: (n, e, o) => {
       if (o.button !== 0 || !n.editable) return !1;
       let s = null;
@@ -850,7 +850,7 @@ function gn(t) {
 }
 function En(t) {
   return new qt({
-    key: new Jt("handlePasteLink"),
+    key: new Vt("handlePasteLink"),
     props: { handlePaste: (n, e, o) => {
       const { shouldAutoLink: s } = t, { state: i } = n, { selection: r } = i, { empty: a } = r;
       if (a) return !1;
