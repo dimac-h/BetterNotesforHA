@@ -1,17 +1,17 @@
-import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as h, N as T, h as E, s as D, g as S, j as A, u as I, k as z } from "./colors-CMfYGb1F.js";
-const j = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
+import { i as b, n as l, a as v, d as N, c as L, m as O, b as a, f as E, t as _, r as h, N as T, h as D, s as S, g as I, j as A, u as z, k as j } from "./colors-CMfYGb1F.js";
+const H = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
     const n = (r) => r.renderRoot?.querySelector(t) ?? null;
-    return j(i, s, { get() {
+    return H(i, s, { get() {
       return n(this);
     } });
   };
 }
-var H = Object.defineProperty, B = Object.getOwnPropertyDescriptor, $ = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? B(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var B = Object.defineProperty, G = Object.getOwnPropertyDescriptor, $ = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? G(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && H(e, i, o), o;
+  return s && o && B(e, i, o), o;
 };
 let x = class extends v {
   constructor() {
@@ -32,13 +32,13 @@ let x = class extends v {
   render() {
     const t = N(this.note.content || ""), e = t.length > 60 ? `${t.slice(0, 60)}…` : t;
     return a`
-      <div class="bar" style="background:${P(this.note.color)}"></div>
+      <div class="bar" style="background:${L(this.note.color)}"></div>
       <div class="header">
         <div class="title">${this.note.title || "Untitled"}</div>
-        ${this.note.pinned ? a`<ha-svg-icon .path=${L}></ha-svg-icon>` : ""}
+        ${this.note.pinned ? a`<ha-svg-icon .path=${O}></ha-svg-icon>` : ""}
       </div>
       <div class="preview">${e}</div>
-      <div class="date">${O(this.note.modified)}</div>
+      <div class="date">${E(this.note.modified)}</div>
     `;
   }
 };
@@ -76,10 +76,10 @@ $([
 x = $([
   _("better-notes-list-item")
 ], x);
-var G = Object.defineProperty, M = Object.getOwnPropertyDescriptor, k = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? M(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var M = Object.defineProperty, R = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? R(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && G(e, i, o), o;
+  return s && o && M(e, i, o), o;
 };
 let u = class extends v {
   constructor() {
@@ -123,22 +123,22 @@ u.styles = b`
     .items { flex: 1; overflow-y: auto; padding: 10px; }
     .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
   `;
-k([
+w([
   l({ attribute: !1 })
 ], u.prototype, "notes", 2);
-k([
+w([
   l({ type: String })
 ], u.prototype, "selectedNoteId", 2);
-k([
+w([
   l({ type: String })
 ], u.prototype, "searchTerm", 2);
-u = k([
+u = w([
   _("better-notes-list")
 ], u);
-var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var q = Object.defineProperty, U = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? U(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && R(e, i, o), o;
+  return s && o && q(e, i, o), o;
 };
 let c = class extends v {
   constructor() {
@@ -281,19 +281,27 @@ m([
 c = m([
   _("better-notes-toolbar")
 ], c);
-async function U() {
-  const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }] = await Promise.all([
-    import("./index-DpIQkkjT.js").then((r) => r.O),
-    import("./index-D5nyuybU.js"),
-    import("./index-C_curDh4.js"),
-    import("./index-BzgY6Pzl.js"),
-    import("./index-DSnW7XAV.js"),
-    import("./index-DcOljIx1.js")
+async function V() {
+  const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }, { ListItem: r }] = await Promise.all([
+    import("./index-pa5U7i3D.js").then((P) => P.O),
+    import("./index-Yys9n5GD.js"),
+    import("./index-B0TKEn8L.js"),
+    import("./index-D6ncd5DV.js"),
+    import("./index-Vi6toNLn.js"),
+    import("./index-lBYWkvms.js"),
+    import("./index-C46ou4Bj.js")
   ]);
   return {
     Editor: t,
     extensions: [
-      e.configure({ heading: { levels: [1, 2, 3] }, link: !1 }),
+      // listItem: false — replaced below with a ListItem that also allows a
+      // heading as its first child. The default ListItem content model is
+      // 'paragraph block*' (first child must specifically be a paragraph),
+      // so toggling a list item to a heading is invalid at that level and
+      // ProseMirror climbs up through every ancestor list to find a place
+      // it IS valid, collapsing all nested indentation in the process.
+      e.configure({ heading: { levels: [1, 2, 3] }, link: !1, listItem: !1 }),
+      r.extend({ content: "(paragraph|heading) block*" }),
       i,
       s.configure({ nested: !0 }),
       o.configure({ openOnClick: !0 }),
@@ -301,12 +309,12 @@ async function U() {
     ]
   };
 }
-var V = Object.defineProperty, K = Object.getOwnPropertyDescriptor, C = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? K(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var K = Object.defineProperty, F = Object.getOwnPropertyDescriptor, C = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? F(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && V(e, i, o), o;
+  return s && o && K(e, i, o), o;
 };
-let w = class extends v {
+let k = class extends v {
   constructor() {
     super(...arguments), this.content = "", this._editor = null, this._fallback = !1, this._lastEmitted = "";
   }
@@ -322,7 +330,7 @@ let w = class extends v {
   async _init() {
     let t;
     try {
-      t = await U();
+      t = await V();
     } catch (s) {
       console.warn("Better Notes: Tiptap failed to load, falling back to textarea", s), t = null;
     }
@@ -414,7 +422,7 @@ let w = class extends v {
       ></textarea>` : a`<div id="mount" @keydown=${(t) => t.stopPropagation()}></div>`;
   }
 };
-w.styles = b`
+k.styles = b`
     :host { display: flex; flex-direction: column; min-height: 0; flex: 1; }
     .fallback {
       width: 100%; min-height: 300px; font-size: 15px; line-height: 1.6;
@@ -456,17 +464,17 @@ w.styles = b`
   `;
 C([
   l({ attribute: !1 })
-], w.prototype, "content", 2);
+], k.prototype, "content", 2);
 C([
   y("#mount")
-], w.prototype, "_mount", 2);
-w = C([
+], k.prototype, "_mount", 2);
+k = C([
   _("better-notes-tiptap-editor")
-], w);
-var F = Object.defineProperty, J = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? J(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+], k);
+var J = Object.defineProperty, Q = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? Q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && F(e, i, o), o;
+  return s && o && J(e, i, o), o;
 };
 let d = class extends v {
   constructor() {
@@ -523,7 +531,7 @@ let d = class extends v {
           <ha-button size="s" appearance="plain" variant="neutral" @click=${() => {
       clearTimeout(this._saveTimeout), this._save();
     }}>
-            ${this._justSaved ? a`<ha-svg-icon .path=${E}></ha-svg-icon>` : "Save"}
+            ${this._justSaved ? a`<ha-svg-icon .path=${D}></ha-svg-icon>` : "Save"}
           </ha-button>
           <ha-button size="s" appearance="plain" variant="danger" @click=${() => this._onDelete()}>${this._pendingDelete ? "Confirm?" : "Delete"}</ha-button>
         </div>
@@ -597,12 +605,12 @@ g([
 d = g([
   _("better-notes-editor")
 ], d);
-var Q = Object.defineProperty, W = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? W(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var W = Object.defineProperty, X = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? X(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && Q(e, i, o), o;
+  return s && o && W(e, i, o), o;
 };
-function X(t) {
+function Y(t) {
   return [...t].sort((e, i) => e.pinned !== i.pinned ? e.pinned ? -1 : 1 : new Date(i.modified).getTime() - new Date(e.modified).getTime());
 }
 let p = class extends v {
@@ -619,10 +627,10 @@ let p = class extends v {
     t.has("hass") && this.hass && !this._unsubscribe && this._init(), t.has("_view") && this.setAttribute("data-view", this._view);
   }
   async _init() {
-    await this._loadNotes(), this._unsubscribe = await D(this.hass, () => this._loadNotes());
+    await this._loadNotes(), this._unsubscribe = await S(this.hass, () => this._loadNotes());
   }
   async _loadNotes() {
-    this._notes = X(await S(this.hass));
+    this._notes = Y(await I(this.hass));
   }
   get _selectedNote() {
     return this._notes.find((t) => t.note_id === this._selectedId) ?? null;
@@ -645,10 +653,10 @@ let p = class extends v {
     this._searchTerm = t.detail.value;
   }
   async _onNoteSave(t) {
-    await I(this.hass, t.detail), await this._loadNotes();
+    await z(this.hass, t.detail), await this._loadNotes();
   }
   async _onNoteDelete(t) {
-    await z(this.hass, t.detail.noteId), this._selectedId = null, this._view = "list", await this._loadNotes();
+    await j(this.hass, t.detail.noteId), this._selectedId = null, this._view = "list", await this._loadNotes();
   }
   _onEditorBack() {
     this._view = "list";
