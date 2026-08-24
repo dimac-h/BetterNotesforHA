@@ -134,12 +134,16 @@ Because the mount is read-only from the *host* checkout, frontend changes still 
 
 ## Testing
 
-No automated test suite exists in this repo today (per `CLAUDE.md`) and this change doesn't introduce one. Verification is manual, using the `dev/docker-compose.yml` instance:
+**Backend: automated.** No test suite exists in this repo today, but this redesign adds one for the Python side, since the backend is stable, self-contained, and easy to test in isolation — `pytest` + `pytest-homeassistant-custom-component` (the standard harness for HA custom integrations; `home-upkeep-addon` uses the identical setup), covering `storage.py`'s CRUD and sort behavior, all four services' event-firing and error paths in `__init__.py`, and the single-instance `config_flow.py`. A root `pyproject.toml` and `tests/` directory are added.
+
+**Frontend: manual.** No automated frontend tests are added. `home-upkeep-addon` — a comparable, larger Lit frontend — has zero frontend test files despite having full pytest coverage on its backend, which is real precedent for this split. The reasons this makes sense for an app this size: the main risk here is visual/theming (does it look native in light/dark HA themes), which a DOM assertion can't verify anyway — it needs a human looking at a real HA instance regardless; and the behavioral logic worth protecting (autosave debounce, delete-confirm, sort order, search filter) is thin per-component glue, not business logic, so the setup cost of a browser-based test harness (Vitest + `@open-wc/testing` or Web Test Runner, none of which exist in this repo yet) isn't justified yet. Revisit if the frontend grows real logic (offline queueing, conflict resolution, etc.). Verification stays manual, using the `dev/docker-compose.yml` instance:
 - `npm run build` succeeds with no TypeScript errors.
 - Start `dev/docker-compose.yml`, confirm the panel renders, matches HA's light and dark themes, and all four operations (create/update/delete/pin) still work end-to-end via the existing events.
 - Confirm the Lovelace card still accepts existing `custom:better-notes-card` YAML configs unchanged.
 - `hassfest` and `hacs/action` validations pass in CI.
 - A test GitHub Release produces a zip asset containing a non-empty `www/` with built JS.
+
+**CI.** `validate.yml` (Task 9 of the implementation plan) is extended to also run `pytest` on every push/PR, alongside hassfest/HACS validation.
 
 ## Migration / rollout risk
 
