@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
+import { mdiCheck } from '@mdi/js';
 import './note-toolbar';
 import './tiptap-editor';
 import type { BetterNotesTiptapEditor, ToolbarAction } from './tiptap-editor';
@@ -26,17 +27,12 @@ export class BetterNotesEditor extends LitElement {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       height: 100%; color: var(--secondary-text-color);
     }
-    .toast {
-      position: absolute; bottom: 24px; right: 24px; background: var(--primary-text-color);
-      color: var(--card-background-color); padding: 8px 16px; border-radius: 4px; font-size: 13px;
-      pointer-events: none; z-index: 1000;
-    }
   `;
 
   @property({ attribute: false }) note: Note | null = null;
 
   @state() private _pendingDelete = false;
-  @state() private _showToast = false;
+  @state() private _justSaved = false;
 
   @query('better-notes-tiptap-editor') private _tiptap?: BetterNotesTiptapEditor;
   @query('.title-input') private _titleInput?: HTMLInputElement;
@@ -67,9 +63,9 @@ export class BetterNotesEditor extends LitElement {
       pinned: overrides.pinned ?? this.note.pinned,
     };
     this.dispatchEvent(new CustomEvent('note-save', { detail, bubbles: true, composed: true }));
-    this._showToast = true;
+    this._justSaved = true;
     clearTimeout(this._toastTimeout);
-    this._toastTimeout = setTimeout(() => { this._showToast = false; }, 1500);
+    this._toastTimeout = setTimeout(() => { this._justSaved = false; }, 500);
   }
 
   private _onToolbarAction(e: CustomEvent<{ action: ToolbarAction; payload?: { href?: string } }>): void {
@@ -112,7 +108,9 @@ export class BetterNotesEditor extends LitElement {
       <div class="header">
         <ha-icon-button class="back-btn" @click=${() => this.dispatchEvent(new CustomEvent('editor-back', { bubbles: true, composed: true }))}>←</ha-icon-button>
         <div class="actions">
-          <ha-button @click=${() => { clearTimeout(this._saveTimeout); this._save(); }}>Save</ha-button>
+          <ha-button @click=${() => { clearTimeout(this._saveTimeout); this._save(); }}>
+            ${this._justSaved ? html`<ha-svg-icon .path=${mdiCheck}></ha-svg-icon>` : 'Save'}
+          </ha-button>
           <ha-button @click=${() => this._onDelete()}>${this._pendingDelete ? 'Confirm?' : 'Delete'}</ha-button>
         </div>
       </div>
@@ -138,7 +136,6 @@ export class BetterNotesEditor extends LitElement {
         @pin-toggle=${this._onPinToggle}
         @link-open-requested=${this._onLinkOpenRequested}
       ></better-notes-toolbar>
-      ${this._showToast ? html`<div class="toast">Saved</div>` : ''}
     `;
   }
 }

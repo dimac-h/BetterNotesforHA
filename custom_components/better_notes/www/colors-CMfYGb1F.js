@@ -1,13 +1,13 @@
-const M = globalThis, D = M.ShadowRoot && (M.ShadyCSS === void 0 || M.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, V = /* @__PURE__ */ Symbol(), B = /* @__PURE__ */ new WeakMap();
+const M = globalThis, L = M.ShadowRoot && (M.ShadyCSS === void 0 || M.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, D = /* @__PURE__ */ Symbol(), B = /* @__PURE__ */ new WeakMap();
 let Y = class {
   constructor(t, e, s) {
-    if (this._$cssResult$ = !0, s !== V) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
+    if (this._$cssResult$ = !0, s !== D) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
     this.cssText = t, this.t = e;
   }
   get styleSheet() {
     let t = this.o;
     const e = this.t;
-    if (D && t === void 0) {
+    if (L && t === void 0) {
       const s = e !== void 0 && e.length === 1;
       s && (t = B.get(e)), t === void 0 && ((this.o = t = new CSSStyleSheet()).replaceSync(this.cssText), s && B.set(e, t));
     }
@@ -17,20 +17,20 @@ let Y = class {
     return this.cssText;
   }
 };
-const rt = (r) => new Y(typeof r == "string" ? r : r + "", void 0, V), xt = (r, ...t) => {
+const rt = (r) => new Y(typeof r == "string" ? r : r + "", void 0, D), xt = (r, ...t) => {
   const e = r.length === 1 ? r[0] : t.reduce((s, i, n) => s + ((o) => {
     if (o._$cssResult$ === !0) return o.cssText;
     if (typeof o == "number") return o;
     throw Error("Value passed to 'css' function must be a 'css' function result: " + o + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
   })(i) + r[n + 1], r[0]);
-  return new Y(e, r, V);
+  return new Y(e, r, D);
 }, nt = (r, t) => {
-  if (D) r.adoptedStyleSheets = t.map((e) => e instanceof CSSStyleSheet ? e : e.styleSheet);
+  if (L) r.adoptedStyleSheets = t.map((e) => e instanceof CSSStyleSheet ? e : e.styleSheet);
   else for (const e of t) {
     const s = document.createElement("style"), i = M.litNonce;
     i !== void 0 && s.setAttribute("nonce", i), s.textContent = e.cssText, r.appendChild(s);
   }
-}, I = D ? (r) => r : (r) => r instanceof CSSStyleSheet ? ((t) => {
+}, I = L ? (r) => r : (r) => r instanceof CSSStyleSheet ? ((t) => {
   let e = "";
   for (const s of t.cssRules) e += s.cssText;
   return rt(e);
@@ -63,7 +63,7 @@ const { is: ot, defineProperty: at, getOwnPropertyDescriptor: ht, getOwnProperty
       }
   }
   return e;
-} }, L = (r, t) => !ot(r, t), W = { attribute: !0, type: String, converter: O, reflect: !1, useDefault: !1, hasChanged: L };
+} }, V = (r, t) => !ot(r, t), W = { attribute: !0, type: String, converter: O, reflect: !1, useDefault: !1, hasChanged: V };
 Symbol.metadata ??= /* @__PURE__ */ Symbol("metadata"), N.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
 let g = class extends HTMLElement {
   static addInitializer(t) {
@@ -178,7 +178,7 @@ let g = class extends HTMLElement {
   requestUpdate(t, e, s, i = !1, n) {
     if (t !== void 0) {
       const o = this.constructor;
-      if (i === !1 && (n = this[t]), s ??= o.getPropertyOptions(t), !((s.hasChanged ?? L)(n, e) || s.useDefault && s.reflect && n === this._$Ej?.get(t) && !this.hasAttribute(o._$Eu(t, s)))) return;
+      if (i === !1 && (n = this[t]), s ??= o.getPropertyOptions(t), !((s.hasChanged ?? V)(n, e) || s.useDefault && s.reflect && n === this._$Ej?.get(t) && !this.hasAttribute(o._$Eu(t, s)))) return;
       this.C(t, e, s);
     }
     this.isUpdatePending === !1 && (this._$ES = this._$EP());
@@ -504,7 +504,7 @@ const Nt = (r) => (t, e) => {
     customElements.define(r, t);
   }) : customElements.define(r, t);
 };
-const Ct = { attribute: !0, type: String, converter: O, reflect: !1, hasChanged: L }, Pt = (r = Ct, t, e) => {
+const Ct = { attribute: !0, type: String, converter: O, reflect: !1, hasChanged: V }, Pt = (r = Ct, t, e) => {
   const { kind: s, metadata: i } = e;
   let n = globalThis.litPropertyMetadata.get(i);
   if (n === void 0 && globalThis.litPropertyMetadata.set(i, n = /* @__PURE__ */ new Map()), s === "setter" && ((r = Object.create(r)).wrapped = !0), n.set(e.name, r), s === "accessor") {
@@ -534,7 +534,7 @@ function Ht(r) {
 function Tt(r) {
   return Ht({ ...r, state: !0, attribute: !1 });
 }
-var Rt = "M3,6V22H21V24H3A2,2 0 0,1 1,22V6H3M16,9H21.5L16,3.5V9M7,2H17L23,8V18A2,2 0 0,1 21,20H7C5.89,20 5,19.1 5,18V4A2,2 0 0,1 7,2M7,4V18H21V11H14V4H7Z", Dt = "M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z";
+var Rt = "M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z", Lt = "M3,6V22H21V24H3A2,2 0 0,1 1,22V6H3M16,9H21.5L16,3.5V9M7,2H17L23,8V18A2,2 0 0,1 21,20H7C5.89,20 5,19.1 5,18V4A2,2 0 0,1 7,2M7,4V18H21V11H14V4H7Z", Dt = "M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z";
 async function Vt(r) {
   return (await r.connection.sendMessagePromise({
     type: "call_service",
@@ -544,7 +544,7 @@ async function Vt(r) {
     return_response: !0
   })).response?.notes ?? [];
 }
-async function Lt(r, t) {
+async function kt(r, t) {
   return (await r.connection.sendMessagePromise({
     type: "call_service",
     domain: "better_notes",
@@ -553,19 +553,19 @@ async function Lt(r, t) {
     return_response: !0
   })).response?.note_id;
 }
-async function kt(r, t) {
+async function jt(r, t) {
   await r.callService("better_notes", "update_note", t);
 }
-async function jt(r, t) {
+async function zt(r, t) {
   await r.callService("better_notes", "delete_note", { note_id: t });
 }
-function zt(r, t) {
+function Bt(r, t) {
   const e = ["better_notes_note_created", "better_notes_note_updated", "better_notes_note_deleted"];
   return Promise.all(e.map((s) => r.connection.subscribeEvents(t, s))).then(
     (s) => () => s.forEach((i) => i())
   );
 }
-const Bt = [
+const It = [
   "#E8D44D",
   // warm yellow
   "#E09455",
@@ -587,32 +587,33 @@ const Bt = [
   "#52A068"
   // sage green
 ];
-function It(r) {
+function qt(r) {
   return r && /^#[0-9a-fA-F]{6}$|^#[0-9a-fA-F]{3}$/.test(r) ? r : "#FFEB3B";
 }
-function qt(r) {
+function Wt(r) {
   const t = new Date(r), e = Date.now() - t.getTime(), s = Math.floor(e / 6e4), i = Math.floor(e / 36e5), n = Math.floor(e / 864e5);
   return s < 1 ? "Just now" : s < 60 ? `${s} min ago` : i < 24 ? `${i} hour${i > 1 ? "s" : ""} ago` : n < 7 ? `${n} day${n > 1 ? "s" : ""} ago` : t.toLocaleDateString();
 }
-function Wt(r) {
+function Ft(r) {
   return new DOMParser().parseFromString(r, "text/html").body.textContent || "";
 }
 export {
-  Bt as N,
+  It as N,
   x as a,
   Ut as b,
-  It as c,
-  Wt as d,
-  Rt as e,
-  qt as f,
+  qt as c,
+  Ft as d,
+  Lt as e,
+  Wt as f,
   Vt as g,
-  Lt as h,
+  Rt as h,
   xt as i,
-  jt as j,
+  kt as j,
+  zt as k,
   Dt as m,
   Ht as n,
   Tt as r,
-  zt as s,
+  Bt as s,
   Nt as t,
-  kt as u
+  jt as u
 };
