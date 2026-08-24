@@ -2058,6 +2058,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -2122,6 +2125,16 @@ jobs:
 git add .github/workflows/release.yml hacs.json
 git commit -m "ci: build frontend and ship a CI-built HACS zip release"
 ```
+
+- [ ] **Step 4: Verify the tag → release → HACS flow end-to-end**
+
+HACS keys off published GitHub Releases, not raw tags — a pushed tag with no Release object is invisible to HACS. Confirm the full chain works:
+
+1. Push a tag (e.g. `git tag v0.1.0-test && git push origin v0.1.0-test`) and publish a GitHub Release for it (`gh release create v0.1.0-test --title "v0.1.0-test" --notes "test release"` or via the UI) — publishing, not just tagging, is what fires `on: release: types: [published]`.
+2. Watch the `Release` workflow run in the Actions tab; confirm it succeeds (in particular the upload step, given the `permissions: contents: write` added above — without it this step 403s).
+3. On the release, confirm `better_notes.zip` is attached as an asset, and that its filename matches `hacs.json`'s `"filename": "better_notes.zip"` exactly (HACS won't find a mismatched name).
+4. Download that zip and confirm `custom_components/better_notes/manifest.json` inside it has `"version": "0.1.0-test"` (or `0.1.0` if the version helper strips a leading `v`) — not the placeholder version committed in the working tree — and that `www/` contains built JS (not source `.ts` files).
+5. Delete the test release and tag afterward (`gh release delete v0.1.0-test --yes && git push origin :refs/tags/v0.1.0-test`) so it doesn't linger as a real HACS-visible release.
 
 ---
 
