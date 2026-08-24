@@ -1,16 +1,16 @@
-import { i as b, n as l, a as v, d as N, c as L, m as O, b as r, f as E, t as _, r as h, N as T, h as D, s as S, g as A, j as I, u as z, k as B } from "./colors-CMfYGb1F.js";
+import { i as b, n as l, a as v, d as P, c as L, m as O, b as a, f as E, t as _, r as h, N, h as D, s as S, g as A, j as I, u as z, k as B } from "./colors-CMfYGb1F.js";
 const j = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
-    const n = (a) => a.renderRoot?.querySelector(t) ?? null;
+    const n = (r) => r.renderRoot?.querySelector(t) ?? null;
     return j(i, s, { get() {
       return n(this);
     } });
   };
 }
-var H = Object.defineProperty, G = Object.getOwnPropertyDescriptor, $ = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? G(e, i) : e, n = t.length - 1, a; n >= 0; n--)
-    (a = t[n]) && (o = (s ? a(e, i, o) : a(o)) || o);
+var H = Object.defineProperty, M = Object.getOwnPropertyDescriptor, $ = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? M(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && H(e, i, o), o;
 };
 let x = class extends v {
@@ -30,12 +30,12 @@ let x = class extends v {
     super.disconnectedCallback(), this.removeEventListener("click", this._select);
   }
   render() {
-    const t = N(this.note.content || ""), e = t.length > 60 ? `${t.slice(0, 60)}…` : t;
-    return r`
+    const t = P(this.note.content || ""), e = t.length > 60 ? `${t.slice(0, 60)}…` : t;
+    return a`
       <div class="bar" style="background:${L(this.note.color)}"></div>
       <div class="header">
         <div class="title">${this.note.title || "Untitled"}</div>
-        ${this.note.pinned ? r`<ha-svg-icon .path=${O}></ha-svg-icon>` : ""}
+        ${this.note.pinned ? a`<ha-svg-icon .path=${O}></ha-svg-icon>` : ""}
       </div>
       <div class="preview">${e}</div>
       <div class="date">${E(this.note.modified)}</div>
@@ -76,10 +76,10 @@ $([
 x = $([
   _("better-notes-list-item")
 ], x);
-var M = Object.defineProperty, q = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, a; n >= 0; n--)
-    (a = t[n]) && (o = (s ? a(e, i, o) : a(o)) || o);
-  return s && o && M(e, i, o), o;
+var G = Object.defineProperty, q = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
+  return s && o && G(e, i, o), o;
 };
 let u = class extends v {
   constructor() {
@@ -95,19 +95,19 @@ let u = class extends v {
   get _filtered() {
     const t = this.searchTerm.toLowerCase();
     return t ? this.notes.filter(
-      (e) => (e.title || "").toLowerCase().includes(t) || N(e.content || "").toLowerCase().includes(t)
+      (e) => (e.title || "").toLowerCase().includes(t) || P(e.content || "").toLowerCase().includes(t)
     ) : this.notes;
   }
   render() {
     const t = this._filtered;
-    return r`
+    return a`
       <div class="header">
         <h1>Better Notes</h1>
         <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e) => e.stopPropagation()}></ha-input>
         <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>+ New Note</ha-button>
       </div>
       <div class="items">
-        ${t.length === 0 ? r`<div class="empty">No notes found</div>` : t.map((e) => r`
+        ${t.length === 0 ? a`<div class="empty">No notes found</div>` : t.map((e) => a`
               <better-notes-list-item .note=${e} ?active=${this.selectedNoteId === e.note_id}></better-notes-list-item>
             `)}
       </div>
@@ -136,8 +136,8 @@ u = w([
   _("better-notes-list")
 ], u);
 var R = Object.defineProperty, U = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? U(e, i) : e, n = t.length - 1, a; n >= 0; n--)
-    (a = t[n]) && (o = (s ? a(e, i, o) : a(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? U(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && R(e, i, o), o;
 };
 let c = class extends v {
@@ -175,7 +175,7 @@ let c = class extends v {
     e && this._isValidUrl(e) && this._dispatchAction("setLink", { href: e }), this._linkOpen = !1;
   }
   render() {
-    return r`
+    return a`
       <div class="group ${this._openGroup === "heading" ? "open" : ""}">
         <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup("heading")} @mousedown=${(t) => t.preventDefault()}>H<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
@@ -213,7 +213,7 @@ let c = class extends v {
         <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup("color")} @mousedown=${(t) => t.preventDefault()}>Color<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <div class="swatches">
-            ${T.map((t) => r`
+            ${N.map((t) => a`
               <div class="dot ${this.color === t ? "active" : ""}" style="background:${t}"
                    @click=${() => this._selectColor(t)}></div>
             `)}
@@ -224,7 +224,7 @@ let c = class extends v {
         ${this.pinned ? "Pinned" : "Pin"}
       </ha-button>
       <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._openLink()} @mousedown=${(t) => t.preventDefault()}>Link</ha-button>
-      ${this._linkOpen ? r`
+      ${this._linkOpen ? a`
         <div class="link-row">
           <ha-input type="url" placeholder="https://…" .value=${this.linkHref} @keydown=${(t) => t.stopPropagation()}></ha-input>
           <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._applyLink()}>Apply</ha-button>
@@ -286,8 +286,8 @@ c = m([
   _("better-notes-toolbar")
 ], c);
 async function V() {
-  const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }, { ListItem: a }] = await Promise.all([
-    import("./index-pa5U7i3D.js").then((P) => P.O),
+  const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }, { ListItem: r }] = await Promise.all([
+    import("./index-pa5U7i3D.js").then((T) => T.O),
     import("./index-Yys9n5GD.js"),
     import("./index-B0TKEn8L.js"),
     import("./index-D6ncd5DV.js"),
@@ -305,7 +305,7 @@ async function V() {
       // ProseMirror climbs up through every ancestor list to find a place
       // it IS valid, collapsing all nested indentation in the process.
       e.configure({ heading: { levels: [1, 2, 3] }, link: !1, listItem: !1, hardBreak: !1 }),
-      a.extend({ content: "(paragraph|heading) block*" }),
+      r.extend({ content: "(paragraph|heading) block*" }),
       i,
       s.configure({ nested: !0 }),
       o.configure({ openOnClick: !0 }),
@@ -314,8 +314,8 @@ async function V() {
   };
 }
 var K = Object.defineProperty, F = Object.getOwnPropertyDescriptor, C = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? F(e, i) : e, n = t.length - 1, a; n >= 0; n--)
-    (a = t[n]) && (o = (s ? a(e, i, o) : a(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? F(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && K(e, i, o), o;
 };
 let k = class extends v {
@@ -425,14 +425,14 @@ let k = class extends v {
       }
   }
   render() {
-    return this._fallback ? r`<textarea
+    return this._fallback ? a`<textarea
         id="fallback"
         class="fallback"
         placeholder="Start typing..."
         .value=${this.content}
         @input=${() => this._emitChanged()}
         @keydown=${(t) => t.stopPropagation()}
-      ></textarea>` : r`<div id="mount" @keydown=${(t) => t.stopPropagation()}></div>`;
+      ></textarea>` : a`<div id="mount" @keydown=${(t) => t.stopPropagation()}></div>`;
   }
 };
 k.styles = b`
@@ -474,6 +474,25 @@ k.styles = b`
     .ProseMirror ul[data-type="taskList"] input[type="checkbox"] {
       cursor: pointer;
     }
+    .ProseMirror pre {
+      background-color: var(--markdown-code-background-color, var(--primary-text-color));
+      color: var(--markdown-code-text-color, var(--card-background-color));
+      border-radius: var(--ha-border-radius-sm, 8px);
+      padding: var(--ha-space-4, 16px);
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: var(--ha-font-family-code, monospace);
+    }
+    .ProseMirror pre code {
+      background: none;
+      color: inherit;
+      padding: 0;
+    }
+    .ProseMirror blockquote {
+      border-left: 4px solid var(--divider-color);
+      margin-inline: 0;
+      padding-inline: 1em;
+    }
   `;
 C([
   l({ attribute: !1 })
@@ -485,8 +504,8 @@ k = C([
   _("better-notes-tiptap-editor")
 ], k);
 var J = Object.defineProperty, Q = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? Q(e, i) : e, n = t.length - 1, a; n >= 0; n--)
-    (a = t[n]) && (o = (s ? a(e, i, o) : a(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? Q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && J(e, i, o), o;
 };
 let d = class extends v {
@@ -537,14 +556,14 @@ let d = class extends v {
     }
   }
   render() {
-    return this.note ? r`
+    return this.note ? a`
       <div class="header">
         <ha-icon-button class="back-btn" @click=${() => this.dispatchEvent(new CustomEvent("editor-back", { bubbles: !0, composed: !0 }))}>←</ha-icon-button>
         <div class="actions">
           <ha-button size="s" appearance="plain" variant="neutral" @click=${() => {
       clearTimeout(this._saveTimeout), this._save();
     }}>
-            ${this._justSaved ? r`<ha-svg-icon .path=${D}></ha-svg-icon>` : "Save"}
+            ${this._justSaved ? a`<ha-svg-icon .path=${D}></ha-svg-icon>` : "Save"}
           </ha-button>
           <ha-button size="s" appearance="plain" variant="danger" @click=${() => this._onDelete()}>${this._pendingDelete ? "Confirm?" : "Delete"}</ha-button>
         </div>
@@ -571,7 +590,7 @@ let d = class extends v {
         @pin-toggle=${this._onPinToggle}
         @link-open-requested=${this._onLinkOpenRequested}
       ></better-notes-toolbar>
-    ` : r`<div class="empty">Select a note or create one</div>`;
+    ` : a`<div class="empty">Select a note or create one</div>`;
   }
 };
 d.styles = b`
@@ -619,8 +638,8 @@ d = g([
   _("better-notes-editor")
 ], d);
 var W = Object.defineProperty, X = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? X(e, i) : e, n = t.length - 1, a; n >= 0; n--)
-    (a = t[n]) && (o = (s ? a(e, i, o) : a(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? X(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && W(e, i, o), o;
 };
 function Y(t) {
@@ -652,7 +671,7 @@ let p = class extends v {
     if (!this._creatingNote) {
       this._creatingNote = !0;
       try {
-        const t = await I(this.hass, { title: "New Note", content: "", color: T[0], pinned: !1 });
+        const t = await I(this.hass, { title: "New Note", content: "", color: N[0], pinned: !1 });
         await this._loadNotes(), t && (this._selectedId = t, this._view = "editor");
       } finally {
         this._creatingNote = !1;
@@ -675,7 +694,7 @@ let p = class extends v {
     this._view = "list";
   }
   render() {
-    return r`
+    return a`
       <div class="layout">
         <div class="list-pane">
           <better-notes-list
