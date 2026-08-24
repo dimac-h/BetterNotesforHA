@@ -97,7 +97,7 @@ export class BetterNotesCard extends LitElement {
       <div class="note" style="--note-color:${safeColor(note.color)}" @click=${() => this._openPanel()}>
         <div class="note-title">
           <span>${note.title || 'Untitled'}</span>
-          ${note.pinned ? html`<ha-icon .path=${mdiPin}></ha-icon>` : ''}
+          ${note.pinned ? html`<ha-svg-icon .path=${mdiPin}></ha-svg-icon>` : ''}
         </div>
         ${isSingle
           ? html`<div class="note-content" .innerHTML=${sanitizeNoteHtml(note.content || '')}></div>`
@@ -132,7 +132,7 @@ export class BetterNotesCard extends LitElement {
     return html`
       <ha-card style=${cardStyle}>
         <div class="header">
-          <ha-icon .path=${mdiNoteMultipleOutline}></ha-icon>
+          <ha-svg-icon .path=${mdiNoteMultipleOutline}></ha-svg-icon>
           <span>${this._config.title}</span>
         </div>
         ${content}

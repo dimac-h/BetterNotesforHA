@@ -122,6 +122,7 @@ export class BetterNotesEditor extends LitElement {
           placeholder="Note Title"
           .value=${this.note.title || ''}
           @input=${() => this._scheduleSave()}
+          @keydown=${(e: KeyboardEvent) => e.stopPropagation()}
         >
         <better-notes-tiptap-editor
           .content=${this.note.content || ''}

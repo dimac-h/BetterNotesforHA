@@ -1,4 +1,4 @@
-import { i as b, n as l, a as v, d as C, c as L, m as O, b as a, f as E, t as _, r as p, N, s as P, g as S, h as A, u as D, j as I } from "./colors-w_morKZN.js";
+import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as p, N as C, s as E, g as S, h as A, u as D, j as I } from "./colors-w_morKZN.js";
 const z = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
@@ -30,15 +30,15 @@ let x = class extends v {
     super.disconnectedCallback(), this.removeEventListener("click", this._select);
   }
   render() {
-    const t = C(this.note.content || ""), e = t.length > 60 ? `${t.slice(0, 60)}…` : t;
+    const t = N(this.note.content || ""), e = t.length > 60 ? `${t.slice(0, 60)}…` : t;
     return a`
-      <div class="bar" style="background:${L(this.note.color)}"></div>
+      <div class="bar" style="background:${P(this.note.color)}"></div>
       <div class="header">
         <div class="title">${this.note.title || "Untitled"}</div>
-        ${this.note.pinned ? a`<ha-icon .path=${O}></ha-icon>` : ""}
+        ${this.note.pinned ? a`<ha-svg-icon .path=${L}></ha-svg-icon>` : ""}
       </div>
       <div class="preview">${e}</div>
-      <div class="date">${E(this.note.modified)}</div>
+      <div class="date">${O(this.note.modified)}</div>
     `;
   }
 };
@@ -65,7 +65,7 @@ x.styles = b`
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 3px;
     }
     .date { font-size: 11px; color: var(--secondary-text-color); }
-    ha-icon { --mdc-icon-size: 12px; color: var(--secondary-text-color); }
+    ha-svg-icon { --mdc-icon-size: 12px; color: var(--secondary-text-color); }
   `;
 $([
   l({ attribute: !1 })
@@ -95,7 +95,7 @@ let u = class extends v {
   get _filtered() {
     const t = this.searchTerm.toLowerCase();
     return t ? this.notes.filter(
-      (e) => (e.title || "").toLowerCase().includes(t) || C(e.content || "").toLowerCase().includes(t)
+      (e) => (e.title || "").toLowerCase().includes(t) || N(e.content || "").toLowerCase().includes(t)
     ) : this.notes;
   }
   render() {
@@ -103,7 +103,7 @@ let u = class extends v {
     return a`
       <div class="header">
         <h1>Better Notes</h1>
-        <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch}></ha-input>
+        <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e) => e.stopPropagation()}></ha-input>
         <ha-button @click=${this._onNew}>+ New Note</ha-button>
       </div>
       <div class="items">
@@ -135,7 +135,7 @@ k([
 u = k([
   _("better-notes-list")
 ], u);
-var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
+var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && R(e, i, o), o;
@@ -209,7 +209,7 @@ let c = class extends v {
         <ha-button size="small" @click=${() => this._toggleGroup("color")}>Color ▾</ha-button>
         <div class="dropdown">
           <div class="swatches">
-            ${N.map((t) => a`
+            ${C.map((t) => a`
               <div class="dot ${this.color === t ? "active" : ""}" style="background:${t}"
                    @click=${() => this._selectColor(t)}></div>
             `)}
@@ -222,7 +222,7 @@ let c = class extends v {
       <ha-button size="small" @click=${() => this._openLink()}>Link</ha-button>
       ${this._linkOpen ? a`
         <div class="link-row">
-          <ha-input type="url" placeholder="https://…" .value=${this.linkHref}></ha-input>
+          <ha-input type="url" placeholder="https://…" .value=${this.linkHref} @keydown=${(t) => t.stopPropagation()}></ha-input>
           <ha-button size="small" @click=${() => this._applyLink()}>Apply</ha-button>
           <ha-button size="small" @click=${() => this._dispatchAction("unsetLink")}>Remove</ha-button>
           <ha-button size="small" @click=${() => {
@@ -258,25 +258,25 @@ c.styles = b`
     .link-row { display: flex; align-items: center; gap: 6px; width: 100%; padding: 6px 0 2px; flex-basis: 100%; }
     .link-row ha-input { flex: 1; }
   `;
-m([
+g([
   l({ type: Boolean })
 ], c.prototype, "pinned", 2);
-m([
+g([
   l({ type: String })
 ], c.prototype, "color", 2);
-m([
+g([
   l({ type: String })
 ], c.prototype, "linkHref", 2);
-m([
+g([
   p()
 ], c.prototype, "_openGroup", 2);
-m([
+g([
   p()
 ], c.prototype, "_linkOpen", 2);
-c = m([
+c = g([
   _("better-notes-toolbar")
 ], c);
-async function U() {
+async function M() {
   const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }] = await Promise.all([
     import("./index-DpIQkkjT.js").then((r) => r.O),
     import("./index-D5nyuybU.js"),
@@ -296,10 +296,10 @@ async function U() {
     ]
   };
 }
-var M = Object.defineProperty, V = Object.getOwnPropertyDescriptor, T = (t, e, i, s) => {
+var U = Object.defineProperty, V = Object.getOwnPropertyDescriptor, T = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? V(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && M(e, i, o), o;
+  return s && o && U(e, i, o), o;
 };
 let w = class extends v {
   constructor() {
@@ -317,7 +317,7 @@ let w = class extends v {
   async _init() {
     let t;
     try {
-      t = await U();
+      t = await M();
     } catch (s) {
       console.warn("Better Notes: Tiptap failed to load, falling back to textarea", s), t = null;
     }
@@ -405,7 +405,8 @@ let w = class extends v {
         placeholder="Start typing..."
         .value=${this.content}
         @input=${() => this._emitChanged()}
-      ></textarea>` : a`<div id="mount"></div>`;
+        @keydown=${(t) => t.stopPropagation()}
+      ></textarea>` : a`<div id="mount" @keydown=${(t) => t.stopPropagation()}></div>`;
   }
 };
 w.styles = b`
@@ -414,6 +415,11 @@ w.styles = b`
       width: 100%; min-height: 300px; font-size: 15px; line-height: 1.6;
       border: none; outline: none; resize: none; color: var(--primary-text-color);
       background: transparent; font-family: inherit;
+    }
+    .ProseMirror,
+    .ProseMirror:focus,
+    .ProseMirror:focus-visible {
+      outline: none;
     }
   `;
 T([
@@ -425,7 +431,7 @@ T([
 w = T([
   _("better-notes-tiptap-editor")
 ], w);
-var K = Object.defineProperty, F = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
+var K = Object.defineProperty, F = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? F(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && K(e, i, o), o;
@@ -495,6 +501,7 @@ let d = class extends v {
           placeholder="Note Title"
           .value=${this.note.title || ""}
           @input=${() => this._scheduleSave()}
+          @keydown=${(t) => t.stopPropagation()}
         >
         <better-notes-tiptap-editor
           .content=${this.note.content || ""}
@@ -537,22 +544,22 @@ d.styles = b`
       pointer-events: none; z-index: 1000;
     }
   `;
-g([
+m([
   l({ attribute: !1 })
 ], d.prototype, "note", 2);
-g([
+m([
   p()
 ], d.prototype, "_pendingDelete", 2);
-g([
+m([
   p()
 ], d.prototype, "_showToast", 2);
-g([
+m([
   y("better-notes-tiptap-editor")
 ], d.prototype, "_tiptap", 2);
-g([
+m([
   y(".title-input")
 ], d.prototype, "_titleInput", 2);
-d = g([
+d = m([
   _("better-notes-editor")
 ], d);
 var J = Object.defineProperty, Q = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
@@ -565,7 +572,7 @@ function W(t) {
 }
 let h = class extends v {
   constructor() {
-    super(...arguments), this._notes = [], this._selectedId = null, this._searchTerm = "", this._view = "list";
+    super(...arguments), this._notes = [], this._selectedId = null, this._searchTerm = "", this._view = "list", this._creatingNote = !1;
   }
   connectedCallback() {
     super.connectedCallback(), this.hass && this._init();
@@ -577,7 +584,7 @@ let h = class extends v {
     t.has("hass") && this.hass && !this._unsubscribe && this._init(), t.has("_view") && this.setAttribute("data-view", this._view);
   }
   async _init() {
-    await this._loadNotes(), this._unsubscribe = await P(this.hass, () => this._loadNotes());
+    await this._loadNotes(), this._unsubscribe = await E(this.hass, () => this._loadNotes());
   }
   async _loadNotes() {
     this._notes = W(await S(this.hass));
@@ -586,8 +593,15 @@ let h = class extends v {
     return this._notes.find((t) => t.note_id === this._selectedId) ?? null;
   }
   async _onNoteNew() {
-    const t = await A(this.hass, { title: "New Note", content: "", color: N[0], pinned: !1 });
-    await this._loadNotes(), t && (this._selectedId = t, this._view = "editor");
+    if (!this._creatingNote) {
+      this._creatingNote = !0;
+      try {
+        const t = await A(this.hass, { title: "New Note", content: "", color: C[0], pinned: !1 });
+        await this._loadNotes(), t && (this._selectedId = t, this._view = "editor");
+      } finally {
+        this._creatingNote = !1;
+      }
+    }
   }
   _onNoteSelect(t) {
     this._selectedId = t.detail.noteId, this._view = "editor";

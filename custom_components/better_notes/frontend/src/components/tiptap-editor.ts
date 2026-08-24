@@ -17,6 +17,11 @@ export class BetterNotesTiptapEditor extends LitElement {
       border: none; outline: none; resize: none; color: var(--primary-text-color);
       background: transparent; font-family: inherit;
     }
+    .ProseMirror,
+    .ProseMirror:focus,
+    .ProseMirror:focus-visible {
+      outline: none;
+    }
   `;
 
   @property({ attribute: false }) content = '';
@@ -120,9 +125,10 @@ export class BetterNotesTiptapEditor extends LitElement {
         placeholder="Start typing..."
         .value=${this.content}
         @input=${() => this._emitChanged()}
+        @keydown=${(e: KeyboardEvent) => e.stopPropagation()}
       ></textarea>`;
     }
-    return html`<div id="mount"></div>`;
+    return html`<div id="mount" @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></div>`;
   }
 }
 

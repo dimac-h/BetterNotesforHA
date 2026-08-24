@@ -168,7 +168,7 @@ let l = class extends f {
       <div class="note" style="--note-color:${u(t.color)}" @click=${() => this._openPanel()}>
         <div class="note-title">
           <span>${t.title || "Untitled"}</span>
-          ${t.pinned ? s`<ha-icon .path=${x}></ha-icon>` : ""}
+          ${t.pinned ? s`<ha-svg-icon .path=${x}></ha-svg-icon>` : ""}
         </div>
         ${e ? s`<div class="note-content" .innerHTML=${B(t.content || "")}></div>` : s`<div class="note-content">${(() => {
       const i = y(t.content || "");
@@ -196,7 +196,7 @@ let l = class extends f {
     return s`
       <ha-card style=${t}>
         <div class="header">
-          <ha-icon .path=${N}></ha-icon>
+          <ha-svg-icon .path=${N}></ha-svg-icon>
           <span>${this._config.title}</span>
         </div>
         ${e}

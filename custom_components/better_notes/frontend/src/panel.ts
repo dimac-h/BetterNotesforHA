@@ -36,6 +36,7 @@ export class BetterNotesPanel extends LitElement {
   @state() private _view: 'list' | 'editor' = 'list';
 
   private _unsubscribe?: () => void;
+  private _creatingNote = false;
 
   connectedCallback(): void {
     super.connectedCallback();
@@ -67,11 +68,17 @@ export class BetterNotesPanel extends LitElement {
   }
 
   private async _onNoteNew(): Promise<void> {
-    const noteId = await createNote(this.hass, { title: 'New Note', content: '', color: NOTE_COLORS[0], pinned: false });
-    await this._loadNotes();
-    if (noteId) {
-      this._selectedId = noteId;
-      this._view = 'editor';
+    if (this._creatingNote) return;
+    this._creatingNote = true;
+    try {
+      const noteId = await createNote(this.hass, { title: 'New Note', content: '', color: NOTE_COLORS[0], pinned: false });
+      await this._loadNotes();
+      if (noteId) {
+        this._selectedId = noteId;
+        this._view = 'editor';
+      }
+    } finally {
+      this._creatingNote = false;
     }
   }
 

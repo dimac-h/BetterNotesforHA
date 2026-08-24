@@ -43,7 +43,7 @@ export class BetterNotesList extends LitElement {
     return html`
       <div class="header">
         <h1>Better Notes</h1>
-        <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch}></ha-input>
+        <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
         <ha-button @click=${this._onNew}>+ New Note</ha-button>
       </div>
       <div class="items">
