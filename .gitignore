@@ -29,6 +29,7 @@ wheels/
 *.db
 *.db-shm
 *.db-wal
+dev/config/
 
 # IDE
 .vscode/
