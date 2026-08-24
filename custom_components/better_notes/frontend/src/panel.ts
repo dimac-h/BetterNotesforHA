@@ -23,6 +23,7 @@ export class BetterNotesPanel extends LitElement {
     .editor-pane { flex: 1; min-width: 0; }
     @media (min-width: 768px) { .list-pane { width: 280px; } }
     @media (max-width: 767px) {
+      .list-pane { width: 100%; flex: 1; }
       :host([data-view="list"]) .editor-pane { display: none; }
       :host([data-view="editor"]) .list-pane { display: none; }
     }

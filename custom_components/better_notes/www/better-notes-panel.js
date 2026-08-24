@@ -76,7 +76,7 @@ $([
 x = $([
   _("better-notes-list-item")
 ], x);
-var G = Object.defineProperty, M = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
+var G = Object.defineProperty, M = Object.getOwnPropertyDescriptor, k = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? M(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && G(e, i, o), o;
@@ -123,16 +123,16 @@ u.styles = b`
     .items { flex: 1; overflow-y: auto; padding: 10px; }
     .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
   `;
-w([
+k([
   l({ attribute: !1 })
 ], u.prototype, "notes", 2);
-w([
+k([
   l({ type: String })
 ], u.prototype, "selectedNoteId", 2);
-w([
+k([
   l({ type: String })
 ], u.prototype, "searchTerm", 2);
-u = w([
+u = k([
   _("better-notes-list")
 ], u);
 var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
@@ -306,7 +306,7 @@ var V = Object.defineProperty, K = Object.getOwnPropertyDescriptor, C = (t, e, i
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && V(e, i, o), o;
 };
-let k = class extends v {
+let w = class extends v {
   constructor() {
     super(...arguments), this.content = "", this._editor = null, this._fallback = !1, this._lastEmitted = "";
   }
@@ -414,7 +414,7 @@ let k = class extends v {
       ></textarea>` : a`<div id="mount" @keydown=${(t) => t.stopPropagation()}></div>`;
   }
 };
-k.styles = b`
+w.styles = b`
     :host { display: flex; flex-direction: column; min-height: 0; flex: 1; }
     .fallback {
       width: 100%; min-height: 300px; font-size: 15px; line-height: 1.6;
@@ -456,13 +456,13 @@ k.styles = b`
   `;
 C([
   l({ attribute: !1 })
-], k.prototype, "content", 2);
+], w.prototype, "content", 2);
 C([
   y("#mount")
-], k.prototype, "_mount", 2);
-k = C([
+], w.prototype, "_mount", 2);
+w = C([
   _("better-notes-tiptap-editor")
-], k);
+], w);
 var F = Object.defineProperty, J = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? J(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
@@ -685,6 +685,7 @@ p.styles = b`
     .editor-pane { flex: 1; min-width: 0; }
     @media (min-width: 768px) { .list-pane { width: 280px; } }
     @media (max-width: 767px) {
+      .list-pane { width: 100%; flex: 1; }
       :host([data-view="list"]) .editor-pane { display: none; }
       :host([data-view="editor"]) .list-pane { display: none; }
     }
