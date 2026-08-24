@@ -16,7 +16,8 @@
 - Target component set is HA 2026.5+ (per `hacs.json`'s `"homeassistant": "2026.8.0"`): use `ha-input` (not the removed `ha-textfield`), `ha-button` (not the removed `ha-fab`/deprecated `mwc-button`).
 - No automated test suite exists in this repo and this work doesn't introduce one (per the spec's Testing section) — verification is `npm run build` / `tsc --noEmit` per task, plus a manual functional pass via `dev/docker-compose.yml` at the end.
 - Behavior parity: every interaction in the current `www/better-notes-panel.js` and `www/better-notes-card.js` (search, create, autosave-on-type with 1s debounce, two-click delete confirm with 3s timeout, pin, 10-color picker, link editor, tag *display* only — no tag editing exists today and none is being added) must still work identically after the rewrite.
-- `frontend/dist/` is gitignored — not committed. `www/tiptap-bundle.js` is untouched and stays committed as-is.
+- `frontend/dist/` is gitignored — not committed.
+- The existing root-level `package.json`/`package-lock.json` + `scripts/tiptap-entry.js` esbuild pipeline (which produces the committed `www/tiptap-bundle.js` IIFE, currently pinned to Tiptap `3.27.1`) is removed — the same Tiptap packages (`@tiptap/core`, `@tiptap/starter-kit`, `@tiptap/extension-task-list`, `@tiptap/extension-task-item`, `@tiptap/extension-link`, `@tiptap/extension-highlight`) move into `frontend/package.json`, bumped to the latest release (`3.30.3`), and are loaded via dynamic `import()` instead.
 
 ---
 
@@ -43,14 +44,15 @@ custom_components/better_notes/
         note-toolbar.ts
         tiptap-editor.ts
   www/
-    better-notes-panel.js   # build output (copied from frontend/dist/)
+    better-notes-panel.js   # build output (copied from frontend/dist/, includes a lazy Tiptap chunk)
     better-notes-card.js    # build output (copied from frontend/dist/)
-    tiptap-bundle.js         # unchanged
 .github/workflows/
   validate.yml
   release.yml
 hacs.json                    # gains zip_release + filename
 ```
+
+Removed as part of this plan: root `package.json`, `package-lock.json`, `scripts/tiptap-entry.js`, and the committed `custom_components/better_notes/www/tiptap-bundle.js` artifact — see Task 1 Step 11.
 
 ---
 
@@ -85,7 +87,13 @@ hacs.json                    # gains zip_release + filename
   },
   "dependencies": {
     "@mdi/js": "^7.4.47",
-    "lit": "^3.3.3"
+    "lit": "^3.3.3",
+    "@tiptap/core": "3.30.3",
+    "@tiptap/starter-kit": "3.30.3",
+    "@tiptap/extension-task-list": "3.30.3",
+    "@tiptap/extension-task-item": "3.30.3",
+    "@tiptap/extension-link": "3.30.3",
+    "@tiptap/extension-highlight": "3.30.3"
   },
   "devDependencies": {
     "typescript": "^7.0.2",
@@ -93,6 +101,8 @@ hacs.json                    # gains zip_release + filename
   }
 }
 ```
+
+Tiptap versions are pinned exactly (no `^`), same policy as the root `package.json` this replaces (which pinned `3.27.1` across the board) — bumped here to the latest available release, `3.30.3`, since re-pinning is happening anyway. Tiptap extensions must all be on the same version to avoid cross-package schema mismatches, so this project pins all of them together rather than letting them drift independently.
 
 - [ ] **Step 2: Create `tsconfig.json`**
 
@@ -354,10 +364,20 @@ npm run build
 ```
 Expected: `npm run build` completes with no TypeScript errors, producing `dist/better-notes-panel.js` and `dist/better-notes-card.js`.
 
-- [ ] **Step 10: Commit**
+- [ ] **Step 10: Remove the old root-level Tiptap build pipeline**
+
+Its deps now live in `frontend/package.json` (Step 1) and its loading mechanism is replaced in Task 2.
 
 ```bash
-git add custom_components/better_notes/frontend/package.json \
+git rm package.json package-lock.json scripts/tiptap-entry.js
+git rm custom_components/better_notes/www/tiptap-bundle.js
+rmdir scripts 2>/dev/null || true
+```
+
+- [ ] **Step 11: Commit**
+
+```bash
+git add -A custom_components/better_notes/frontend/package.json \
         custom_components/better_notes/frontend/package-lock.json \
         custom_components/better_notes/frontend/tsconfig.json \
         custom_components/better_notes/frontend/vite.config.ts \
@@ -370,54 +390,50 @@ git commit -m "feat: scaffold frontend build (Vite + Lit + TypeScript)"
 ### Task 2: Tiptap editor wrapper
 
 **Files:**
+- Create: `custom_components/better_notes/frontend/src/tiptap-extensions.ts`
 - Create: `custom_components/better_notes/frontend/src/components/tiptap-editor.ts`
 
 **Interfaces:**
 - Consumes: nothing from earlier tasks besides the toolchain.
-- Produces: `<better-notes-tiptap-editor>` element with `.content: string` property, `content-changed` CustomEvent (`detail: { html: string }`), and public methods `getHTML(): string`, `runAction(action: ToolbarAction, payload?: { href?: string }): void`, `getLinkHref(): string`. Exports the `ToolbarAction` type. Task 3 (`note-toolbar.ts`) consumes `ToolbarAction`; Task 4 (`note-editor.ts`) consumes the element, its events, and its methods.
+- Produces: `loadTiptapExtensions()` from `tiptap-extensions.ts` (consumed only by `tiptap-editor.ts`); `<better-notes-tiptap-editor>` element with `.content: string` property, `content-changed` CustomEvent (`detail: { html: string }`), and public methods `getHTML(): string`, `runAction(action: ToolbarAction, payload?: { href?: string }): void`, `getLinkHref(): string`. Exports the `ToolbarAction` type. Task 3 (`note-toolbar.ts`) consumes `ToolbarAction`; Task 4 (`note-editor.ts`) consumes the element, its events, and its methods.
 
-- [ ] **Step 1: Create `src/components/tiptap-editor.ts`**
+`tiptap-extensions.ts` isolates *which* Tiptap packages are loaded from the editor lifecycle in `tiptap-editor.ts` — adding a future extension (the user has a list planned) is then a two-line change confined to this one file: `npm install @tiptap/extension-whatever` in `frontend/`, add one line to the `Promise.all` below and one line to the returned `extensions` array. No other file needs to change, and no separate build step exists anymore to remember to re-run (unlike the old `scripts/tiptap-entry.js` + `npm run build:tiptap` pipeline this replaces) — `npm run build` picks it up automatically.
+
+- [ ] **Step 1: Create `src/tiptap-extensions.ts`**
+
+```typescript
+// Adding a new Tiptap extension: `npm install @tiptap/extension-X` in
+// frontend/, then add it to the Promise.all below and to the returned
+// extensions array. That's the whole surface area — tiptap-editor.ts
+// never needs to change for a new extension.
+export async function loadTiptapExtensions() {
+  const [{ Editor }, { StarterKit }, { TaskList }, { TaskItem }, { Link }, { Highlight }] = await Promise.all([
+    import('@tiptap/core'),
+    import('@tiptap/starter-kit'),
+    import('@tiptap/extension-task-list'),
+    import('@tiptap/extension-task-item'),
+    import('@tiptap/extension-link'),
+    import('@tiptap/extension-highlight'),
+  ]);
+  return {
+    Editor,
+    extensions: [
+      StarterKit.configure({ heading: { levels: [1, 2, 3] }, link: false }),
+      TaskList,
+      TaskItem.configure({ nested: true }),
+      Link.configure({ openOnClick: false }),
+      Highlight,
+    ],
+  };
+}
+```
+
+- [ ] **Step 2: Create `src/components/tiptap-editor.ts`**
 
 ```typescript
 import { LitElement, html, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-
-interface TiptapBundleGlobal {
-  Editor: any;
-  StarterKit: any;
-  TaskList: any;
-  TaskItem: any;
-  Link: any;
-  Highlight: any;
-}
-
-declare global {
-  interface Window {
-    TiptapBundle?: TiptapBundleGlobal;
-  }
-}
-
-let bundlePromise: Promise<TiptapBundleGlobal> | null = null;
-
-function loadTiptapBundle(): Promise<TiptapBundleGlobal> {
-  if (window.TiptapBundle) return Promise.resolve(window.TiptapBundle);
-  if (bundlePromise) return bundlePromise;
-  bundlePromise = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = '/better_notes_panel/tiptap-bundle.js';
-    script.onload = () => {
-      if (window.TiptapBundle) resolve(window.TiptapBundle);
-      else reject(new Error('TiptapBundle not found after script load'));
-    };
-    script.onerror = () => {
-      script.remove();
-      bundlePromise = null;
-      reject(new Error('Failed to load tiptap-bundle.js'));
-    };
-    document.head.appendChild(script);
-  });
-  return bundlePromise;
-}
+import { loadTiptapExtensions } from '../tiptap-extensions';
 
 export type ToolbarAction =
   | 'paragraph' | 'h1' | 'h2' | 'h3'
@@ -465,29 +481,23 @@ export class BetterNotesTiptapEditor extends LitElement {
   }
 
   private async _init(): Promise<void> {
-    let bundle: TiptapBundleGlobal | null;
+    let loaded: Awaited<ReturnType<typeof loadTiptapExtensions>> | null;
     try {
-      bundle = await loadTiptapBundle();
+      loaded = await loadTiptapExtensions();
     } catch (err) {
       console.warn('Better Notes: Tiptap failed to load, falling back to textarea', err);
-      bundle = null;
+      loaded = null;
     }
-    if (!bundle || !this._mount) {
+    if (!loaded || !this._mount) {
       this._fallback = true;
       this.requestUpdate();
       return;
     }
-    const { Editor, StarterKit, TaskList, TaskItem, Link, Highlight } = bundle;
+    const { Editor, extensions } = loaded;
     this._lastEmitted = this.content;
     this._editor = new Editor({
       element: this._mount,
-      extensions: [
-        StarterKit.configure({ heading: { levels: [1, 2, 3] }, link: false }),
-        TaskList,
-        TaskItem.configure({ nested: true }),
-        Link.configure({ openOnClick: false }),
-        Highlight,
-      ],
+      extensions,
       content: this.content,
       autofocus: 'end',
       onUpdate: () => this._emitChanged(),

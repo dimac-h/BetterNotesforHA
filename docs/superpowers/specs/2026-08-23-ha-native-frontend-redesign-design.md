@@ -57,7 +57,7 @@ Rather than inventing a design system (as `home-upkeep-addon` did with its own `
 
 `DEFAULT_COLORS` (the 10 note accent colors in `const.py`) stay as user-facing note colors — those are content, not chrome, and are intentionally vivid/distinct from the neutral HA theme surface.
 
-The rich-text body editor continues to use Tiptap (the same pinned `3.27.1` packages, same extension set: StarterKit, TaskList, TaskItem, Link, Highlight) — only *how* it's bundled changes, per the "Folding in the existing Tiptap build" note above. `components/tiptap-editor.ts` mounts it into a plain `div` inside its own shadow DOM.
+The rich-text body editor continues to use Tiptap (same extension set: StarterKit, TaskList, TaskItem, Link, Highlight) — bumped from the currently-pinned `3.27.1` to the latest release, `3.30.3`, since the packages are being re-pinned in `frontend/package.json` anyway. Only *how* it's bundled changes otherwise, per the "Folding in the existing Tiptap build" note above. `components/tiptap-editor.ts` mounts it into a plain `div` inside its own shadow DOM.
 
 ### 3. Component split
 
