@@ -9,6 +9,7 @@ export class BetterNotesList extends LitElement {
   static styles = css`
     :host { display: flex; flex-direction: column; height: 100%; background: var(--secondary-background-color); }
     .header { padding: 16px; border-bottom: 1px solid var(--divider-color); }
+    .title-row { display: flex; align-items: center; gap: 4px; }
     h1 { font-size: 22px; font-weight: 600; color: var(--primary-text-color); margin: 0 0 12px; }
     ha-input { display: block; width: 100%; margin-bottom: 10px; }
     ha-button { width: 100%; }
@@ -42,7 +43,10 @@ export class BetterNotesList extends LitElement {
     const filtered = this._filtered;
     return html`
       <div class="header">
-        <h1>Better Notes</h1>
+        <div class="title-row">
+          <ha-menu-button></ha-menu-button>
+          <h1>Better Notes</h1>
+        </div>
         <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
         <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>+ New Note</ha-button>
       </div>

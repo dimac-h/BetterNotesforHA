@@ -1,4 +1,4 @@
-import { i as b, n as l, a as v, d as P, c as L, m as O, b as a, f as E, t as _, r as h, N, h as D, s as S, g as A, j as I, u as z, k as B } from "./colors-CMfYGb1F.js";
+import { i as b, n as l, a as v, d as P, c as L, m as O, b as a, f as E, t as m, r as h, N, h as D, s as S, g as A, j as I, u as z, k as B } from "./colors-CMfYGb1F.js";
 const j = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
@@ -74,7 +74,7 @@ $([
   l({ type: Boolean, reflect: !0 })
 ], x.prototype, "active", 2);
 x = $([
-  _("better-notes-list-item")
+  m("better-notes-list-item")
 ], x);
 var G = Object.defineProperty, q = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
@@ -102,7 +102,10 @@ let u = class extends v {
     const t = this._filtered;
     return a`
       <div class="header">
-        <h1>Better Notes</h1>
+        <div class="title-row">
+          <ha-menu-button></ha-menu-button>
+          <h1>Better Notes</h1>
+        </div>
         <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e) => e.stopPropagation()}></ha-input>
         <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>+ New Note</ha-button>
       </div>
@@ -117,6 +120,7 @@ let u = class extends v {
 u.styles = b`
     :host { display: flex; flex-direction: column; height: 100%; background: var(--secondary-background-color); }
     .header { padding: 16px; border-bottom: 1px solid var(--divider-color); }
+    .title-row { display: flex; align-items: center; gap: 4px; }
     h1 { font-size: 22px; font-weight: 600; color: var(--primary-text-color); margin: 0 0 12px; }
     ha-input { display: block; width: 100%; margin-bottom: 10px; }
     ha-button { width: 100%; }
@@ -133,9 +137,9 @@ w([
   l({ type: String })
 ], u.prototype, "searchTerm", 2);
 u = w([
-  _("better-notes-list")
+  m("better-notes-list")
 ], u);
-var R = Object.defineProperty, U = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
+var R = Object.defineProperty, U = Object.getOwnPropertyDescriptor, _ = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? U(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && R(e, i, o), o;
@@ -267,23 +271,23 @@ c.styles = b`
     .link-row { display: flex; align-items: center; gap: 6px; width: 100%; padding: 6px 0 2px; flex-basis: 100%; }
     .link-row ha-input { flex: 1; }
   `;
-m([
+_([
   l({ type: Boolean })
 ], c.prototype, "pinned", 2);
-m([
+_([
   l({ type: String })
 ], c.prototype, "color", 2);
-m([
+_([
   l({ type: String })
 ], c.prototype, "linkHref", 2);
-m([
+_([
   h()
 ], c.prototype, "_openGroup", 2);
-m([
+_([
   h()
 ], c.prototype, "_linkOpen", 2);
-c = m([
-  _("better-notes-toolbar")
+c = _([
+  m("better-notes-toolbar")
 ], c);
 async function V() {
   const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }, { ListItem: r }] = await Promise.all([
@@ -501,7 +505,7 @@ C([
   y("#mount")
 ], k.prototype, "_mount", 2);
 k = C([
-  _("better-notes-tiptap-editor")
+  m("better-notes-tiptap-editor")
 ], k);
 var J = Object.defineProperty, Q = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? Q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
@@ -635,7 +639,7 @@ g([
   y(".title-input")
 ], d.prototype, "_titleInput", 2);
 d = g([
-  _("better-notes-editor")
+  m("better-notes-editor")
 ], d);
 var W = Object.defineProperty, X = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? X(e, i) : e, n = t.length - 1, r; n >= 0; n--)
@@ -746,7 +750,7 @@ f([
   h()
 ], p.prototype, "_view", 2);
 p = f([
-  _("better-notes-panel")
+  m("better-notes-panel")
 ], p);
 export {
   p as BetterNotesPanel
