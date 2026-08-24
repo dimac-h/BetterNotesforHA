@@ -130,7 +130,7 @@ export class BetterNotesToolbar extends LitElement {
       <ha-button size="small" @click=${() => this._openLink()}>Link</ha-button>
       ${this._linkOpen ? html`
         <div class="link-row">
-          <ha-input type="url" placeholder="https://…" .value=${this.linkHref}></ha-input>
+          <ha-input type="url" placeholder="https://…" .value=${this.linkHref} @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
           <ha-button size="small" @click=${() => this._applyLink()}>Apply</ha-button>
           <ha-button size="small" @click=${() => this._dispatchAction('unsetLink')}>Remove</ha-button>
           <ha-button size="small" @click=${() => { this._linkOpen = false; }}>✕</ha-button>

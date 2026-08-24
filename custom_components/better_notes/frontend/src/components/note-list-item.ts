@@ -29,7 +29,7 @@ export class BetterNotesListItem extends LitElement {
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 3px;
     }
     .date { font-size: 11px; color: var(--secondary-text-color); }
-    ha-icon { --mdc-icon-size: 12px; color: var(--secondary-text-color); }
+    ha-svg-icon { --mdc-icon-size: 12px; color: var(--secondary-text-color); }
   `;
 
   @property({ attribute: false }) note!: Note;
@@ -60,7 +60,7 @@ export class BetterNotesListItem extends LitElement {
       <div class="bar" style="background:${safeColor(this.note.color)}"></div>
       <div class="header">
         <div class="title">${this.note.title || 'Untitled'}</div>
-        ${this.note.pinned ? html`<ha-icon .path=${mdiPin}></ha-icon>` : ''}
+        ${this.note.pinned ? html`<ha-svg-icon .path=${mdiPin}></ha-svg-icon>` : ''}
       </div>
       <div class="preview">${truncated}</div>
       <div class="date">${formatRelativeDate(this.note.modified)}</div>
