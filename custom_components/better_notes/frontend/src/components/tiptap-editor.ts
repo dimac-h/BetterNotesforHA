@@ -51,7 +51,7 @@ export class BetterNotesTiptapEditor extends LitElement {
   updated(changed: Map<string, unknown>): void {
     if (changed.has('content') && this._editor && this.content !== this._lastEmitted) {
       this._lastEmitted = this.content;
-      this._editor.commands.setContent(this.content);
+      this._editor.commands.setContent(this.content, { emitUpdate: false });
       this._editor.commands.focus('end');
     }
   }

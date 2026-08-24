@@ -1,17 +1,17 @@
-import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as p, N as C, s as E, g as S, h as A, u as D, j as I } from "./colors-w_morKZN.js";
-const z = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
+import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as p, N as T, h as E, s as S, g as A, j as D, u as I, k as j } from "./colors-CMfYGb1F.js";
+const H = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
     const n = (r) => r.renderRoot?.querySelector(t) ?? null;
-    return z(i, s, { get() {
+    return H(i, s, { get() {
       return n(this);
     } });
   };
 }
-var H = Object.defineProperty, j = Object.getOwnPropertyDescriptor, $ = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? j(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var z = Object.defineProperty, B = Object.getOwnPropertyDescriptor, $ = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? B(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && H(e, i, o), o;
+  return s && o && z(e, i, o), o;
 };
 let x = class extends v {
   constructor() {
@@ -76,10 +76,10 @@ $([
 x = $([
   _("better-notes-list-item")
 ], x);
-var B = Object.defineProperty, G = Object.getOwnPropertyDescriptor, k = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? G(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var G = Object.defineProperty, R = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? R(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && B(e, i, o), o;
+  return s && o && G(e, i, o), o;
 };
 let u = class extends v {
   constructor() {
@@ -123,22 +123,22 @@ u.styles = b`
     .items { flex: 1; overflow-y: auto; padding: 10px; }
     .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
   `;
-k([
+w([
   l({ attribute: !1 })
 ], u.prototype, "notes", 2);
-k([
+w([
   l({ type: String })
 ], u.prototype, "selectedNoteId", 2);
-k([
+w([
   l({ type: String })
 ], u.prototype, "searchTerm", 2);
-u = k([
+u = w([
   _("better-notes-list")
 ], u);
-var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var q = Object.defineProperty, M = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? M(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && R(e, i, o), o;
+  return s && o && q(e, i, o), o;
 };
 let c = class extends v {
   constructor() {
@@ -209,7 +209,7 @@ let c = class extends v {
         <ha-button size="small" @click=${() => this._toggleGroup("color")}>Color ▾</ha-button>
         <div class="dropdown">
           <div class="swatches">
-            ${C.map((t) => a`
+            ${T.map((t) => a`
               <div class="dot ${this.color === t ? "active" : ""}" style="background:${t}"
                    @click=${() => this._selectColor(t)}></div>
             `)}
@@ -276,7 +276,7 @@ m([
 c = m([
   _("better-notes-toolbar")
 ], c);
-async function M() {
+async function U() {
   const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }] = await Promise.all([
     import("./index-DpIQkkjT.js").then((r) => r.O),
     import("./index-D5nyuybU.js"),
@@ -296,12 +296,12 @@ async function M() {
     ]
   };
 }
-var U = Object.defineProperty, V = Object.getOwnPropertyDescriptor, T = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? V(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var V = Object.defineProperty, K = Object.getOwnPropertyDescriptor, C = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? K(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && U(e, i, o), o;
+  return s && o && V(e, i, o), o;
 };
-let w = class extends v {
+let k = class extends v {
   constructor() {
     super(...arguments), this.content = "", this._editor = null, this._fallback = !1, this._lastEmitted = "";
   }
@@ -312,12 +312,12 @@ let w = class extends v {
     super.disconnectedCallback(), this._editor?.destroy(), this._editor = null;
   }
   updated(t) {
-    t.has("content") && this._editor && this.content !== this._lastEmitted && (this._lastEmitted = this.content, this._editor.commands.setContent(this.content), this._editor.commands.focus("end"));
+    t.has("content") && this._editor && this.content !== this._lastEmitted && (this._lastEmitted = this.content, this._editor.commands.setContent(this.content, { emitUpdate: !1 }), this._editor.commands.focus("end"));
   }
   async _init() {
     let t;
     try {
-      t = await M();
+      t = await U();
     } catch (s) {
       console.warn("Better Notes: Tiptap failed to load, falling back to textarea", s), t = null;
     }
@@ -409,7 +409,7 @@ let w = class extends v {
       ></textarea>` : a`<div id="mount" @keydown=${(t) => t.stopPropagation()}></div>`;
   }
 };
-w.styles = b`
+k.styles = b`
     :host { display: flex; flex-direction: column; min-height: 0; flex: 1; }
     .fallback {
       width: 100%; min-height: 300px; font-size: 15px; line-height: 1.6;
@@ -426,23 +426,23 @@ w.styles = b`
       flex: 1; min-height: 100%; cursor: text;
     }
   `;
-T([
+C([
   l({ attribute: !1 })
-], w.prototype, "content", 2);
-T([
+], k.prototype, "content", 2);
+C([
   y("#mount")
-], w.prototype, "_mount", 2);
-w = T([
+], k.prototype, "_mount", 2);
+k = C([
   _("better-notes-tiptap-editor")
-], w);
-var K = Object.defineProperty, F = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? F(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+], k);
+var F = Object.defineProperty, J = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? J(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && K(e, i, o), o;
+  return s && o && F(e, i, o), o;
 };
 let d = class extends v {
   constructor() {
-    super(...arguments), this.note = null, this._pendingDelete = !1, this._showToast = !1;
+    super(...arguments), this.note = null, this._pendingDelete = !1, this._justSaved = !1;
   }
   disconnectedCallback() {
     super.disconnectedCallback(), clearTimeout(this._saveTimeout), clearTimeout(this._deleteTimeout), clearTimeout(this._toastTimeout);
@@ -459,9 +459,9 @@ let d = class extends v {
       color: t.color ?? this.note.color,
       pinned: t.pinned ?? this.note.pinned
     };
-    this.dispatchEvent(new CustomEvent("note-save", { detail: e, bubbles: !0, composed: !0 })), this._showToast = !0, clearTimeout(this._toastTimeout), this._toastTimeout = setTimeout(() => {
-      this._showToast = !1;
-    }, 1500);
+    this.dispatchEvent(new CustomEvent("note-save", { detail: e, bubbles: !0, composed: !0 })), this._justSaved = !0, clearTimeout(this._toastTimeout), this._toastTimeout = setTimeout(() => {
+      this._justSaved = !1;
+    }, 500);
   }
   _onToolbarAction(t) {
     this._tiptap?.runAction(t.detail.action, t.detail.payload);
@@ -494,7 +494,9 @@ let d = class extends v {
         <div class="actions">
           <ha-button @click=${() => {
       clearTimeout(this._saveTimeout), this._save();
-    }}>Save</ha-button>
+    }}>
+            ${this._justSaved ? a`<ha-svg-icon .path=${E}></ha-svg-icon>` : "Save"}
+          </ha-button>
           <ha-button @click=${() => this._onDelete()}>${this._pendingDelete ? "Confirm?" : "Delete"}</ha-button>
         </div>
       </div>
@@ -520,7 +522,6 @@ let d = class extends v {
         @pin-toggle=${this._onPinToggle}
         @link-open-requested=${this._onLinkOpenRequested}
       ></better-notes-toolbar>
-      ${this._showToast ? a`<div class="toast">Saved</div>` : ""}
     ` : a`<div class="empty">Select a note or create one</div>`;
   }
 };
@@ -543,11 +544,6 @@ d.styles = b`
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       height: 100%; color: var(--secondary-text-color);
     }
-    .toast {
-      position: absolute; bottom: 24px; right: 24px; background: var(--primary-text-color);
-      color: var(--card-background-color); padding: 8px 16px; border-radius: 4px; font-size: 13px;
-      pointer-events: none; z-index: 1000;
-    }
   `;
 g([
   l({ attribute: !1 })
@@ -557,7 +553,7 @@ g([
 ], d.prototype, "_pendingDelete", 2);
 g([
   p()
-], d.prototype, "_showToast", 2);
+], d.prototype, "_justSaved", 2);
 g([
   y("better-notes-tiptap-editor")
 ], d.prototype, "_tiptap", 2);
@@ -567,12 +563,12 @@ g([
 d = g([
   _("better-notes-editor")
 ], d);
-var J = Object.defineProperty, Q = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? Q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var Q = Object.defineProperty, W = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? W(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && J(e, i, o), o;
+  return s && o && Q(e, i, o), o;
 };
-function W(t) {
+function X(t) {
   return [...t].sort((e, i) => e.pinned !== i.pinned ? e.pinned ? -1 : 1 : new Date(i.modified).getTime() - new Date(e.modified).getTime());
 }
 let h = class extends v {
@@ -589,10 +585,10 @@ let h = class extends v {
     t.has("hass") && this.hass && !this._unsubscribe && this._init(), t.has("_view") && this.setAttribute("data-view", this._view);
   }
   async _init() {
-    await this._loadNotes(), this._unsubscribe = await E(this.hass, () => this._loadNotes());
+    await this._loadNotes(), this._unsubscribe = await S(this.hass, () => this._loadNotes());
   }
   async _loadNotes() {
-    this._notes = W(await S(this.hass));
+    this._notes = X(await A(this.hass));
   }
   get _selectedNote() {
     return this._notes.find((t) => t.note_id === this._selectedId) ?? null;
@@ -601,7 +597,7 @@ let h = class extends v {
     if (!this._creatingNote) {
       this._creatingNote = !0;
       try {
-        const t = await A(this.hass, { title: "New Note", content: "", color: C[0], pinned: !1 });
+        const t = await D(this.hass, { title: "New Note", content: "", color: T[0], pinned: !1 });
         await this._loadNotes(), t && (this._selectedId = t, this._view = "editor");
       } finally {
         this._creatingNote = !1;
@@ -615,10 +611,10 @@ let h = class extends v {
     this._searchTerm = t.detail.value;
   }
   async _onNoteSave(t) {
-    await D(this.hass, t.detail), await this._loadNotes();
+    await I(this.hass, t.detail), await this._loadNotes();
   }
   async _onNoteDelete(t) {
-    await I(this.hass, t.detail.noteId), this._selectedId = null, this._view = "list", await this._loadNotes();
+    await j(this.hass, t.detail.noteId), this._selectedId = null, this._view = "list", await this._loadNotes();
   }
   _onEditorBack() {
     this._view = "list";
