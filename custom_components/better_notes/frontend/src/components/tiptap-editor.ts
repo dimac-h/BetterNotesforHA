@@ -49,6 +49,25 @@ export class BetterNotesTiptapEditor extends LitElement {
     .ProseMirror ul[data-type="taskList"] input[type="checkbox"] {
       cursor: pointer;
     }
+    .ProseMirror pre {
+      background-color: var(--markdown-code-background-color, var(--primary-text-color));
+      color: var(--markdown-code-text-color, var(--card-background-color));
+      border-radius: var(--ha-border-radius-sm, 8px);
+      padding: var(--ha-space-4, 16px);
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: var(--ha-font-family-code, monospace);
+    }
+    .ProseMirror pre code {
+      background: none;
+      color: inherit;
+      padding: 0;
+    }
+    .ProseMirror blockquote {
+      border-left: 4px solid var(--divider-color);
+      margin-inline: 0;
+      padding-inline: 1em;
+    }
   `;
 
   @property({ attribute: false }) content = '';
