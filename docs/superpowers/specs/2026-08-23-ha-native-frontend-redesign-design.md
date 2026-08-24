@@ -39,7 +39,9 @@ frontend/
   dist/                  # build output, gitignored — see Release below
 ```
 
-`frontend/dist/` is **not** committed (mirrors `home-upkeep-addon`, but here the release workflow actually builds it — see below). Local dev testing (per `CLAUDE.md`'s existing "copy into a live HA instance" workflow) requires running `npm run build` in `frontend/` first when frontend source changed, then copying `frontend/dist/*.js` into `www/` alongside the existing `tiptap-bundle.js`.
+`frontend/dist/` is **not** committed (mirrors `home-upkeep-addon`, but here the release workflow actually builds it — see below). Local dev testing (per `CLAUDE.md`'s existing "copy into a live HA instance" workflow) requires running `npm run build` in `frontend/` first when frontend source changed, then copying `frontend/dist/*.js` into `www/`.
+
+**Folding in the existing Tiptap build.** The repo already has a *second*, separate build pipeline for the rich-text editor: a root-level `package.json`/`package-lock.json` + `scripts/tiptap-entry.js`, built with esbuild into `www/tiptap-bundle.js` as an IIFE exposing `window.TiptapBundle`, loaded at runtime via a hand-rolled `<script>` tag injection with a textarea fallback on failure. Now that `frontend/` has real Vite/npm tooling, running two separate toolchains for one app is duplication this redesign should remove: the exact pinned deps (`@tiptap/core`, `@tiptap/starter-kit`, `@tiptap/extension-task-list`, `@tiptap/extension-task-item`, `@tiptap/extension-link`, `@tiptap/extension-highlight`, all `3.27.1`) move into `frontend/package.json`, and `tiptap-editor.ts` loads them via a real dynamic `import()` instead of the script-tag/global pattern — Vite code-splits dynamic imports into a lazy chunk automatically, so the "only load Tiptap when a note is opened" behavior is preserved without a hand-rolled loader. The root `package.json`, `package-lock.json`, `scripts/tiptap-entry.js`, and the committed `www/tiptap-bundle.js` artifact are all removed as part of this work.
 
 ### 2. Visual design — native HA elements and tokens
 
@@ -55,7 +57,7 @@ Rather than inventing a design system (as `home-upkeep-addon` did with its own `
 
 `DEFAULT_COLORS` (the 10 note accent colors in `const.py`) stay as user-facing note colors — those are content, not chrome, and are intentionally vivid/distinct from the neutral HA theme surface.
 
-The rich-text body editor continues to use the existing `tiptap-bundle.js` (self-hosted, already vetted, unrelated to this redesign). It's wrapped by a small Lit component (`components/note-editor-dialog.ts`) that mounts Tiptap into a plain `div` inside the dialog's Lit-rendered shadow DOM, the same integration pattern the current vanilla code already uses.
+The rich-text body editor continues to use Tiptap (the same pinned `3.27.1` packages, same extension set: StarterKit, TaskList, TaskItem, Link, Highlight) — only *how* it's bundled changes, per the "Folding in the existing Tiptap build" note above. `components/tiptap-editor.ts` mounts it into a plain `div` inside its own shadow DOM.
 
 ### 3. Component split
 
@@ -66,7 +68,7 @@ Corrected against the actual current UX (read from `www/better-notes-panel.js` a
 - `components/note-list-item.ts`: one row (color bar, title, pin icon, content preview, relative date), emits a `note-select` event.
 - `components/note-editor.ts`: the inline editor pane — title `ha-input` (debounced autosave), mobile `ha-icon-button` back action, save/delete `ha-button`s (delete uses a pending-confirm state, same 3s two-click-confirm behavior as today), save-toast feedback, and mounts `tiptap-editor.ts` for the body.
 - `components/note-toolbar.ts`: the formatting toolbar — heading/format/list dropdown groups, the `DEFAULT_COLORS` swatch dropdown, pin toggle, and the link editor row (URL `ha-input` + apply/remove/cancel) — emits toolbar-action events that `note-editor.ts` forwards to the Tiptap editor instance.
-- `components/tiptap-editor.ts`: isolates the existing lazy-load-`tiptap-bundle.js`-with-textarea-fallback logic and the `Editor` lifecycle (create/update/destroy), so `note-editor.ts` doesn't need to know Tiptap's API directly.
+- `components/tiptap-editor.ts`: isolates the dynamic-`import()`-with-textarea-fallback loading logic and the `Editor` lifecycle (create/update/destroy), so `note-editor.ts` doesn't need to know Tiptap's API directly.
 - `card.ts` (`<better-notes-card>`): thin LitElement wrapping `ha-card`, reuses `note-list-item.ts`-equivalent rendering for the list and single-note views, read-only tag chip display, keeps the existing `setConfig`/`hass` setter contract, `getCardSize()`, `getConfigElement()`, `getStubConfig()`, and `window.customCards` registration so existing user Lovelace YAML configs and the card picker keep working unchanged.
 - `card-editor.ts` (`<better-notes-card-editor>`): the card's visual config editor (title, max_notes, show_pinned_only, show_all, card_color, note_id fields), dispatching the same `config-changed` custom event Lovelace's card editor contract expects.
 
