@@ -1,9 +1,9 @@
-import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as h, N as T, h as E, s as D, g as S, j as A, u as I, k as j } from "./colors-CMfYGb1F.js";
-const z = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
+import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as h, N as T, h as E, s as D, g as S, j as A, u as I, k as z } from "./colors-CMfYGb1F.js";
+const j = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
     const n = (r) => r.renderRoot?.querySelector(t) ?? null;
-    return z(i, s, { get() {
+    return j(i, s, { get() {
       return n(this);
     } });
   };
@@ -104,7 +104,7 @@ let u = class extends v {
       <div class="header">
         <h1>Better Notes</h1>
         <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e) => e.stopPropagation()}></ha-input>
-        <ha-button @click=${this._onNew}>+ New Note</ha-button>
+        <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>+ New Note</ha-button>
       </div>
       <div class="items">
         ${t.length === 0 ? a`<div class="empty">No notes found</div>` : t.map((e) => a`
@@ -177,7 +177,7 @@ let c = class extends v {
   render() {
     return a`
       <div class="group ${this._openGroup === "heading" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("heading")} @mousedown=${(t) => t.preventDefault()}>H<span class="caret"> ▾</span></ha-button>
+        <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup("heading")} @mousedown=${(t) => t.preventDefault()}>H<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction("paragraph")}>Normal</button>
           <button class="item" @click=${() => this._dispatchAction("h1")}>H1</button>
@@ -186,7 +186,7 @@ let c = class extends v {
         </div>
       </div>
       <div class="group ${this._openGroup === "format" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("format")} @mousedown=${(t) => t.preventDefault()}>B<span class="caret"> ▾</span></ha-button>
+        <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup("format")} @mousedown=${(t) => t.preventDefault()}>B<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction("bold")}>Bold</button>
           <button class="item" @click=${() => this._dispatchAction("italic")}>Italic</button>
@@ -195,7 +195,7 @@ let c = class extends v {
         </div>
       </div>
       <div class="group ${this._openGroup === "list" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("list")} @mousedown=${(t) => t.preventDefault()}>≡<span class="caret"> ▾</span></ha-button>
+        <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup("list")} @mousedown=${(t) => t.preventDefault()}>≡<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction("bulletList")}>Bullet list</button>
           <button class="item" @click=${() => this._dispatchAction("orderedList")}>Numbered list</button>
@@ -206,7 +206,7 @@ let c = class extends v {
         </div>
       </div>
       <div class="group ${this._openGroup === "color" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("color")} @mousedown=${(t) => t.preventDefault()}>Color<span class="caret"> ▾</span></ha-button>
+        <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup("color")} @mousedown=${(t) => t.preventDefault()}>Color<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <div class="swatches">
             ${T.map((t) => a`
@@ -216,16 +216,16 @@ let c = class extends v {
           </div>
         </div>
       </div>
-      <ha-button size="small" class=${this.pinned ? "active" : ""} @click=${() => this._togglePin()} @mousedown=${(t) => t.preventDefault()}>
+      <ha-button size="s" appearance="plain" variant=${this.pinned ? "brand" : "neutral"} @click=${() => this._togglePin()} @mousedown=${(t) => t.preventDefault()}>
         ${this.pinned ? "Pinned" : "Pin"}
       </ha-button>
-      <ha-button size="small" @click=${() => this._openLink()} @mousedown=${(t) => t.preventDefault()}>Link</ha-button>
+      <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._openLink()} @mousedown=${(t) => t.preventDefault()}>Link</ha-button>
       ${this._linkOpen ? a`
         <div class="link-row">
           <ha-input type="url" placeholder="https://…" .value=${this.linkHref} @keydown=${(t) => t.stopPropagation()}></ha-input>
-          <ha-button size="small" @click=${() => this._applyLink()}>Apply</ha-button>
-          <ha-button size="small" @click=${() => this._dispatchAction("unsetLink")}>Remove</ha-button>
-          <ha-button size="small" @click=${() => {
+          <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._applyLink()}>Apply</ha-button>
+          <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._dispatchAction("unsetLink")}>Remove</ha-button>
+          <ha-button size="s" appearance="plain" variant="neutral" @click=${() => {
       this._linkOpen = !1;
     }}>✕</ha-button>
         </div>
@@ -520,12 +520,12 @@ let d = class extends v {
       <div class="header">
         <ha-icon-button class="back-btn" @click=${() => this.dispatchEvent(new CustomEvent("editor-back", { bubbles: !0, composed: !0 }))}>←</ha-icon-button>
         <div class="actions">
-          <ha-button @click=${() => {
+          <ha-button size="s" appearance="plain" variant="neutral" @click=${() => {
       clearTimeout(this._saveTimeout), this._save();
     }}>
             ${this._justSaved ? a`<ha-svg-icon .path=${E}></ha-svg-icon>` : "Save"}
           </ha-button>
-          <ha-button @click=${() => this._onDelete()}>${this._pendingDelete ? "Confirm?" : "Delete"}</ha-button>
+          <ha-button size="s" appearance="plain" variant="danger" @click=${() => this._onDelete()}>${this._pendingDelete ? "Confirm?" : "Delete"}</ha-button>
         </div>
       </div>
       <div class="body">
@@ -648,7 +648,7 @@ let p = class extends v {
     await I(this.hass, t.detail), await this._loadNotes();
   }
   async _onNoteDelete(t) {
-    await j(this.hass, t.detail.noteId), this._selectedId = null, this._view = "list", await this._loadNotes();
+    await z(this.hass, t.detail.noteId), this._selectedId = null, this._view = "list", await this._loadNotes();
   }
   _onEditorBack() {
     this._view = "list";

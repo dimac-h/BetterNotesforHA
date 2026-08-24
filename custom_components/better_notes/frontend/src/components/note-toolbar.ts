@@ -90,7 +90,7 @@ export class BetterNotesToolbar extends LitElement {
   render() {
     return html`
       <div class="group ${this._openGroup === 'heading' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('heading')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>H<span class="caret"> ▾</span></ha-button>
+        <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup('heading')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>H<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction('paragraph')}>Normal</button>
           <button class="item" @click=${() => this._dispatchAction('h1')}>H1</button>
@@ -99,7 +99,7 @@ export class BetterNotesToolbar extends LitElement {
         </div>
       </div>
       <div class="group ${this._openGroup === 'format' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('format')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>B<span class="caret"> ▾</span></ha-button>
+        <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup('format')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>B<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction('bold')}>Bold</button>
           <button class="item" @click=${() => this._dispatchAction('italic')}>Italic</button>
@@ -108,7 +108,7 @@ export class BetterNotesToolbar extends LitElement {
         </div>
       </div>
       <div class="group ${this._openGroup === 'list' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('list')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>≡<span class="caret"> ▾</span></ha-button>
+        <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup('list')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>≡<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction('bulletList')}>Bullet list</button>
           <button class="item" @click=${() => this._dispatchAction('orderedList')}>Numbered list</button>
@@ -119,7 +119,7 @@ export class BetterNotesToolbar extends LitElement {
         </div>
       </div>
       <div class="group ${this._openGroup === 'color' ? 'open' : ''}">
-        <ha-button size="small" @click=${() => this._toggleGroup('color')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>Color<span class="caret"> ▾</span></ha-button>
+        <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._toggleGroup('color')} @mousedown=${(e: MouseEvent) => e.preventDefault()}>Color<span class="caret"> ▾</span></ha-button>
         <div class="dropdown">
           <div class="swatches">
             ${NOTE_COLORS.map(c => html`
@@ -129,16 +129,16 @@ export class BetterNotesToolbar extends LitElement {
           </div>
         </div>
       </div>
-      <ha-button size="small" class=${this.pinned ? 'active' : ''} @click=${() => this._togglePin()} @mousedown=${(e: MouseEvent) => e.preventDefault()}>
+      <ha-button size="s" appearance="plain" variant=${this.pinned ? 'brand' : 'neutral'} @click=${() => this._togglePin()} @mousedown=${(e: MouseEvent) => e.preventDefault()}>
         ${this.pinned ? 'Pinned' : 'Pin'}
       </ha-button>
-      <ha-button size="small" @click=${() => this._openLink()} @mousedown=${(e: MouseEvent) => e.preventDefault()}>Link</ha-button>
+      <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._openLink()} @mousedown=${(e: MouseEvent) => e.preventDefault()}>Link</ha-button>
       ${this._linkOpen ? html`
         <div class="link-row">
           <ha-input type="url" placeholder="https://…" .value=${this.linkHref} @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
-          <ha-button size="small" @click=${() => this._applyLink()}>Apply</ha-button>
-          <ha-button size="small" @click=${() => this._dispatchAction('unsetLink')}>Remove</ha-button>
-          <ha-button size="small" @click=${() => { this._linkOpen = false; }}>✕</ha-button>
+          <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._applyLink()}>Apply</ha-button>
+          <ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._dispatchAction('unsetLink')}>Remove</ha-button>
+          <ha-button size="s" appearance="plain" variant="neutral" @click=${() => { this._linkOpen = false; }}>✕</ha-button>
         </div>
       ` : ''}
     `;
