@@ -42,7 +42,8 @@ jobs:
             -x 'frontend/package.json' \
             -x 'frontend/package-lock.json' \
             -x 'frontend/tsconfig.json' \
-            -x 'frontend/vite.config.ts'
+            -x 'frontend/vite.config.ts' \
+            -x 'frontend/dist/*'
 
       - name: Upload Release
         uses: softprops/action-gh-release@v2
