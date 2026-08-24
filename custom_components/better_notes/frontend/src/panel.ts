@@ -30,6 +30,7 @@ export class BetterNotesPanel extends LitElement {
   `;
 
   @property({ attribute: false }) hass!: HomeAssistant;
+  @property({ type: Boolean }) narrow = false;
 
   @state() private _notes: Note[] = [];
   @state() private _selectedId: string | null = null;
@@ -38,16 +39,49 @@ export class BetterNotesPanel extends LitElement {
 
   private _unsubscribe?: () => void;
   private _creatingNote = false;
+  private _pushedEditorState = false;
 
   connectedCallback(): void {
     super.connectedCallback();
     if (this.hass) this._init();
+    window.addEventListener('popstate', this._onPopState);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
     this._unsubscribe?.();
     this._unsubscribe = undefined;
+    window.removeEventListener('popstate', this._onPopState);
+  }
+
+  // On narrow (mobile) layouts, the editor pane replaces the list pane
+  // instead of showing beside it — push a history entry when entering it so
+  // the browser/swipe back gesture returns to the note list instead of
+  // leaving the panel entirely. Desktop shows both panes at once, so
+  // there's no "screen" to navigate back from — skip history entirely there.
+  private _onPopState = (): void => {
+    if (this._pushedEditorState) {
+      this._pushedEditorState = false;
+      this._view = 'list';
+    }
+  };
+
+  private _enterEditor(noteId: string): void {
+    this._selectedId = noteId;
+    if (this.narrow && this._view !== 'editor') {
+      history.pushState({ betterNotesEditor: true }, '', location.href);
+      this._pushedEditorState = true;
+    }
+    this._view = 'editor';
+  }
+
+  private _leaveEditor(): void {
+    if (this._pushedEditorState) {
+      this._pushedEditorState = false;
+      history.back();
+    } else {
+      this._view = 'list';
+    }
   }
 
   updated(changed: Map<string, unknown>): void {
@@ -75,8 +109,7 @@ export class BetterNotesPanel extends LitElement {
       const noteId = await createNote(this.hass, { title: 'New Note', content: '', color: NOTE_COLORS[0], pinned: false });
       await this._loadNotes();
       if (noteId) {
-        this._selectedId = noteId;
-        this._view = 'editor';
+        this._enterEditor(noteId);
       }
     } finally {
       this._creatingNote = false;
@@ -84,8 +117,7 @@ export class BetterNotesPanel extends LitElement {
   }
 
   private _onNoteSelect(e: CustomEvent<{ noteId: string }>): void {
-    this._selectedId = e.detail.noteId;
-    this._view = 'editor';
+    this._enterEditor(e.detail.noteId);
   }
 
   private _onSearchChanged(e: CustomEvent<{ value: string }>): void {
@@ -100,12 +132,12 @@ export class BetterNotesPanel extends LitElement {
   private async _onNoteDelete(e: CustomEvent<{ noteId: string }>): Promise<void> {
     await deleteNote(this.hass, e.detail.noteId);
     this._selectedId = null;
-    this._view = 'list';
+    this._leaveEditor();
     await this._loadNotes();
   }
 
   private _onEditorBack(): void {
-    this._view = 'list';
+    this._leaveEditor();
   }
 
   render() {
