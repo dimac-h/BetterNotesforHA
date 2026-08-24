@@ -105,6 +105,10 @@ export class BetterNotesToolbar extends LitElement {
           <button class="item" @click=${() => this._dispatchAction('italic')}>Italic</button>
           <button class="item" @click=${() => this._dispatchAction('strike')}>Strikethrough</button>
           <button class="item" @click=${() => this._dispatchAction('highlight')}>Highlight</button>
+          <div class="divider"></div>
+          <button class="item" @click=${() => this._dispatchAction('code')}>Code</button>
+          <button class="item" @click=${() => this._dispatchAction('codeBlock')}>Code block</button>
+          <button class="item" @click=${() => this._dispatchAction('blockquote')}>Blockquote</button>
         </div>
       </div>
       <div class="group ${this._openGroup === 'list' ? 'open' : ''}">

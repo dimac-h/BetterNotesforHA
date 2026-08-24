@@ -4,7 +4,7 @@ import { loadTiptapExtensions } from '../tiptap-extensions';
 
 export type ToolbarAction =
   | 'paragraph' | 'h1' | 'h2' | 'h3'
-  | 'bold' | 'italic' | 'strike' | 'highlight'
+  | 'bold' | 'italic' | 'strike' | 'highlight' | 'code' | 'codeBlock' | 'blockquote'
   | 'bulletList' | 'orderedList' | 'taskList' | 'indent' | 'outdent'
   | 'setLink' | 'unsetLink';
 
@@ -134,6 +134,9 @@ export class BetterNotesTiptapEditor extends LitElement {
       case 'italic': chain.toggleItalic().run(); break;
       case 'strike': chain.toggleStrike().run(); break;
       case 'highlight': chain.toggleHighlight().run(); break;
+      case 'code': chain.toggleCode().run(); break;
+      case 'codeBlock': chain.toggleCodeBlock().run(); break;
+      case 'blockquote': chain.toggleBlockquote().run(); break;
       case 'bulletList': chain.toggleBulletList().run(); break;
       case 'orderedList': chain.toggleOrderedList().run(); break;
       case 'taskList': chain.toggleTaskList().run(); break;
