@@ -1,4 +1,4 @@
-import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as p, N as T, h as E, s as S, g as A, j as D, u as I, k as j } from "./colors-CMfYGb1F.js";
+import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as p, N as T, h as E, s as D, g as S, j as A, u as I, k as j } from "./colors-CMfYGb1F.js";
 const H = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
@@ -76,7 +76,7 @@ $([
 x = $([
   _("better-notes-list-item")
 ], x);
-var G = Object.defineProperty, R = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
+var G = Object.defineProperty, R = Object.getOwnPropertyDescriptor, k = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? R(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && G(e, i, o), o;
@@ -123,16 +123,16 @@ u.styles = b`
     .items { flex: 1; overflow-y: auto; padding: 10px; }
     .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
   `;
-w([
+k([
   l({ attribute: !1 })
 ], u.prototype, "notes", 2);
-w([
+k([
   l({ type: String })
 ], u.prototype, "selectedNoteId", 2);
-w([
+k([
   l({ type: String })
 ], u.prototype, "searchTerm", 2);
-u = w([
+u = k([
   _("better-notes-list")
 ], u);
 var q = Object.defineProperty, M = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
@@ -171,13 +171,13 @@ let c = class extends v {
     }
   }
   _applyLink() {
-    const e = this.renderRoot.querySelector(".link-row input")?.value.trim();
+    const e = this.renderRoot.querySelector(".link-row ha-input")?.value?.trim();
     e && this._isValidUrl(e) && this._dispatchAction("setLink", { href: e }), this._linkOpen = !1;
   }
   render() {
     return a`
       <div class="group ${this._openGroup === "heading" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("heading")}>H ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup("heading")} @mousedown=${(t) => t.preventDefault()}>H ▾</ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction("paragraph")}>Normal</button>
           <button class="item" @click=${() => this._dispatchAction("h1")}>H1</button>
@@ -186,7 +186,7 @@ let c = class extends v {
         </div>
       </div>
       <div class="group ${this._openGroup === "format" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("format")}>B ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup("format")} @mousedown=${(t) => t.preventDefault()}>B ▾</ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction("bold")}>Bold</button>
           <button class="item" @click=${() => this._dispatchAction("italic")}>Italic</button>
@@ -195,7 +195,7 @@ let c = class extends v {
         </div>
       </div>
       <div class="group ${this._openGroup === "list" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("list")}>≡ ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup("list")} @mousedown=${(t) => t.preventDefault()}>≡ ▾</ha-button>
         <div class="dropdown">
           <button class="item" @click=${() => this._dispatchAction("bulletList")}>Bullet list</button>
           <button class="item" @click=${() => this._dispatchAction("orderedList")}>Numbered list</button>
@@ -206,7 +206,7 @@ let c = class extends v {
         </div>
       </div>
       <div class="group ${this._openGroup === "color" ? "open" : ""}">
-        <ha-button size="small" @click=${() => this._toggleGroup("color")}>Color ▾</ha-button>
+        <ha-button size="small" @click=${() => this._toggleGroup("color")} @mousedown=${(t) => t.preventDefault()}>Color ▾</ha-button>
         <div class="dropdown">
           <div class="swatches">
             ${T.map((t) => a`
@@ -216,10 +216,10 @@ let c = class extends v {
           </div>
         </div>
       </div>
-      <ha-button size="small" class=${this.pinned ? "active" : ""} @click=${() => this._togglePin()}>
+      <ha-button size="small" class=${this.pinned ? "active" : ""} @click=${() => this._togglePin()} @mousedown=${(t) => t.preventDefault()}>
         ${this.pinned ? "Pinned" : "Pin"}
       </ha-button>
-      <ha-button size="small" @click=${() => this._openLink()}>Link</ha-button>
+      <ha-button size="small" @click=${() => this._openLink()} @mousedown=${(t) => t.preventDefault()}>Link</ha-button>
       ${this._linkOpen ? a`
         <div class="link-row">
           <ha-input type="url" placeholder="https://…" .value=${this.linkHref} @keydown=${(t) => t.stopPropagation()}></ha-input>
@@ -301,7 +301,7 @@ var V = Object.defineProperty, K = Object.getOwnPropertyDescriptor, C = (t, e, i
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && V(e, i, o), o;
 };
-let k = class extends v {
+let w = class extends v {
   constructor() {
     super(...arguments), this.content = "", this._editor = null, this._fallback = !1, this._lastEmitted = "";
   }
@@ -409,7 +409,7 @@ let k = class extends v {
       ></textarea>` : a`<div id="mount" @keydown=${(t) => t.stopPropagation()}></div>`;
   }
 };
-k.styles = b`
+w.styles = b`
     :host { display: flex; flex-direction: column; min-height: 0; flex: 1; }
     .fallback {
       width: 100%; min-height: 300px; font-size: 15px; line-height: 1.6;
@@ -428,13 +428,13 @@ k.styles = b`
   `;
 C([
   l({ attribute: !1 })
-], k.prototype, "content", 2);
+], w.prototype, "content", 2);
 C([
   y("#mount")
-], k.prototype, "_mount", 2);
-k = C([
+], w.prototype, "_mount", 2);
+w = C([
   _("better-notes-tiptap-editor")
-], k);
+], w);
 var F = Object.defineProperty, J = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? J(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
@@ -585,10 +585,10 @@ let h = class extends v {
     t.has("hass") && this.hass && !this._unsubscribe && this._init(), t.has("_view") && this.setAttribute("data-view", this._view);
   }
   async _init() {
-    await this._loadNotes(), this._unsubscribe = await S(this.hass, () => this._loadNotes());
+    await this._loadNotes(), this._unsubscribe = await D(this.hass, () => this._loadNotes());
   }
   async _loadNotes() {
-    this._notes = X(await A(this.hass));
+    this._notes = X(await S(this.hass));
   }
   get _selectedNote() {
     return this._notes.find((t) => t.note_id === this._selectedId) ?? null;
@@ -597,7 +597,7 @@ let h = class extends v {
     if (!this._creatingNote) {
       this._creatingNote = !0;
       try {
-        const t = await D(this.hass, { title: "New Note", content: "", color: T[0], pinned: !1 });
+        const t = await A(this.hass, { title: "New Note", content: "", color: T[0], pinned: !1 });
         await this._loadNotes(), t && (this._selectedId = t, this._view = "editor");
       } finally {
         this._creatingNote = !1;
