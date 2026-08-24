@@ -26,6 +26,25 @@ export class BetterNotesTiptapEditor extends LitElement {
     .ProseMirror {
       flex: 1; min-height: 100%; cursor: text;
     }
+    .ProseMirror ul[data-type="taskList"] {
+      list-style: none;
+      padding-left: 0;
+    }
+    .ProseMirror ul[data-type="taskList"] li {
+      display: flex;
+      align-items: flex-start;
+    }
+    .ProseMirror ul[data-type="taskList"] li > label {
+      flex: 0 0 auto;
+      margin-right: 0.5rem;
+      user-select: none;
+    }
+    .ProseMirror ul[data-type="taskList"] li > div {
+      flex: 1 1 auto;
+    }
+    .ProseMirror ul[data-type="taskList"] input[type="checkbox"] {
+      cursor: pointer;
+    }
   `;
 
   @property({ attribute: false }) content = '';

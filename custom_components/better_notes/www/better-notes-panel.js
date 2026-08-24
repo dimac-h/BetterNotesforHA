@@ -1,4 +1,4 @@
-import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as p, N as T, h as E, s as D, g as S, j as A, u as I, k as j } from "./colors-CMfYGb1F.js";
+import { i as b, n as l, a as v, d as N, c as P, m as L, b as a, f as O, t as _, r as h, N as T, h as E, s as D, g as S, j as A, u as I, k as j } from "./colors-CMfYGb1F.js";
 const H = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
@@ -76,8 +76,8 @@ $([
 x = $([
   _("better-notes-list-item")
 ], x);
-var G = Object.defineProperty, R = Object.getOwnPropertyDescriptor, k = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? R(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var G = Object.defineProperty, M = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? M(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && G(e, i, o), o;
 };
@@ -123,22 +123,22 @@ u.styles = b`
     .items { flex: 1; overflow-y: auto; padding: 10px; }
     .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
   `;
-k([
+w([
   l({ attribute: !1 })
 ], u.prototype, "notes", 2);
-k([
+w([
   l({ type: String })
 ], u.prototype, "selectedNoteId", 2);
-k([
+w([
   l({ type: String })
 ], u.prototype, "searchTerm", 2);
-u = k([
+u = w([
   _("better-notes-list")
 ], u);
-var q = Object.defineProperty, M = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? M(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
-  return s && o && q(e, i, o), o;
+  return s && o && R(e, i, o), o;
 };
 let c = class extends v {
   constructor() {
@@ -268,10 +268,10 @@ m([
   l({ type: String })
 ], c.prototype, "linkHref", 2);
 m([
-  p()
+  h()
 ], c.prototype, "_openGroup", 2);
 m([
-  p()
+  h()
 ], c.prototype, "_linkOpen", 2);
 c = m([
   _("better-notes-toolbar")
@@ -301,7 +301,7 @@ var V = Object.defineProperty, K = Object.getOwnPropertyDescriptor, C = (t, e, i
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && V(e, i, o), o;
 };
-let w = class extends v {
+let k = class extends v {
   constructor() {
     super(...arguments), this.content = "", this._editor = null, this._fallback = !1, this._lastEmitted = "";
   }
@@ -409,7 +409,7 @@ let w = class extends v {
       ></textarea>` : a`<div id="mount" @keydown=${(t) => t.stopPropagation()}></div>`;
   }
 };
-w.styles = b`
+k.styles = b`
     :host { display: flex; flex-direction: column; min-height: 0; flex: 1; }
     .fallback {
       width: 100%; min-height: 300px; font-size: 15px; line-height: 1.6;
@@ -425,16 +425,35 @@ w.styles = b`
     .ProseMirror {
       flex: 1; min-height: 100%; cursor: text;
     }
+    .ProseMirror ul[data-type="taskList"] {
+      list-style: none;
+      padding-left: 0;
+    }
+    .ProseMirror ul[data-type="taskList"] li {
+      display: flex;
+      align-items: flex-start;
+    }
+    .ProseMirror ul[data-type="taskList"] li > label {
+      flex: 0 0 auto;
+      margin-right: 0.5rem;
+      user-select: none;
+    }
+    .ProseMirror ul[data-type="taskList"] li > div {
+      flex: 1 1 auto;
+    }
+    .ProseMirror ul[data-type="taskList"] input[type="checkbox"] {
+      cursor: pointer;
+    }
   `;
 C([
   l({ attribute: !1 })
-], w.prototype, "content", 2);
+], k.prototype, "content", 2);
 C([
   y("#mount")
-], w.prototype, "_mount", 2);
-w = C([
+], k.prototype, "_mount", 2);
+k = C([
   _("better-notes-tiptap-editor")
-], w);
+], k);
 var F = Object.defineProperty, J = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? J(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
@@ -549,10 +568,10 @@ g([
   l({ attribute: !1 })
 ], d.prototype, "note", 2);
 g([
-  p()
+  h()
 ], d.prototype, "_pendingDelete", 2);
 g([
-  p()
+  h()
 ], d.prototype, "_justSaved", 2);
 g([
   y("better-notes-tiptap-editor")
@@ -571,7 +590,7 @@ var Q = Object.defineProperty, W = Object.getOwnPropertyDescriptor, f = (t, e, i
 function X(t) {
   return [...t].sort((e, i) => e.pinned !== i.pinned ? e.pinned ? -1 : 1 : new Date(i.modified).getTime() - new Date(e.modified).getTime());
 }
-let h = class extends v {
+let p = class extends v {
   constructor() {
     super(...arguments), this._notes = [], this._selectedId = null, this._searchTerm = "", this._view = "list", this._creatingNote = !1;
   }
@@ -644,7 +663,7 @@ let h = class extends v {
     `;
   }
 };
-h.styles = b`
+p.styles = b`
     :host { display: block; height: 100%; }
     .layout { display: flex; height: 100%; background: var(--card-background-color); overflow: hidden; }
     .list-pane { flex-shrink: 0; }
@@ -657,22 +676,22 @@ h.styles = b`
   `;
 f([
   l({ attribute: !1 })
-], h.prototype, "hass", 2);
+], p.prototype, "hass", 2);
 f([
-  p()
-], h.prototype, "_notes", 2);
+  h()
+], p.prototype, "_notes", 2);
 f([
-  p()
-], h.prototype, "_selectedId", 2);
+  h()
+], p.prototype, "_selectedId", 2);
 f([
-  p()
-], h.prototype, "_searchTerm", 2);
+  h()
+], p.prototype, "_searchTerm", 2);
 f([
-  p()
-], h.prototype, "_view", 2);
-h = f([
+  h()
+], p.prototype, "_view", 2);
+p = f([
   _("better-notes-panel")
-], h);
+], p);
 export {
-  h as BetterNotesPanel
+  p as BetterNotesPanel
 };
