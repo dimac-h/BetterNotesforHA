@@ -17,7 +17,7 @@ export async function loadTiptapExtensions() {
       StarterKit.configure({ heading: { levels: [1, 2, 3] }, link: false }),
       TaskList,
       TaskItem.configure({ nested: true }),
-      Link.configure({ openOnClick: false }),
+      Link.configure({ openOnClick: true }),
       Highlight,
     ],
   };
