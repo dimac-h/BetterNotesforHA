@@ -4,18 +4,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-A Home Assistant custom integration (`custom_components/better_notes`) that adds an Apple Notes-style panel and Lovelace card to Home Assistant. Distributed via HACS, requires HA 2024.1.0+.
+A Home Assistant custom integration (`custom_components/better_notes`) that adds an Apple Notes-style panel and Lovelace card to Home Assistant. Distributed via HACS, requires HA 2026.8.0+.
 
-## No Build System
+## Development
 
-There is no build step, test suite, linter config, or package manager in this repo. Development is done by copying the `custom_components/better_notes/` directory into a live Home Assistant instance and restarting HA to pick up changes.
+Backend-only changes (`__init__.py`, `storage.py`, `config_flow.py`, `const.py`) need no build step.
 
-To test changes, copy the integration to your HA instance:
+Frontend changes (`custom_components/better_notes/frontend/src/`) need a build first:
 ```bash
-cp -r custom_components/better_notes/ /path/to/homeassistant/custom_components/
+cd custom_components/better_notes/frontend
+npm run build   # outputs to frontend/dist/, copy the built *.js into ../www/
 ```
 
-Then restart Home Assistant and check logs for errors.
+Local testing uses a disposable, bind-mounted HA instance instead of copying files into a real install:
+```bash
+docker compose -f dev/docker-compose.yml up -d      # start — http://localhost:8123
+docker compose -f dev/docker-compose.yml restart     # pick up changes (HA doesn't hot-reload custom_components)
+docker compose -f dev/docker-compose.yml logs -f     # watch logs
+rm -rf dev/config                                    # full reset
+```
+
+`custom_components/better_notes` is mounted read-only, so edits appear after a restart with no copy step.
+
+## Releasing
+
+Publishing a GitHub Release triggers `.github/workflows/release.yml`, which builds `frontend/`, patches `manifest.json`'s version, zips `custom_components/better_notes/`, and uploads the zip as a release asset. `hacs.json` sets `"zip_release": true` so HACS installs from that built asset rather than raw repo content — the frontend build output must exist in what HACS installs, and committing it to git isn't required (unlike `tiptap-bundle.js`, which is committed since it's not part of the Vite build).
 
 ## Architecture
 
@@ -25,9 +38,10 @@ Then restart Home Assistant and check logs for errors.
 - `config_flow.py` — minimal single-instance config flow (no user-configurable options)
 - `const.py` — all domain constants, attribute names, default colors, and panel config
 
-**Frontend (vanilla JS/HTML)** — no framework, no bundler:
-- `www/better-notes-panel.html` — full-page notes UI served as an iframe panel in the HA sidebar
-- `www/better-notes-card.js` — custom Lovelace card (`custom:better-notes-card`) registered as a custom element
+**Frontend** — TypeScript + LitElement, built with Vite (`custom_components/better_notes/frontend/`), using HA's own native elements and theme tokens (`ha-card`, `ha-dialog`, `ha-button`, `ha-input`, etc.) rather than a custom design system:
+- `frontend/src/panel.ts` — full-page notes UI, built to `www/better-notes-panel.js` and served as a sidebar panel
+- `frontend/src/card.ts` — custom Lovelace card (`custom:better-notes-card`), built to `www/better-notes-card.js`
+- `www/tiptap-bundle.js` — pre-built rich-text editor, checked into git as-is (not part of the Vite build), wrapped by a Lit component for the note body editor
 
 The panel communicates with HA backend by calling HA services via the HA WebSocket API / REST API from the browser.
 
