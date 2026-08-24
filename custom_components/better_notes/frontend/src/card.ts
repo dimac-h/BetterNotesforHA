@@ -147,7 +147,7 @@ window.customCards.push({
   name: 'Better Notes Card',
   description: 'Display notes from Better Notes',
   preview: true,
-  documentationURL: 'https://github.com/CameronVerrells/BetterNotesforHA',
+  documentationURL: 'https://github.com/dimac-h/BetterNotesforHA',
 });
 
 declare global {
