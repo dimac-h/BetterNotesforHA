@@ -190,7 +190,7 @@ let l = class extends f {
       const n = i.length, o = this._config.max_notes ?? 5;
       this._config.show_all || (i = i.slice(0, o)), e = i.length === 0 ? s`<div class="empty">No notes to display</div>` : s`
             ${i.map((a) => this._renderNote(a, !1))}
-            ${n > o ? s`<ha-button @click=${() => this._openPanel()}>View All Notes</ha-button>` : ""}
+            ${n > o ? s`<ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._openPanel()}>View All Notes</ha-button>` : ""}
           `;
     }
     return s`

@@ -114,10 +114,10 @@ export class BetterNotesEditor extends LitElement {
       <div class="header">
         <ha-icon-button class="back-btn" @click=${() => this.dispatchEvent(new CustomEvent('editor-back', { bubbles: true, composed: true }))}>←</ha-icon-button>
         <div class="actions">
-          <ha-button @click=${() => { clearTimeout(this._saveTimeout); this._save(); }}>
+          <ha-button size="s" appearance="plain" variant="neutral" @click=${() => { clearTimeout(this._saveTimeout); this._save(); }}>
             ${this._justSaved ? html`<ha-svg-icon .path=${mdiCheck}></ha-svg-icon>` : 'Save'}
           </ha-button>
-          <ha-button @click=${() => this._onDelete()}>${this._pendingDelete ? 'Confirm?' : 'Delete'}</ha-button>
+          <ha-button size="s" appearance="plain" variant="danger" @click=${() => this._onDelete()}>${this._pendingDelete ? 'Confirm?' : 'Delete'}</ha-button>
         </div>
       </div>
       <div class="body">

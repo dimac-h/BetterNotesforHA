@@ -126,7 +126,7 @@ export class BetterNotesCard extends LitElement {
         ? html`<div class="empty">No notes to display</div>`
         : html`
             ${notes.map(n => this._renderNote(n, false))}
-            ${total > maxNotes ? html`<ha-button @click=${() => this._openPanel()}>View All Notes</ha-button>` : ''}
+            ${total > maxNotes ? html`<ha-button size="s" appearance="plain" variant="neutral" @click=${() => this._openPanel()}>View All Notes</ha-button>` : ''}
           `;
     }
     return html`
