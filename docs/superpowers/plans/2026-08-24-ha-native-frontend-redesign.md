@@ -14,7 +14,8 @@
 
 - No backend (Python) changes — `__init__.py`, `storage.py`, `config_flow.py`, `const.py`, the four services, and the four events stay exactly as they are.
 - Target component set is HA 2026.5+ (per `hacs.json`'s `"homeassistant": "2026.8.0"`): use `ha-input` (not the removed `ha-textfield`), `ha-button` (not the removed `ha-fab`/deprecated `mwc-button`).
-- No automated test suite exists in this repo and this work doesn't introduce one (per the spec's Testing section) — verification is `npm run build` / `tsc --noEmit` per task, plus a manual functional pass via `dev/docker-compose.yml` at the end.
+- Frontend: no automated tests (per the spec's Testing section, following `home-upkeep-addon`'s precedent) — verification is `npm run build` / `tsc --noEmit` per task, plus a manual functional pass via `dev/docker-compose.yml` at the end (Task 8).
+- Backend: gets `pytest` + `pytest-homeassistant-custom-component` coverage (Tasks 11–14) — this is new, since no test suite existed before this plan.
 - Behavior parity: every interaction in the current `www/better-notes-panel.js` and `www/better-notes-card.js` (search, create, autosave-on-type with 1s debounce, two-click delete confirm with 3s timeout, pin, 10-color picker, link editor, tag *display* only — no tag editing exists today and none is being added) must still work identically after the rewrite.
 - `frontend/dist/` is gitignored — not committed.
 - The existing root-level `package.json`/`package-lock.json` + `scripts/tiptap-entry.js` esbuild pipeline (which produces the committed `www/tiptap-bundle.js` IIFE, currently pinned to Tiptap `3.27.1`) is removed — the same Tiptap packages (`@tiptap/core`, `@tiptap/starter-kit`, `@tiptap/extension-task-list`, `@tiptap/extension-task-item`, `@tiptap/extension-link`, `@tiptap/extension-highlight`) move into `frontend/package.json`, bumped to the latest release (`3.30.3`), and are loaded via dynamic `import()` instead.
@@ -1578,7 +1579,393 @@ git commit -m "feat: wire built HA-native frontend into www/"
 
 ---
 
-### Task 9: CI validation workflow
+### Task 9: Python test infrastructure
+
+**Files:**
+- Create: `pyproject.toml`
+- Create: `tests/__init__.py`
+- Create: `tests/conftest.py`
+
+**Interfaces:**
+- Produces: `pytest_plugins`, the `auto_enable_custom_integrations` autouse fixture, and a `setup_integration` fixture (returns a `MockConfigEntry` with the integration already set up) from `tests/conftest.py`. Tasks 10–12 consume `setup_integration`; all of them run via the root `pyproject.toml`'s `pytest` config.
+
+- [ ] **Step 1: Create `pyproject.toml`**
+
+```toml
+[project]
+name = "better-notes-integration"
+version = "0.1.0"
+description = "Better Notes Home Assistant custom integration"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest-homeassistant-custom-component>=0.13.316",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+```
+
+- [ ] **Step 2: Create `tests/__init__.py`**
+
+```python
+"""Tests for the Better Notes integration."""
+```
+
+- [ ] **Step 3: Create `tests/conftest.py`**
+
+```python
+"""Fixtures for testing the Better Notes integration."""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+import pytest
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from custom_components.better_notes.const import DOMAIN
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+
+pytest_plugins = "pytest_homeassistant_custom_component"
+
+
+@pytest.fixture(autouse=True)
+def auto_enable_custom_integrations(enable_custom_integrations: None) -> None:
+    """Enable custom integration loading in every test."""
+    return enable_custom_integrations
+
+
+@pytest.fixture
+async def setup_integration(hass: HomeAssistant) -> MockConfigEntry:
+    """Set up the better_notes integration with a fresh store."""
+    entry = MockConfigEntry(domain=DOMAIN)
+    entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    return entry
+```
+
+- [ ] **Step 4: Install dev dependencies and verify pytest collects (zero tests yet)**
+
+Run:
+```bash
+pip install -e . --group dev
+pytest
+```
+Expected: `no tests ran` (or similar) — no errors, confirming the harness itself loads cleanly before any test files exist.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add pyproject.toml tests/__init__.py tests/conftest.py
+git commit -m "test: add pytest-homeassistant-custom-component test infrastructure"
+```
+
+---
+
+### Task 10: Storage tests
+
+**Files:**
+- Create: `tests/test_storage.py`
+
+**Interfaces:**
+- Consumes: `NotesStorage` from `custom_components.better_notes.storage`.
+- Produces: nothing — leaf test module.
+
+- [ ] **Step 1: Create `tests/test_storage.py`**
+
+```python
+"""Tests for NotesStorage."""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+import pytest
+
+from custom_components.better_notes.storage import NotesStorage
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+
+
+@pytest.fixture
+async def storage(hass: HomeAssistant) -> NotesStorage:
+    s = NotesStorage(hass)
+    await s.async_load()
+    return s
+
+
+async def test_create_note_defaults(storage: NotesStorage) -> None:
+    note = await storage.async_create_note(title="Groceries")
+    assert note["title"] == "Groceries"
+    assert note["content"] == ""
+    assert note["color"] == "#FFEB3B"
+    assert note["pinned"] is False
+    assert note["tags"] == []
+    assert note["note_id"]
+    assert note["created"] == note["modified"]
+
+
+async def test_create_note_persists_across_instances(hass: HomeAssistant, storage: NotesStorage) -> None:
+    note = await storage.async_create_note(title="Groceries")
+    reloaded = NotesStorage(hass)
+    await reloaded.async_load()
+    notes = await reloaded.async_get_all_notes()
+    assert [n["note_id"] for n in notes] == [note["note_id"]]
+
+
+async def test_update_note_changes_requested_fields(storage: NotesStorage) -> None:
+    note = await storage.async_create_note(title="Old title")
+    updated = await storage.async_update_note(note["note_id"], title="New title", pinned=True)
+    assert updated is not None
+    assert updated["title"] == "New title"
+    assert updated["pinned"] is True
+    assert updated["created"] == note["created"]
+    assert updated["modified"] >= note["created"]
+
+
+async def test_update_note_partial_leaves_other_fields_untouched(storage: NotesStorage) -> None:
+    note = await storage.async_create_note(title="Title", content="Body", color="#123456", tags=["a"])
+    updated = await storage.async_update_note(note["note_id"], pinned=True)
+    assert updated is not None
+    assert updated["title"] == "Title"
+    assert updated["content"] == "Body"
+    assert updated["color"] == "#123456"
+    assert updated["tags"] == ["a"]
+    assert updated["pinned"] is True
+
+
+async def test_update_note_missing_returns_none(storage: NotesStorage) -> None:
+    assert await storage.async_update_note("does-not-exist", title="x") is None
+
+
+async def test_delete_note(storage: NotesStorage) -> None:
+    note = await storage.async_create_note(title="Temp")
+    assert await storage.async_delete_note(note["note_id"]) is True
+    assert await storage.async_get_all_notes() == []
+
+
+async def test_delete_note_missing_returns_false(storage: NotesStorage) -> None:
+    assert await storage.async_delete_note("does-not-exist") is False
+
+
+async def test_get_all_notes_sorted_pinned_first_then_modified_desc(storage: NotesStorage) -> None:
+    note_a = await storage.async_create_note(title="A")
+    note_b = await storage.async_create_note(title="B")
+    note_c = await storage.async_create_note(title="C")
+    await storage.async_update_note(note_a["note_id"], pinned=True)
+
+    notes = await storage.async_get_all_notes()
+    assert notes[0]["note_id"] == note_a["note_id"]
+    remaining_ids = [n["note_id"] for n in notes[1:]]
+    assert remaining_ids == [note_c["note_id"], note_b["note_id"]]
+```
+
+- [ ] **Step 2: Run the tests**
+
+Run: `pytest tests/test_storage.py -v`
+Expected: all tests pass.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add tests/test_storage.py
+git commit -m "test: add NotesStorage CRUD and sort-order tests"
+```
+
+---
+
+### Task 11: Services and event tests
+
+**Files:**
+- Create: `tests/test_init.py`
+
+**Interfaces:**
+- Consumes: `setup_integration` fixture from `tests/conftest.py`; `DOMAIN` from `custom_components.better_notes.const`.
+- Produces: nothing — leaf test module.
+
+- [ ] **Step 1: Create `tests/test_init.py`**
+
+```python
+"""Tests for Better Notes setup, services, and events."""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+import pytest
+from homeassistant.exceptions import HomeAssistantError
+
+from custom_components.better_notes.const import DOMAIN
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+    from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+
+async def test_setup_registers_all_services(hass: HomeAssistant, setup_integration: MockConfigEntry) -> None:
+    assert hass.services.has_service(DOMAIN, "create_note")
+    assert hass.services.has_service(DOMAIN, "update_note")
+    assert hass.services.has_service(DOMAIN, "delete_note")
+    assert hass.services.has_service(DOMAIN, "get_notes")
+
+
+async def test_create_note_service_fires_event_and_returns_response(
+    hass: HomeAssistant, setup_integration: MockConfigEntry
+) -> None:
+    events = []
+    hass.bus.async_listen(f"{DOMAIN}_note_created", events.append)
+
+    result = await hass.services.async_call(
+        DOMAIN, "create_note", {"title": "Test note"}, blocking=True, return_response=True,
+    )
+    await hass.async_block_till_done()
+
+    assert result["title"] == "Test note"
+    assert len(events) == 1
+    assert events[0].data["title"] == "Test note"
+
+
+async def test_get_notes_service_returns_created_notes(
+    hass: HomeAssistant, setup_integration: MockConfigEntry
+) -> None:
+    await hass.services.async_call(DOMAIN, "create_note", {"title": "A"}, blocking=True, return_response=True)
+    result = await hass.services.async_call(DOMAIN, "get_notes", {}, blocking=True, return_response=True)
+    assert [n["title"] for n in result["notes"]] == ["A"]
+
+
+async def test_update_note_service_fires_event(hass: HomeAssistant, setup_integration: MockConfigEntry) -> None:
+    created = await hass.services.async_call(
+        DOMAIN, "create_note", {"title": "A"}, blocking=True, return_response=True,
+    )
+    events = []
+    hass.bus.async_listen(f"{DOMAIN}_note_updated", events.append)
+
+    await hass.services.async_call(
+        DOMAIN, "update_note", {"note_id": created["note_id"], "title": "B"}, blocking=True,
+    )
+    await hass.async_block_till_done()
+
+    assert events[0].data["title"] == "B"
+
+
+async def test_update_note_service_missing_note_raises(
+    hass: HomeAssistant, setup_integration: MockConfigEntry
+) -> None:
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            DOMAIN, "update_note", {"note_id": "missing", "title": "B"}, blocking=True,
+        )
+
+
+async def test_delete_note_service_fires_event(hass: HomeAssistant, setup_integration: MockConfigEntry) -> None:
+    created = await hass.services.async_call(
+        DOMAIN, "create_note", {"title": "A"}, blocking=True, return_response=True,
+    )
+    events = []
+    hass.bus.async_listen(f"{DOMAIN}_note_deleted", events.append)
+
+    await hass.services.async_call(DOMAIN, "delete_note", {"note_id": created["note_id"]}, blocking=True)
+    await hass.async_block_till_done()
+
+    assert events[0].data["note_id"] == created["note_id"]
+
+
+async def test_delete_note_service_missing_note_raises(
+    hass: HomeAssistant, setup_integration: MockConfigEntry
+) -> None:
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(DOMAIN, "delete_note", {"note_id": "missing"}, blocking=True)
+
+
+async def test_unload_removes_services(hass: HomeAssistant, setup_integration: MockConfigEntry) -> None:
+    assert await hass.config_entries.async_unload(setup_integration.entry_id)
+    await hass.async_block_till_done()
+    assert not hass.services.has_service(DOMAIN, "create_note")
+```
+
+- [ ] **Step 2: Run the tests**
+
+Run: `pytest tests/test_init.py -v`
+Expected: all tests pass.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add tests/test_init.py
+git commit -m "test: add service registration, event-firing, and error-path tests"
+```
+
+---
+
+### Task 12: Config flow tests
+
+**Files:**
+- Create: `tests/test_config_flow.py`
+
+**Interfaces:**
+- Consumes: `DOMAIN` from `custom_components.better_notes.const`.
+- Produces: nothing — leaf test module.
+
+- [ ] **Step 1: Create `tests/test_config_flow.py`**
+
+```python
+"""Tests for the Better Notes config flow."""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from homeassistant import config_entries
+from homeassistant.data_entry_flow import FlowResultType
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from custom_components.better_notes.const import DOMAIN
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+
+
+async def test_user_flow_creates_entry(hass: HomeAssistant) -> None:
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER},
+    )
+    assert result["type"] == FlowResultType.FORM
+
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
+    assert result["type"] == FlowResultType.CREATE_ENTRY
+    assert result["title"] == "Better Notes"
+
+
+async def test_user_flow_aborts_if_already_configured(hass: HomeAssistant) -> None:
+    entry = MockConfigEntry(domain=DOMAIN)
+    entry.add_to_hass(hass)
+
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER},
+    )
+    assert result["type"] == FlowResultType.ABORT
+    assert result["reason"] == "single_instance_allowed"
+```
+
+- [ ] **Step 2: Run the tests**
+
+Run: `pytest tests/test_config_flow.py -v`
+Expected: all tests pass.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add tests/test_config_flow.py
+git commit -m "test: add config flow single-instance tests"
+```
+
+---
+
+### Task 13: CI validation workflow
 
 **Files:**
 - Create: `.github/workflows/validate.yml`
@@ -1623,18 +2010,36 @@ jobs:
         with:
           category: integration
           ignore: brands
+
+  pytest:
+    name: Python tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -e . --group dev
+
+      - name: Run pytest
+        run: pytest
 ```
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add .github/workflows/validate.yml
-git commit -m "ci: add hassfest and HACS validation workflow"
+git commit -m "ci: add hassfest, HACS, and pytest validation workflow"
 ```
 
 ---
 
-### Task 10: CI release workflow and HACS zip_release
+### Task 14: CI release workflow and HACS zip_release
 
 **Files:**
 - Create: `.github/workflows/release.yml`
@@ -1722,7 +2127,7 @@ git commit -m "ci: build frontend and ship a CI-built HACS zip release"
 
 ## Post-plan verification
 
-After Task 10, before opening the PR (per `CLAUDE.md`'s Git Workflow — always via PR, never direct to `main`):
+After Task 14, before opening the PR (per `CLAUDE.md`'s Git Workflow — always via PR, never direct to `main`):
 - Run `cd custom_components/better_notes/frontend && npm run build` one final time from a clean checkout to confirm no uncommitted build-tool drift.
 - Re-run the Task 8 manual checklist once more against the final state.
 - Confirm `git status` is clean and every task's commit is present.
