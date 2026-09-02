@@ -43,49 +43,6 @@ Go to **Settings → Devices & Services → Add Integration** and search for *Ho
 | **📌**  | Pin / unpin                                            |
 | **🔗**  | Insert / remove link                                   |
 
-## Dashboard card
-
-Add to any dashboard:
-
-```yaml
-type: custom:better-notes-card
-title: My Notes
-max_notes: 5
-show_pinned_only: false
-# note_id: abc123 # show a single note
-```
-
-## Services
-
-Use these in automations to create or manage notes programmatically. Note content is stored as HTML — plain text is accepted and displayed as a paragraph.
-
-### `better_notes.create_note`
-```yaml
-service: better_notes.create_note
-data:
-  title: "Grocery List"
-  content: "Milk, eggs, bread"
-  color: "#FFEB3B"   # optional
-  pinned: false       # optional
-```
-
-### `better_notes.update_note`
-```yaml
-service: better_notes.update_note
-data:
-  note_id: "abc123-def456"
-  title: "Updated title"
-  content: "Updated content"
-  pinned: true
-```
-
-### `better_notes.delete_note`
-```yaml
-service: better_notes.delete_note
-data:
-  note_id: "abc123-def456"
-```
-
 ### `better_notes.get_notes`
 Returns all notes. Use `return_response: true` in automations to read the result.
 
