@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-A Home Assistant custom integration (`custom_components/better_notes`) that adds an Apple Notes-style panel and Lovelace card to Home Assistant. Distributed via HACS, requires HA 2026.8.0+.
+A Home Assistant custom integration (`custom_components/better_notes`) that adds an Apple Notes-style panel and Lovelace card to Home Assistant. Distributed via HACS, requires HA 2026.8.2+ (the panel registration uses `handle_safe_area`, added to `panel_custom.async_register_panel` in that release — see "Custom Panel Safe-Area Opt-Out" below).
 
 ## Development
 
@@ -44,6 +44,12 @@ Publishing a GitHub Release triggers `.github/workflows/release.yml`, which buil
 - `www/tiptap-bundle.js` — pre-built rich-text editor, checked into git as-is (not part of the Vite build), wrapped by a Lit component for the note body editor
 
 The panel communicates with HA backend by calling HA services via the HA WebSocket API / REST API from the browser.
+
+### Custom Panel Safe-Area Opt-Out
+
+`async_register_panel()` in `__init__.py` passes `handle_safe_area=True`. Since HA 2026.8, `ha-panel-custom` defaults to wrapping non-iframe custom panels with `display: block` plus safe-area inset padding it applies itself — this forces the wrapper into auto/content-driven height, breaking our panel's `:host { height: 100% }` app-shell layout (fixed-viewport, internally-scrolling note body, sticky-bottom toolbar). HA's default mode is built for simple document-flow panels that just scroll the page, not app shells like ours, so we opt out rather than fight it. This is why `hacs.json`'s minimum HA version is `2026.8.2` — that's when `handle_safe_area` was added to core's `panel_custom.async_register_panel` (home-assistant/core#178598).
+
+Opting out only skips HA's own padding-application step — the `--safe-area-inset-*` CSS variables it resolves are still inherited normally (no iframe boundary in our case). So `note-editor.ts`'s toolbar CSS reads `var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px))`: HA still computes the actual inset value, we just apply our own margin on top of it instead of re-deriving it independently.
 
 ## Frontend Design Language
 

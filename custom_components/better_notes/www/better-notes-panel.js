@@ -614,7 +614,7 @@ p.styles = v`
     better-notes-toolbar {
       flex-shrink: 0;
       margin: 8px 12px 12px;
-      margin-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      margin-bottom: calc(12px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
     }
     .title-input {
       width: 100%; font-size: 28px; font-weight: 700; border: none; outline: none; margin-bottom: 16px;
