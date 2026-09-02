@@ -24,7 +24,7 @@ export class BetterNotesTiptapEditor extends LitElement {
       outline: none;
     }
     .ProseMirror {
-      flex: 1; min-height: 100%; cursor: text;
+      flex: 1; min-height: 100%; cursor: text; overflow-wrap: anywhere;
     }
     .ProseMirror ul[data-type="taskList"] {
       list-style: none;
