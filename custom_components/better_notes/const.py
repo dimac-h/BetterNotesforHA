@@ -1,4 +1,4 @@
-"""Constants for the Better Notes integration."""
+"""Constants for the Home Assistant Notes integration."""
 
 DOMAIN = "better_notes"
 STORAGE_VERSION = 1
@@ -36,7 +36,7 @@ DEFAULT_COLORS = [
 ]
 
 # Panel configuration
-PANEL_TITLE = "Better Notes"
+PANEL_TITLE = "Home Assistant Notes"
 PANEL_ICON = "mdi:note-multiple"
 PANEL_URL = "better-notes"
 PANEL_COMPONENT_NAME = "better-notes-panel"

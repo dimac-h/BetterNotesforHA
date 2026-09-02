@@ -45,7 +45,7 @@ export class BetterNotesList extends LitElement {
       <div class="header">
         <div class="title-row">
           <ha-menu-button></ha-menu-button>
-          <h1>Better Notes</h1>
+          <h1>Home Assistant Notes</h1>
         </div>
         <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
         <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>+ New Note</ha-button>

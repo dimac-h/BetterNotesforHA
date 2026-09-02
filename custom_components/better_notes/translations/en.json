@@ -2,13 +2,13 @@
   "config": {
     "step": {
       "user": {
-        "title": "Better Notes",
-        "description": "Set up the Better Notes integration to add an Apple Notes-like experience to Home Assistant."
+        "title": "Home Assistant Notes",
+        "description": "Set up the Home Assistant Notes integration to add an Apple Notes-like experience to Home Assistant."
       }
     },
     "abort": {
-      "single_instance_allowed": "Only a single configuration of Better Notes is allowed."
+      "single_instance_allowed": "Only a single configuration of Home Assistant Notes is allowed."
     }
   },
-  "title": "Better Notes"
+  "title": "Home Assistant Notes"
 }

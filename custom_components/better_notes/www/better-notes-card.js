@@ -1,5 +1,5 @@
 import { i as _, r as h, a as f, b as s, t as g, n as v, g as p, s as w, c as u, m as x, d as y, f as $, e as N } from "./colors-CMfYGb1F.js";
-var C = Object.defineProperty, E = Object.getOwnPropertyDescriptor, b = (t, e, i, n) => {
+var C = Object.defineProperty, E = Object.getOwnPropertyDescriptor, m = (t, e, i, n) => {
   for (var o = n > 1 ? void 0 : n ? E(e, i) : e, a = t.length - 1, r; a >= 0; a--)
     (r = t[a]) && (o = (n ? r(e, i, o) : r(o)) || o);
   return n && o && C(e, i, o), o;
@@ -56,13 +56,13 @@ c.styles = _`
     label { display: block; margin-bottom: 4px; font-weight: 500; }
     ha-input { width: 100%; }
   `;
-b([
+m([
   h()
 ], c.prototype, "_config", 2);
-c = b([
+c = m([
   g("better-notes-card-editor")
 ], c);
-const O = /* @__PURE__ */ new Set([
+const A = /* @__PURE__ */ new Set([
   "p",
   "br",
   "strong",
@@ -89,40 +89,40 @@ const O = /* @__PURE__ */ new Set([
   "label",
   "span",
   "div"
-]), A = {
+]), O = {
   a: ["href", "target", "rel"],
   input: ["type", "checked", "disabled"]
 }, P = /^(https?:|mailto:)/i;
-function m(t) {
+function b(t) {
   if (t.nodeType === Node.TEXT_NODE) return;
   if (t.nodeType !== Node.ELEMENT_NODE) {
     t.parentNode?.removeChild(t);
     return;
   }
   const e = t, i = e.tagName.toLowerCase();
-  if (!O.has(i)) {
+  if (!A.has(i)) {
     const o = e.parentNode;
     for (; e.firstChild; ) o?.insertBefore(e.firstChild, e);
     o?.removeChild(e);
     return;
   }
-  const n = A[i] || [];
+  const n = O[i] || [];
   if (Array.from(e.attributes).forEach((o) => {
     !n.includes(o.name) && o.name !== "data-type" && o.name !== "data-checked" && e.removeAttribute(o.name);
   }), i === "a") {
     const o = e.getAttribute("href") || "";
     P.test(o) || e.removeAttribute("href"), e.setAttribute("rel", "noopener noreferrer");
   }
-  Array.from(e.childNodes).forEach(m);
+  Array.from(e.childNodes).forEach(b);
 }
-function B(t) {
+function S(t) {
   const e = new DOMParser().parseFromString(t, "text/html");
-  return Array.from(e.body.childNodes).forEach(m), e.body.innerHTML;
+  return Array.from(e.body.childNodes).forEach(b), e.body.innerHTML;
 }
-var S = Object.defineProperty, k = Object.getOwnPropertyDescriptor, d = (t, e, i, n) => {
-  for (var o = n > 1 ? void 0 : n ? k(e, i) : e, a = t.length - 1, r; a >= 0; a--)
+var k = Object.defineProperty, D = Object.getOwnPropertyDescriptor, d = (t, e, i, n) => {
+  for (var o = n > 1 ? void 0 : n ? D(e, i) : e, a = t.length - 1, r; a >= 0; a--)
     (r = t[a]) && (o = (n ? r(e, i, o) : r(o)) || o);
-  return n && o && S(e, i, o), o;
+  return n && o && k(e, i, o), o;
 };
 let l = class extends f {
   constructor() {
@@ -170,7 +170,7 @@ let l = class extends f {
           <span>${t.title || "Untitled"}</span>
           ${t.pinned ? s`<ha-svg-icon .path=${x}></ha-svg-icon>` : ""}
         </div>
-        ${e ? s`<div class="note-content" .innerHTML=${B(t.content || "")}></div>` : s`<div class="note-content">${(() => {
+        ${e ? s`<div class="note-content" .innerHTML=${S(t.content || "")}></div>` : s`<div class="note-content">${(() => {
       const i = y(t.content || "");
       return i.length > 150 ? `${i.slice(0, 150)}…` : i;
     })()}</div>`}
@@ -242,8 +242,8 @@ l = d([
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "better-notes-card",
-  name: "Better Notes Card",
-  description: "Display notes from Better Notes",
+  name: "Home Assistant Notes Card",
+  description: "Display notes from Home Assistant Notes",
   preview: !0,
   documentationURL: "https://github.com/dimac-h/BetterNotesforHA"
 });

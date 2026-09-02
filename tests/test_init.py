@@ -1,4 +1,4 @@
-"""Tests for Better Notes setup, services, and events."""
+"""Tests for Home Assistant Notes setup, services, and events."""
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

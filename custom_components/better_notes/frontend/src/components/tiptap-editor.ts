@@ -103,7 +103,7 @@ export class BetterNotesTiptapEditor extends LitElement {
     try {
       loaded = await loadTiptapExtensions();
     } catch (err) {
-      console.warn('Better Notes: Tiptap failed to load, falling back to textarea', err);
+      console.warn('Home Assistant Notes: Tiptap failed to load, falling back to textarea', err);
       loaded = null;
     }
     if (!loaded || !this._mount) {

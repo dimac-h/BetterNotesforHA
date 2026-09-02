@@ -144,8 +144,8 @@ export class BetterNotesCard extends LitElement {
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: 'better-notes-card',
-  name: 'Better Notes Card',
-  description: 'Display notes from Better Notes',
+  name: 'Home Assistant Notes Card',
+  description: 'Display notes from Home Assistant Notes',
   preview: true,
   documentationURL: 'https://github.com/dimac-h/BetterNotesforHA',
 });

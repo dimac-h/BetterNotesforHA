@@ -1,4 +1,4 @@
-"""Config flow for Better Notes integration."""
+"""Config flow for Home Assistant Notes integration."""
 from __future__ import annotations
 
 import logging
@@ -16,7 +16,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class BetterNotesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for Better Notes."""
+    """Handle a config flow for Home Assistant Notes."""
 
     VERSION = 1
 
@@ -28,7 +28,7 @@ class BetterNotesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_abort(reason="single_instance_allowed")
 
         if user_input is not None:
-            return self.async_create_entry(title="Better Notes", data={})
+            return self.async_create_entry(title="Home Assistant Notes", data={})
 
         return self.async_show_form(step_id="user", data_schema=vol.Schema({}))
 

@@ -1,4 +1,4 @@
-"""Storage handler for Better Notes."""
+"""Storage handler for Home Assistant Notes."""
 from __future__ import annotations
 
 import logging

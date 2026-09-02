@@ -2,15 +2,15 @@
   "config": {
     "step": {
       "user": {
-        "title": "Better Notes Setup",
-        "description": "Set up the Better Notes integration. This will add a notes panel to your sidebar and enable note management throughout Home Assistant."
+        "title": "Home Assistant Notes Setup",
+        "description": "Set up the Home Assistant Notes integration. This will add a notes panel to your sidebar and enable note management throughout Home Assistant."
       }
     },
     "abort": {
-      "single_instance_allowed": "Only a single instance of Better Notes is allowed. The integration is already configured."
+      "single_instance_allowed": "Only a single instance of Home Assistant Notes is allowed. The integration is already configured."
     }
   },
-  "title": "Better Notes",
+  "title": "Home Assistant Notes",
   "services": {
     "create_note": {
       "name": "Create Note",

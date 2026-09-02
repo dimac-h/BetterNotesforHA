@@ -1,17 +1,17 @@
-import { i as v, n as l, a as _, d as P, c as T, m as L, b as a, f as S, t as m, r as h, N as E, h as O, s as D, g as A, j as I, u as B, k as z } from "./colors-CMfYGb1F.js";
+import { i as v, n as l, a as _, d as P, c as T, m as L, b as a, f as S, t as m, r as h, N as E, h as O, s as D, g as A, j as I, u as z, k as H } from "./colors-CMfYGb1F.js";
 const j = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
-    const r = (n) => n.renderRoot?.querySelector(t) ?? null;
+    const n = (r) => r.renderRoot?.querySelector(t) ?? null;
     return j(i, s, { get() {
-      return r(this);
+      return n(this);
     } });
   };
 }
-var H = Object.defineProperty, M = Object.getOwnPropertyDescriptor, $ = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? M(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
-  return s && o && H(e, i, o), o;
+var B = Object.defineProperty, M = Object.getOwnPropertyDescriptor, $ = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? M(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
+  return s && o && B(e, i, o), o;
 };
 let x = class extends _ {
   constructor() {
@@ -77,8 +77,8 @@ x = $([
   m("better-notes-list-item")
 ], x);
 var G = Object.defineProperty, q = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? q(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && G(e, i, o), o;
 };
 let b = class extends _ {
@@ -104,7 +104,7 @@ let b = class extends _ {
       <div class="header">
         <div class="title-row">
           <ha-menu-button></ha-menu-button>
-          <h1>Better Notes</h1>
+          <h1>Home Assistant Notes</h1>
         </div>
         <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e) => e.stopPropagation()}></ha-input>
         <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>+ New Note</ha-button>
@@ -140,8 +140,8 @@ b = w([
   m("better-notes-list")
 ], b);
 var R = Object.defineProperty, U = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? U(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? U(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && R(e, i, o), o;
 };
 let d = class extends _ {
@@ -290,7 +290,7 @@ d = g([
   m("better-notes-toolbar")
 ], d);
 async function V() {
-  const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: r }, { ListItem: n }] = await Promise.all([
+  const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }, { ListItem: r }] = await Promise.all([
     import("./index-pa5U7i3D.js").then((N) => N.O),
     import("./index-Yys9n5GD.js"),
     import("./index-B0TKEn8L.js"),
@@ -309,17 +309,17 @@ async function V() {
       // ProseMirror climbs up through every ancestor list to find a place
       // it IS valid, collapsing all nested indentation in the process.
       e.configure({ heading: { levels: [1, 2, 3] }, link: !1, listItem: !1, hardBreak: !1 }),
-      n.extend({ content: "(paragraph|heading) block*" }),
+      r.extend({ content: "(paragraph|heading) block*" }),
       i,
       s.configure({ nested: !0 }),
       o.configure({ openOnClick: !0 }),
-      r
+      n
     ]
   };
 }
 var K = Object.defineProperty, F = Object.getOwnPropertyDescriptor, C = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? F(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? F(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && K(e, i, o), o;
 };
 let k = class extends _ {
@@ -340,7 +340,7 @@ let k = class extends _ {
     try {
       t = await V();
     } catch (s) {
-      console.warn("Better Notes: Tiptap failed to load, falling back to textarea", s), t = null;
+      console.warn("Home Assistant Notes: Tiptap failed to load, falling back to textarea", s), t = null;
     }
     if (!t || !this._mount) {
       this._fallback = !0, this.requestUpdate();
@@ -508,8 +508,8 @@ k = C([
   m("better-notes-tiptap-editor")
 ], k);
 var J = Object.defineProperty, Q = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? Q(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? Q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && J(e, i, o), o;
 };
 let p = class extends _ {
@@ -644,8 +644,8 @@ p = f([
   m("better-notes-editor")
 ], p);
 var W = Object.defineProperty, X = Object.getOwnPropertyDescriptor, u = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? X(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? X(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && W(e, i, o), o;
 };
 function Y(t) {
@@ -699,10 +699,10 @@ let c = class extends _ {
     this._searchTerm = t.detail.value;
   }
   async _onNoteSave(t) {
-    await B(this.hass, t.detail), await this._loadNotes();
+    await z(this.hass, t.detail), await this._loadNotes();
   }
   async _onNoteDelete(t) {
-    await z(this.hass, t.detail.noteId), this._selectedId = null, this._leaveEditor(), await this._loadNotes();
+    await H(this.hass, t.detail.noteId), this._selectedId = null, this._leaveEditor(), await this._loadNotes();
   }
   _onEditorBack() {
     this._leaveEditor();
