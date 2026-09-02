@@ -95,6 +95,8 @@ Notes are sorted pinned-first, then by `modified` descending.
 
 Always open a pull request when completing a feature or fix. Never merge directly to `main` without a PR.
 
+All commits, branches, and PRs in this repo must be attributed to `dimac-h` (author and committer) — never to Claude, an AI, or a specific Claude model name, in commit messages, PR titles/descriptions, or branch names.
+
 ## HACS Distribution
 
 `hacs.json` and `manifest.json` must stay in sync for HACS compatibility. The `render_readme` flag in `hacs.json` means the README is shown as the HACS integration page.

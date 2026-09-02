@@ -18,12 +18,14 @@ export class BetterNotesEditor extends LitElement {
     @media (max-width: 767px) { .back-btn { display: inline-flex; } }
     .actions { display: flex; gap: 8px; margin-left: auto; }
     .body {
-      flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column;
-      padding: 20px 24px calc(20px + 56px);
+      flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column;
+      padding: 20px 24px 40px;
     }
     better-notes-tiptap-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     better-notes-toolbar {
-      position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 10;
+      flex-shrink: 0;
+      margin: 8px 12px 12px;
+      margin-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     }
     .title-input {
       width: 100%; font-size: 28px; font-weight: 700; border: none; outline: none; margin-bottom: 16px;
