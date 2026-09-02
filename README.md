@@ -2,7 +2,7 @@
 
 A notes panel for Home Assistant with rich text editing, dark mode support, and Lovelace card integration.
 
-![Home Assistant Notes panel](https://raw.githubusercontent.com/dimac-h/BetterNotesforHA/main/images/screenshot.png)
+![Home Assistant Notes panel](https://raw.githubusercontent.com/dimac-h/Home-Assistant-Notes/main/images/screenshot.png)
 
 ## Features
 
@@ -19,7 +19,7 @@ A notes panel for Home Assistant with rich text editing, dark mode support, and 
 ### HACS (recommended)
 
 1. Open HACS → Integrations → ⋮ → Custom repositories
-2. Add `https://github.com/dimac-h/BetterNotesforHA` as an Integration
+2. Add `https://github.com/dimac-h/Home-Assistant-Notes` as an Integration
 3. Download **Home Assistant Notes** and restart Home Assistant
 
 ### Manual
@@ -50,4 +50,4 @@ Go to **Settings → Devices & Services → Add Integration** and search for *Ho
 
 ## License
 
-MIT — contributions are welcome via [pull request](https://github.com/dimac-h/BetterNotesforHA/pulls).
+MIT — contributions are welcome via [pull request](https://github.com/dimac-h/Home-Assistant-Notes/pulls).
