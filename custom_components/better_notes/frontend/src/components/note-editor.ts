@@ -24,7 +24,7 @@ export class BetterNotesEditor extends LitElement {
     better-notes-tiptap-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     better-notes-toolbar {
       flex-shrink: 0;
-      margin: 0 12px 12px;
+      margin: 8px 12px 12px;
       margin-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     }
     .title-input {
