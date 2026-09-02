@@ -1,4 +1,4 @@
-import { i as v, n as l, a as _, d as P, c as T, m as L, b as a, f as S, t as m, r as h, N as E, h as O, s as D, g as A, j as z, u as I, k as B } from "./colors-CMfYGb1F.js";
+import { i as v, n as l, a as _, d as P, c as T, m as L, b as a, f as S, t as m, r as h, N as E, h as O, s as D, g as A, j as I, u as B, k as z } from "./colors-CMfYGb1F.js";
 const j = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
@@ -76,7 +76,7 @@ $([
 x = $([
   m("better-notes-list-item")
 ], x);
-var G = Object.defineProperty, q = Object.getOwnPropertyDescriptor, k = (t, e, i, s) => {
+var G = Object.defineProperty, q = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && G(e, i, o), o;
@@ -127,20 +127,20 @@ b.styles = v`
     .items { flex: 1; overflow-y: auto; padding: 10px; }
     .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
   `;
-k([
+w([
   l({ attribute: !1 })
 ], b.prototype, "notes", 2);
-k([
+w([
   l({ type: String })
 ], b.prototype, "selectedNoteId", 2);
-k([
+w([
   l({ type: String })
 ], b.prototype, "searchTerm", 2);
-b = k([
+b = w([
   m("better-notes-list")
 ], b);
-var R = Object.defineProperty, V = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? V(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+var R = Object.defineProperty, U = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? U(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && R(e, i, o), o;
 };
@@ -289,7 +289,7 @@ g([
 d = g([
   m("better-notes-toolbar")
 ], d);
-async function U() {
+async function V() {
   const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }, { ListItem: r }] = await Promise.all([
     import("./index-pa5U7i3D.js").then((N) => N.O),
     import("./index-Yys9n5GD.js"),
@@ -322,7 +322,7 @@ var K = Object.defineProperty, F = Object.getOwnPropertyDescriptor, C = (t, e, i
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && K(e, i, o), o;
 };
-let w = class extends _ {
+let k = class extends _ {
   constructor() {
     super(...arguments), this.content = "", this._editor = null, this._fallback = !1, this._lastEmitted = "";
   }
@@ -338,7 +338,7 @@ let w = class extends _ {
   async _init() {
     let t;
     try {
-      t = await U();
+      t = await V();
     } catch (s) {
       console.warn("Better Notes: Tiptap failed to load, falling back to textarea", s), t = null;
     }
@@ -439,7 +439,7 @@ let w = class extends _ {
       ></textarea>` : a`<div id="mount" @keydown=${(t) => t.stopPropagation()}></div>`;
   }
 };
-w.styles = v`
+k.styles = v`
     :host { display: flex; flex-direction: column; min-height: 0; flex: 1; }
     .fallback {
       width: 100%; min-height: 300px; font-size: 15px; line-height: 1.6;
@@ -500,13 +500,13 @@ w.styles = v`
   `;
 C([
   l({ attribute: !1 })
-], w.prototype, "content", 2);
+], k.prototype, "content", 2);
 C([
   y("#mount")
-], w.prototype, "_mount", 2);
-w = C([
+], k.prototype, "_mount", 2);
+k = C([
   m("better-notes-tiptap-editor")
-], w);
+], k);
 var J = Object.defineProperty, Q = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? Q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
@@ -514,18 +514,10 @@ var J = Object.defineProperty, Q = Object.getOwnPropertyDescriptor, f = (t, e, i
 };
 let p = class extends _ {
   constructor() {
-    super(...arguments), this.note = null, this._pendingDelete = !1, this._justSaved = !1, this._onViewportResize = () => {
-      const t = window.visualViewport;
-      if (!t) return;
-      const e = Math.max(0, window.innerHeight - t.height - t.offsetTop);
-      this.style.setProperty("--better-notes-keyboard-offset", `${e}px`);
-    };
-  }
-  connectedCallback() {
-    super.connectedCallback(), window.visualViewport?.addEventListener("resize", this._onViewportResize);
+    super(...arguments), this.note = null, this._pendingDelete = !1, this._justSaved = !1;
   }
   disconnectedCallback() {
-    super.disconnectedCallback(), clearTimeout(this._saveTimeout), clearTimeout(this._deleteTimeout), clearTimeout(this._toastTimeout), window.visualViewport?.removeEventListener("resize", this._onViewportResize);
+    super.disconnectedCallback(), clearTimeout(this._saveTimeout), clearTimeout(this._deleteTimeout), clearTimeout(this._toastTimeout);
   }
   _scheduleSave() {
     clearTimeout(this._saveTimeout), this._saveTimeout = setTimeout(() => this._save(), 1e3);
@@ -616,16 +608,13 @@ p.styles = v`
     .actions { display: flex; gap: 8px; margin-left: auto; }
     .body {
       flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column;
-      padding: 20px 24px calc(20px + 56px);
+      padding: 20px 24px;
     }
     better-notes-tiptap-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     better-notes-toolbar {
-      position: fixed; left: 12px; right: 12px;
-      bottom: calc(12px + env(safe-area-inset-bottom, 0px) + var(--better-notes-keyboard-offset, 0px));
-      z-index: 10;
-    }
-    @media (min-width: 768px) {
-      better-notes-toolbar { left: calc(280px + 12px); }
+      flex-shrink: 0;
+      margin: 0 12px 12px;
+      margin-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     }
     .title-input {
       width: 100%; font-size: 28px; font-weight: 700; border: none; outline: none; margin-bottom: 16px;
@@ -696,7 +685,7 @@ let c = class extends _ {
     if (!this._creatingNote) {
       this._creatingNote = !0;
       try {
-        const t = await z(this.hass, { title: "New Note", content: "", color: E[0], pinned: !1 });
+        const t = await I(this.hass, { title: "New Note", content: "", color: E[0], pinned: !1 });
         await this._loadNotes(), t && this._enterEditor(t);
       } finally {
         this._creatingNote = !1;
@@ -710,10 +699,10 @@ let c = class extends _ {
     this._searchTerm = t.detail.value;
   }
   async _onNoteSave(t) {
-    await I(this.hass, t.detail), await this._loadNotes();
+    await B(this.hass, t.detail), await this._loadNotes();
   }
   async _onNoteDelete(t) {
-    await B(this.hass, t.detail.noteId), this._selectedId = null, this._leaveEditor(), await this._loadNotes();
+    await z(this.hass, t.detail.noteId), this._selectedId = null, this._leaveEditor(), await this._loadNotes();
   }
   _onEditorBack() {
     this._leaveEditor();
