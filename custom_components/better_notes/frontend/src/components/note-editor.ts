@@ -23,7 +23,12 @@ export class BetterNotesEditor extends LitElement {
     }
     better-notes-tiptap-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     better-notes-toolbar {
-      position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 10;
+      position: fixed; left: 12px; right: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px) + var(--better-notes-keyboard-offset, 0px));
+      z-index: 10;
+    }
+    @media (min-width: 768px) {
+      better-notes-toolbar { left: calc(280px + 12px); }
     }
     .title-input {
       width: 100%; font-size: 28px; font-weight: 700; border: none; outline: none; margin-bottom: 16px;
@@ -47,12 +52,28 @@ export class BetterNotesEditor extends LitElement {
   private _deleteTimeout?: ReturnType<typeof setTimeout>;
   private _toastTimeout?: ReturnType<typeof setTimeout>;
 
+  connectedCallback(): void {
+    super.connectedCallback();
+    window.visualViewport?.addEventListener('resize', this._onViewportResize);
+  }
+
   disconnectedCallback(): void {
     super.disconnectedCallback();
     clearTimeout(this._saveTimeout);
     clearTimeout(this._deleteTimeout);
     clearTimeout(this._toastTimeout);
+    window.visualViewport?.removeEventListener('resize', this._onViewportResize);
   }
+
+  // iOS Safari keeps the layout viewport full-height when the on-screen keyboard opens,
+  // shrinking only the visual viewport — so a fixed-position toolbar anchored to the
+  // layout viewport ends up hidden behind the keyboard unless we push it up manually.
+  private _onViewportResize = (): void => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+    const offset = Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop);
+    this.style.setProperty('--better-notes-keyboard-offset', `${offset}px`);
+  };
 
   private _scheduleSave(): void {
     clearTimeout(this._saveTimeout);
