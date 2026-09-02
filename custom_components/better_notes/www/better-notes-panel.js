@@ -611,7 +611,9 @@ p.styles = v`
     }
     .header { padding: 12px 16px; border-bottom: 1px solid var(--divider-color); display: flex; align-items: center; gap: 10px; }
     .back-btn { display: none; }
-    @media (max-width: 767px) { .back-btn { display: inline-flex; transform: scale(1.2); } }
+    @media (max-width: 767px) {
+      .back-btn { display: inline-flex; --mdc-icon-size: 28px; }
+    }
     .actions { display: flex; gap: 8px; margin-left: auto; }
     .body {
       flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column;
