@@ -608,7 +608,7 @@ p.styles = v`
     .actions { display: flex; gap: 8px; margin-left: auto; }
     .body {
       flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column;
-      padding: 20px 24px;
+      padding: 20px 24px 40px;
     }
     better-notes-tiptap-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     better-notes-toolbar {
