@@ -1,4 +1,4 @@
-"""Fixtures for testing the Better Notes integration."""
+"""Fixtures for testing the Home Assistant Notes integration."""
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

@@ -1,4 +1,4 @@
-"""Tests for the Better Notes config flow."""
+"""Tests for the Home Assistant Notes config flow."""
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -21,7 +21,7 @@ async def test_user_flow_creates_entry(hass: HomeAssistant) -> None:
 
     result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
     assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert result["title"] == "Better Notes"
+    assert result["title"] == "Home Assistant Notes"
 
 
 async def test_user_flow_aborts_if_already_configured(hass: HomeAssistant) -> None:

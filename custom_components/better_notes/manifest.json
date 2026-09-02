@@ -1,6 +1,6 @@
 {
   "domain": "better_notes",
-  "name": "Better Notes",
+  "name": "Home Assistant Notes",
   "codeowners": ["@dimac-h"],
   "config_flow": true,
   "dependencies": ["http"],

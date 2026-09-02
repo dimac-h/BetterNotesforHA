@@ -1,4 +1,4 @@
-"""The Better Notes integration."""
+"""The Home Assistant Notes integration."""
 from __future__ import annotations
 
 import logging
@@ -61,7 +61,7 @@ DELETE_NOTE_SCHEMA = vol.Schema({
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Better Notes from a config entry."""
+    """Set up Home Assistant Notes from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
     # Initialize storage
@@ -148,7 +148,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         DOMAIN, SERVICE_GET_NOTES, handle_get_notes, supports_response=SupportsResponse.ONLY
     )
 
-    _LOGGER.info("Better Notes integration setup complete")
+    _LOGGER.info("Home Assistant Notes integration setup complete")
     return True
 
 

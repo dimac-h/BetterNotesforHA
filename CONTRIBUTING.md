@@ -1,6 +1,6 @@
-# Contributing to Better Notes for Home Assistant
+# Contributing to Home Assistant Notes
 
-Thank you for your interest in contributing to Better Notes! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to Home Assistant Notes! This document provides guidelines and instructions for contributing.
 
 ## How to Contribute
 
