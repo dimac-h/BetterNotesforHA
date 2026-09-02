@@ -43,8 +43,8 @@ Feature suggestions are welcome! Please:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/CameronVerrells/BetterNotesforHA.git
-   cd BetterNotesforHA
+   git clone https://github.com/dimac-h/Home-Assistant-Notes.git
+   cd Home-Assistant-Notes
    ```
 
 2. Create a symbolic link in your Home Assistant config directory:
