@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
-import { mdiCheck } from '@mdi/js';
+import { mdiCheck, mdiArrowLeft } from '@mdi/js';
 import './note-toolbar';
 import './tiptap-editor';
 import type { BetterNotesTiptapEditor, ToolbarAction } from './tiptap-editor';
@@ -10,12 +10,15 @@ import type { Note } from '../api';
 export class BetterNotesEditor extends LitElement {
   static styles = css`
     :host {
-      display: flex; flex-direction: column; height: 100%; background: var(--card-background-color);
+      display: flex; flex-direction: column; height: var(--better-notes-visible-height, 100%);
+      background: var(--card-background-color);
       min-width: 0; min-height: 0; position: relative;
     }
     .header { padding: 12px 16px; border-bottom: 1px solid var(--divider-color); display: flex; align-items: center; gap: 10px; }
     .back-btn { display: none; }
-    @media (max-width: 767px) { .back-btn { display: inline-flex; } }
+    @media (max-width: 767px) {
+      .back-btn { display: inline-flex; --mdc-icon-size: 28px; }
+    }
     .actions { display: flex; gap: 8px; margin-left: auto; }
     .body {
       flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column;
@@ -25,7 +28,7 @@ export class BetterNotesEditor extends LitElement {
     better-notes-toolbar {
       flex-shrink: 0;
       margin: 8px 12px 12px;
-      margin-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      margin-bottom: calc(12px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
     }
     .title-input {
       width: 100%; font-size: 28px; font-weight: 700; border: none; outline: none; margin-bottom: 16px;
@@ -49,12 +52,30 @@ export class BetterNotesEditor extends LitElement {
   private _deleteTimeout?: ReturnType<typeof setTimeout>;
   private _toastTimeout?: ReturnType<typeof setTimeout>;
 
+  connectedCallback(): void {
+    super.connectedCallback();
+    window.visualViewport?.addEventListener('resize', this._onViewportResize);
+    this._onViewportResize();
+  }
+
   disconnectedCallback(): void {
     super.disconnectedCallback();
     clearTimeout(this._saveTimeout);
     clearTimeout(this._deleteTimeout);
     clearTimeout(this._toastTimeout);
+    window.visualViewport?.removeEventListener('resize', this._onViewportResize);
   }
+
+  // Mobile browsers keep the layout viewport full-height when the on-screen keyboard
+  // opens, shrinking only the visual viewport — so a plain height:100% app shell
+  // extends below the visible area and its in-flow bottom toolbar ends up hidden
+  // behind the keyboard. Shrinking the shell itself to match keeps everything,
+  // including the toolbar, within the visible area without any position hacks.
+  private _onViewportResize = (): void => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+    this.style.setProperty('--better-notes-visible-height', `${viewport.height}px`);
+  };
 
   private _scheduleSave(): void {
     clearTimeout(this._saveTimeout);
@@ -114,7 +135,7 @@ export class BetterNotesEditor extends LitElement {
     }
     return html`
       <div class="header">
-        <ha-icon-button class="back-btn" @click=${() => this.dispatchEvent(new CustomEvent('editor-back', { bubbles: true, composed: true }))}>←</ha-icon-button>
+        <ha-icon-button class="back-btn" .path=${mdiArrowLeft} @click=${() => this.dispatchEvent(new CustomEvent('editor-back', { bubbles: true, composed: true }))}></ha-icon-button>
         <div class="actions">
           <ha-button size="s" appearance="plain" variant="neutral" @click=${() => { clearTimeout(this._saveTimeout); this._save(); }}>
             ${this._justSaved ? html`<ha-svg-icon .path=${mdiCheck}></ha-svg-icon>` : 'Save'}

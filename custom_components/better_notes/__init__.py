@@ -89,6 +89,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         module_url="/better_notes_panel/better-notes-panel.js",
         embed_iframe=False,
         require_admin=False,
+        handle_safe_area=True,
     )
 
     # Register services
