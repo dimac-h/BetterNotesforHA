@@ -42,10 +42,6 @@ Go to **Settings → Devices & Services → Add Integration** and search for *Ho
 | **🎨▾** | Note color                                             |
 | **📌**  | Pin / unpin                                            |
 | **🔗**  | Insert / remove link                                   |
-
-### `better_notes.get_notes`
-Returns all notes. Use `return_response: true` in automations to read the result.
-
 ## Troubleshooting
 
 **Panel not in sidebar** — disable and re-enable the integration in Settings → Devices & Services, then hard-refresh the browser.
