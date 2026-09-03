@@ -70,11 +70,21 @@ const PREVIEW_ALLOWED_TAGS = new Set([
 ]);
 
 function cleanPreviewNode(node: Node): void {
-  Array.from(node.childNodes).forEach((child) => {
-    if (child.nodeType === Node.TEXT_NODE) return;
+  // Walk with an explicit next-sibling pointer captured before any mutation,
+  // rather than a childNodes snapshot — a snapshot goes stale as soon as one
+  // sibling is unwrapped/removed, and a later removeChild on another
+  // already-detached sibling throws NotFoundError.
+  let child = node.firstChild;
+  while (child) {
+    const next: ChildNode | null = child.nextSibling;
+    if (child.nodeType === Node.TEXT_NODE) {
+      child = next;
+      continue;
+    }
     if (child.nodeType !== Node.ELEMENT_NODE) {
       node.removeChild(child);
-      return;
+      child = next;
+      continue;
     }
     const el = child as HTMLElement;
     if (!PREVIEW_ALLOWED_TAGS.has(el.tagName)) {
@@ -82,12 +92,16 @@ function cleanPreviewNode(node: Node): void {
       // text — script/style are the only ones dropped outright.
       if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') {
         el.remove();
-        return;
+        child = next;
+        continue;
       }
+      const firstMoved = el.firstChild;
       while (el.firstChild) node.insertBefore(el.firstChild, el);
       node.removeChild(el);
-      cleanPreviewNode(node);
-      return;
+      // Re-visit the just-unwrapped content (it may itself contain disallowed
+      // tags) before continuing on to `next`.
+      child = firstMoved ?? next;
+      continue;
     }
     Array.from(el.attributes).forEach((attr) => {
       const keep = (el.tagName === 'INPUT' && attr.name === 'checked')
@@ -100,7 +114,8 @@ function cleanPreviewNode(node: Node): void {
       el.setAttribute('disabled', '');
     }
     cleanPreviewNode(el);
-  });
+    child = next;
+  }
 }
 
 // Renders a trusted-but-structural preview of note content: real

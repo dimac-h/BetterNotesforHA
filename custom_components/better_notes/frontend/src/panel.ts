@@ -77,10 +77,14 @@ export class BetterNotesPanel extends LitElement {
 
   private _leaveEditor(): void {
     if (this._pushedEditorState) {
-      // Don't clear the flag or set _view here — _onPopState does both
-      // once the async popstate event actually fires. Clearing it first
-      // meant popstate saw it already false and skipped updating _view,
-      // requiring a second click to take effect.
+      // Clear the flag and update _view synchronously so a second call
+      // before the async popstate event fires (e.g. a double-click on the
+      // back button) takes the else branch below instead of calling
+      // history.back() again and popping an extra entry. _onPopState still
+      // handles the flag/view update for the swipe/browser-back gesture,
+      // which doesn't go through this method at all.
+      this._pushedEditorState = false;
+      this._view = 'list';
       history.back();
     } else {
       this._view = 'list';

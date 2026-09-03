@@ -1,4 +1,4 @@
-import { A as T, E as P, i as v, n as l, a as _, h as N, j as S, c as O, m as A, b as a, f as D, t as g, d as z, r as h, N as I, k as H, l as B, s as j, g as M, o as R, D as G, u as q, p as U } from "./colors--DikOxJY.js";
+import { A as T, E as P, i as v, n as l, a as _, h as N, j as S, c as O, m as A, b as a, f as D, t as g, d as z, r as h, N as I, k as H, l as B, s as j, g as M, o as R, D as G, u as q, p as U } from "./colors-MRcmDynT.js";
 const V = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function $(t, e) {
   return (i, s, o) => {
@@ -170,23 +170,25 @@ b.styles = v`
       font-size: 20px; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em;
       color: var(--primary-text-color); margin: 0;
     }
-    /* ha-input's internal wa-input::part(base) hardcodes height: 56px
-       with no CSS variable indirection, so it can't be themed — clip
-       it down to size instead, centering the shifted control in the
-       visible window. */
     .search-wrap {
-      height: 34px; overflow: hidden; margin-block-end: var(--ha-space-3);
+      margin-block-end: var(--ha-space-3);
       border-radius: 6px;
       box-shadow: 0 0 0 1px var(--divider-color);
+      overflow: hidden;
     }
     ha-input {
-      display: block; width: 100%; margin-top: -11px;
+      display: block; width: 100%;
       --ha-color-form-background: var(--card-background-color);
       --ha-color-form-background-hover: var(--card-background-color);
       --ha-color-form-background-focus: var(--card-background-color);
       --ha-color-form-background-active: var(--card-background-color);
       font-size: 12px;
     }
+    /* ha-input's internal wa-input::part(base) hardcodes height: 56px with
+       no CSS variable indirection — target the exported shadow part
+       directly instead of clipping/offsetting the whole element, so this
+       tracks the control's real box rather than a guessed pixel offset. */
+    ha-input::part(base) { height: 34px; min-height: 34px; }
     ha-button { width: 100%; --wa-form-control-border-radius: 6px; }
     .items { flex: 1; overflow-y: auto; padding: var(--ha-space-3) var(--ha-space-4); }
     .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
@@ -740,7 +742,7 @@ let c = class extends _ {
     this._selectedId = t, this.narrow && this._view !== "editor" && (history.pushState({ betterNotesEditor: !0 }, "", location.href), this._pushedEditorState = !0), this._view = "editor";
   }
   _leaveEditor() {
-    this._pushedEditorState ? history.back() : this._view = "list";
+    this._pushedEditorState ? (this._pushedEditorState = !1, this._view = "list", history.back()) : this._view = "list";
   }
   updated(t) {
     t.has("hass") && this.hass && !this._unsubscribe && this._init(), t.has("_view") && this.setAttribute("data-view", this._view);
