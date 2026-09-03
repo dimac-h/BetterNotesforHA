@@ -56,9 +56,63 @@ export function formatRelativeDate(iso: string): string {
 
 export function stripHtml(html: string): string {
   // textContent ignores block-level layout, so adjacent <li>/<p>/etc. run
-  // together with no separator — insert one before parsing.
+  // together with no separator — insert a line break before parsing so
+  // each block (e.g. each list item) lands on its own line.
   const spaced = html
-    .replace(/<\/(li|p|div|h[1-6]|tr)>/gi, '</$1> ')
-    .replace(/<br\s*\/?>/gi, ' ');
+    .replace(/<\/(li|p|div|h[1-6]|tr)>/gi, '</$1>\n')
+    .replace(/<br\s*\/?>/gi, '\n');
   return new DOMParser().parseFromString(spaced, 'text/html').body.textContent || '';
+}
+
+const PREVIEW_ALLOWED_TAGS = new Set([
+  'P', 'BR', 'UL', 'OL', 'LI', 'LABEL', 'SPAN', 'DIV',
+  'STRONG', 'B', 'EM', 'I', 'S', 'U', 'MARK', 'INPUT',
+]);
+
+function cleanPreviewNode(node: Node): void {
+  Array.from(node.childNodes).forEach((child) => {
+    if (child.nodeType === Node.TEXT_NODE) return;
+    if (child.nodeType !== Node.ELEMENT_NODE) {
+      node.removeChild(child);
+      return;
+    }
+    const el = child as HTMLElement;
+    if (!PREVIEW_ALLOWED_TAGS.has(el.tagName)) {
+      // Unwrap disallowed elements (e.g. <a>) instead of dropping their
+      // text — script/style are the only ones dropped outright.
+      if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') {
+        el.remove();
+        return;
+      }
+      while (el.firstChild) node.insertBefore(el.firstChild, el);
+      node.removeChild(el);
+      cleanPreviewNode(node);
+      return;
+    }
+    Array.from(el.attributes).forEach((attr) => {
+      const keep = (el.tagName === 'INPUT' && attr.name === 'checked')
+        || (el.tagName === 'UL' && attr.name === 'data-type')
+        || (el.tagName === 'LI' && attr.name === 'data-checked');
+      if (!keep) el.removeAttribute(attr.name);
+    });
+    if (el.tagName === 'INPUT') {
+      el.setAttribute('type', 'checkbox');
+      el.setAttribute('disabled', '');
+    }
+    cleanPreviewNode(el);
+  });
+}
+
+// Renders a trusted-but-structural preview of note content: real
+// <ul>/<li>/checkbox markup (so the list preview shows bullets/checkboxes
+// like the editor does) instead of flattened plain text, with everything
+// but a small structural tag allowlist stripped to avoid injecting
+// arbitrary markup/scripts from note content into the shadow DOM.
+export function notePreviewHtml(html: string): string {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  cleanPreviewNode(doc.body);
+  Array.from(doc.body.querySelectorAll('p')).forEach((p) => {
+    if (!p.textContent?.trim() && !p.querySelector('input')) p.remove();
+  });
+  return doc.body.innerHTML;
 }

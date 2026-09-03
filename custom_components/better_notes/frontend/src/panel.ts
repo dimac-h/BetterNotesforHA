@@ -77,7 +77,10 @@ export class BetterNotesPanel extends LitElement {
 
   private _leaveEditor(): void {
     if (this._pushedEditorState) {
-      this._pushedEditorState = false;
+      // Don't clear the flag or set _view here — _onPopState does both
+      // once the async popstate event actually fires. Clearing it first
+      // meant popstate saw it already false and skipped updating _view,
+      // requiring a second click to take effect.
       history.back();
     } else {
       this._view = 'list';

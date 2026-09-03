@@ -1,7 +1,8 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { mdiPin } from '@mdi/js';
-import { safeColor, getNoteTextColor, formatRelativeDate, stripHtml } from '../colors';
+import { safeColor, getNoteTextColor, formatRelativeDate, notePreviewHtml } from '../colors';
 import type { Note } from '../api';
 
 @customElement('better-notes-list-item')
@@ -21,8 +22,14 @@ export class BetterNotesListItem extends LitElement {
     }
     .preview {
       font-size: 13px; line-height: 1.4; color: var(--note-text-muted);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-block-end: 4px;
+      margin-block-end: 4px; pointer-events: none;
+      display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+      line-clamp: 3; overflow: hidden;
     }
+    .preview p, .preview li { margin: 0; }
+    .preview ul, .preview ol { margin: 0; padding-inline-start: 1.1em; }
+    .preview ul[data-type='taskList'] { list-style: none; padding-inline-start: 0; }
+    .preview input[type='checkbox'] { vertical-align: middle; margin-inline-end: 4px; }
     .date { font-size: 12px; line-height: 1.3; color: var(--note-text-muted); }
     ha-svg-icon { --mdc-icon-size: 14px; color: var(--note-text-muted); flex-shrink: 0; }
   `;
@@ -49,8 +56,7 @@ export class BetterNotesListItem extends LitElement {
   };
 
   render() {
-    const preview = stripHtml(this.note.content || '');
-    const truncated = preview.length > 60 ? `${preview.slice(0, 60)}…` : preview;
+    const preview = notePreviewHtml(this.note.content || '');
     const { title: textColor, muted: mutedColor } = getNoteTextColor(this.note.color);
     return html`
       <div
@@ -61,7 +67,7 @@ export class BetterNotesListItem extends LitElement {
           <div class="title">${this.note.title || 'Untitled'}</div>
           ${this.note.pinned ? html`<ha-svg-icon .path=${mdiPin}></ha-svg-icon>` : ''}
         </div>
-        <div class="preview">${truncated}</div>
+        <div class="preview">${unsafeHTML(preview)}</div>
         <div class="date">${formatRelativeDate(this.note.modified)}</div>
       </div>
     `;
