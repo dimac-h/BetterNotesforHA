@@ -1,41 +1,30 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { mdiPin } from '@mdi/js';
-import { safeColor, formatRelativeDate, stripHtml } from '../colors';
+import { safeColor, getNoteTextColor, formatRelativeDate, stripHtml } from '../colors';
 import type { Note } from '../api';
 
 @customElement('better-notes-list-item')
 export class BetterNotesListItem extends LitElement {
   static styles = css`
-    :host {
-      display: block; cursor: pointer;
-      padding-block: var(--ha-space-3);
-      padding-inline: var(--ha-space-4) var(--ha-space-3);
-      border-block-end: 1px solid var(--divider-color);
-      border-inline-start: 3px solid transparent;
-      background: var(--card-background-color);
+    :host { display: block; cursor: pointer; margin-block-end: var(--ha-space-2); }
+    .card {
+      border-radius: 6px;
+      padding: var(--ha-space-3);
     }
-    :host(:hover) { background: color-mix(in srgb, var(--primary-color) 6%, var(--card-background-color)); }
-    :host([active]) {
-      background: color-mix(in srgb, var(--primary-color) 12%, var(--card-background-color));
-      border-inline-start-color: var(--primary-color);
-    }
-    .header { display: flex; align-items: center; gap: var(--ha-space-2); margin-block-end: 2px; }
-    .dot { flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; }
+    :host(:hover) .card { box-shadow: var(--ha-box-shadow-s, 0 2px 6px rgba(0, 0, 0, 0.15)); }
+    :host([active]) .card { box-shadow: 0 0 0 2px var(--primary-color); }
+    .header { display: flex; align-items: center; gap: var(--ha-space-2); margin-block-end: 4px; }
     .title {
-      font-size: 15px; line-height: 1.3; font-weight: 600; color: var(--primary-text-color);
+      font-size: 15px; line-height: 1.3; font-weight: 600; color: var(--note-text);
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;
     }
     .preview {
-      font-size: 13px; line-height: 1.4; color: var(--secondary-text-color);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-block-end: 2px;
-      padding-inline-start: 16px;
+      font-size: 13px; line-height: 1.4; color: var(--note-text-muted);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-block-end: 4px;
     }
-    .date {
-      font-size: 12px; line-height: 1.3; color: var(--secondary-text-color);
-      padding-inline-start: 16px;
-    }
-    ha-svg-icon { --mdc-icon-size: 14px; color: var(--secondary-text-color); flex-shrink: 0; }
+    .date { font-size: 12px; line-height: 1.3; color: var(--note-text-muted); }
+    ha-svg-icon { --mdc-icon-size: 14px; color: var(--note-text-muted); flex-shrink: 0; }
   `;
 
   @property({ attribute: false }) note!: Note;
@@ -62,14 +51,19 @@ export class BetterNotesListItem extends LitElement {
   render() {
     const preview = stripHtml(this.note.content || '');
     const truncated = preview.length > 60 ? `${preview.slice(0, 60)}…` : preview;
+    const { title: textColor, muted: mutedColor } = getNoteTextColor(this.note.color);
     return html`
-      <div class="header">
-        <div class="dot" style="background:${safeColor(this.note.color)}"></div>
-        <div class="title">${this.note.title || 'Untitled'}</div>
-        ${this.note.pinned ? html`<ha-svg-icon .path=${mdiPin}></ha-svg-icon>` : ''}
+      <div
+        class="card"
+        style="background:${safeColor(this.note.color)}; --note-text:${textColor}; --note-text-muted:${mutedColor}"
+      >
+        <div class="header">
+          <div class="title">${this.note.title || 'Untitled'}</div>
+          ${this.note.pinned ? html`<ha-svg-icon .path=${mdiPin}></ha-svg-icon>` : ''}
+        </div>
+        <div class="preview">${truncated}</div>
+        <div class="date">${formatRelativeDate(this.note.modified)}</div>
       </div>
-      <div class="preview">${truncated}</div>
-      <div class="date">${formatRelativeDate(this.note.modified)}</div>
     `;
   }
 }

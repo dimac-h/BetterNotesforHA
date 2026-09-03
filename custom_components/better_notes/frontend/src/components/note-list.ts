@@ -7,14 +7,11 @@ import type { Note } from '../api';
 @customElement('better-notes-list')
 export class BetterNotesList extends LitElement {
   static styles = css`
-    :host { display: flex; flex-direction: column; height: 100%; background: var(--secondary-background-color); }
+    :host { display: flex; flex-direction: column; height: 100%; background: var(--card-background-color); }
     .header {
-      position: relative; z-index: 1;
       background: var(--card-background-color);
       padding-block: var(--ha-space-4) var(--ha-space-3);
       padding-inline: var(--ha-space-4);
-      border-block-end: 1px solid var(--divider-color);
-      box-shadow: var(--ha-box-shadow-s, 0 1px 2px rgba(0, 0, 0, 0.06));
     }
     .title-row { display: flex; align-items: center; gap: var(--ha-space-2); margin-block-end: var(--ha-space-3); }
     ha-menu-button { flex-shrink: 0; }
@@ -22,10 +19,26 @@ export class BetterNotesList extends LitElement {
       font-size: 20px; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em;
       color: var(--primary-text-color); margin: 0;
     }
-    ha-input { display: block; width: 100%; margin-block-end: var(--ha-space-3); }
-    ha-button { width: 100%; }
-    .items { flex: 1; overflow-y: auto; }
-    .empty { padding: var(--ha-space-4); }
+    /* ha-input's internal wa-input::part(base) hardcodes height: 56px
+       with no CSS variable indirection, so it can't be themed — clip
+       it down to size instead, centering the shifted control in the
+       visible window. */
+    .search-wrap {
+      height: 34px; overflow: hidden; margin-block-end: var(--ha-space-3);
+      border-radius: 6px;
+      box-shadow: 0 0 0 1px var(--divider-color);
+    }
+    ha-input {
+      display: block; width: 100%; margin-top: -11px;
+      --ha-color-form-background: var(--card-background-color);
+      --ha-color-form-background-hover: var(--card-background-color);
+      --ha-color-form-background-focus: var(--card-background-color);
+      --ha-color-form-background-active: var(--card-background-color);
+      font-size: 12px;
+    }
+    ha-button { width: 100%; --wa-form-control-border-radius: 6px; }
+    .items { flex: 1; overflow-y: auto; padding: var(--ha-space-3) var(--ha-space-4); }
+    .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
   `;
 
   @property({ attribute: false }) notes: Note[] = [];
@@ -58,18 +71,14 @@ export class BetterNotesList extends LitElement {
           <ha-menu-button></ha-menu-button>
           <h1>Home Assistant Notes</h1>
         </div>
-        <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
+        <div class="search-wrap">
+          <ha-input appearance="plain" size="s" placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
+        </div>
         <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>New note</ha-button>
       </div>
       <div class="items">
         ${filtered.length === 0
-          ? html`
-              <div class="empty">
-                <ha-alert alert-type="info" narrow>
-                  ${this.searchTerm ? html`No notes match "${this.searchTerm}".` : 'No notes yet. Create one to get started.'}
-                </ha-alert>
-              </div>
-            `
+          ? html`<div class="empty">No notes found</div>`
           : filtered.map(note => html`
               <better-notes-list-item .note=${note} ?active=${this.selectedNoteId === note.note_id}></better-notes-list-item>
             `)}

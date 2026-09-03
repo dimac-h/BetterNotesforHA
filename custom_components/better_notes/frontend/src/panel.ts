@@ -4,7 +4,7 @@ import './components/note-list';
 import './components/note-editor';
 import { getNotes, createNote, updateNote, deleteNote, subscribeNoteEvents } from './api';
 import type { Note } from './api';
-import { NOTE_COLORS } from './colors';
+import { DEFAULT_NOTE_COLOR } from './colors';
 import type { HomeAssistant } from './ha-types';
 
 function sortNotes(notes: Note[]): Note[] {
@@ -106,7 +106,7 @@ export class BetterNotesPanel extends LitElement {
     if (this._creatingNote) return;
     this._creatingNote = true;
     try {
-      const noteId = await createNote(this.hass, { title: 'New Note', content: '', color: NOTE_COLORS[0], pinned: false });
+      const noteId = await createNote(this.hass, { title: 'New Note', content: '', color: DEFAULT_NOTE_COLOR, pinned: false });
       await this._loadNotes();
       if (noteId) {
         this._enterEditor(noteId);
