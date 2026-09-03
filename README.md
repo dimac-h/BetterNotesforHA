@@ -2,14 +2,12 @@
 
 A notes panel for Home Assistant with rich text editing, dark mode support, and Lovelace card integration.
 
-<img src="https://raw.githubusercontent.com/dimac-h/Home-Assistant-Notes/main/images/screenshot-mobile.png" alt="Home Assistant Notes panel on mobile" width="320">
-
-<details>
-<summary>Desktop screenshot</summary>
-
-![Home Assistant Notes panel](https://raw.githubusercontent.com/dimac-h/Home-Assistant-Notes/main/images/screenshot.png)
-
-</details>
+<table>
+<tr>
+<td><img src="https://raw.githubusercontent.com/dimac-h/Home-Assistant-Notes/main/images/screenshot.png" alt="Home Assistant Notes panel on desktop" width="600" height="400"></td>
+<td><img src="https://raw.githubusercontent.com/dimac-h/Home-Assistant-Notes/main/images/screenshot-mobile.png" alt="Home Assistant Notes panel on mobile" width="300" height="400"></td>
+</tr>
+</table>
 
 ## Features
 
