@@ -13,21 +13,26 @@ A notes panel for Home Assistant with rich text editing, dark mode support, and 
 
 ## Features
 
-- Rich text editor — headings, bold, italic, lists, checklists, highlights, links
+- Rich text editing via [Tiptap](https://tiptap.dev/) headings, bold, italic, lists, checklists, highlights, links
 - Ten note colors with pin support
 - Real-time search
 - Dashboard card to display notes on any view
 - Auto-save
 - Dark mode
 
-<details>
-<summary>Installation</summary>
+## Installation
 
 ### HACS (recommended)
+
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
 1. Open HACS → Integrations → ⋮ → Custom repositories
 2. Add `https://github.com/dimac-h/Home-Assistant-Notes` as an Integration
 3. Download **Home Assistant Notes** and restart Home Assistant
+
+Or click the button below (requires [My Home Assistant](https://www.home-assistant.io/integrations/my/) configured) to open the repository directly in HACS:
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=dimac-h&repository=Home-Assistant-Notes&category=integration)
 
 ### Manual
 
@@ -35,16 +40,16 @@ Copy the `custom_components/better_notes` folder into your HA `custom_components
 
 ### Setup
 
-Go to **Settings → Devices & Services → Add Integration** and search for *Home Assistant Notes*. The panel appears in the sidebar automatically.
+Go to **Settings → Devices & Services → Add Integration** and search for *Home Assistant Notes*, or click the shortcut button below. The panel appears in the sidebar automatically.
 
-</details>
+[![Add Integration to your Home Assistant instance.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=better_notes)
 
 ## Formatting toolbar
 
 | Button  | Action                                                 |
 |---------|--------------------------------------------------------|
 | **H▾**  | Heading level (Normal / H1 / H2 / H3)                  |
-| **B▾**  | Bold, Italic, Strikethrough, Highlight                 |
+| **B▾**  | Bold, Italic, Strikethrough, Highlight, Code, Code block, Blockquote |
 | **≡▾**  | Bullet list, Numbered list, Checklist, Indent, Outdent |
 | **🎨▾** | Note color                                             |
 | **📌**  | Pin / unpin                                            |
