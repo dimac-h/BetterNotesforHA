@@ -112,7 +112,6 @@ export class BetterNotesTiptapEditor extends LitElement {
       return;
     }
     const { Editor, extensions } = loaded;
-    this._lastEmitted = this.content;
     this._editor = new Editor({
       element: this._mount,
       extensions,
@@ -120,6 +119,7 @@ export class BetterNotesTiptapEditor extends LitElement {
       autofocus: 'end',
       onUpdate: () => this._emitChanged(),
     });
+    this._lastEmitted = this._editor.getHTML();
   }
 
   private _emitChanged(): void {
