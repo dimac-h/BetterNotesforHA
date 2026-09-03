@@ -8,28 +8,34 @@ import type { Note } from '../api';
 export class BetterNotesListItem extends LitElement {
   static styles = css`
     :host {
-      position: relative; display: block; padding: 10px 10px 10px 14px; margin-bottom: 8px;
-      background: var(--card-background-color); border: 1px solid var(--divider-color);
-      border-radius: 8px; cursor: pointer;
+      display: block; cursor: pointer;
+      padding-block: var(--ha-space-3);
+      padding-inline: var(--ha-space-4) var(--ha-space-3);
+      border-block-end: 1px solid var(--divider-color);
+      border-inline-start: 3px solid transparent;
+      background: var(--card-background-color);
     }
-    :host(:hover) { border-color: var(--primary-color); box-shadow: var(--ha-box-shadow-s, 0 2px 4px rgba(0,0,0,0.08)); }
+    :host(:hover) { background: color-mix(in srgb, var(--primary-color) 6%, var(--card-background-color)); }
     :host([active]) {
-      background: color-mix(in srgb, var(--primary-color) 18%, var(--card-background-color));
-      border-color: var(--primary-color);
-      box-shadow: inset 3px 0 0 var(--primary-color);
+      background: color-mix(in srgb, var(--primary-color) 12%, var(--card-background-color));
+      border-inline-start-color: var(--primary-color);
     }
-    .bar { position: absolute; left: 0; top: 0; width: 4px; height: 100%; border-radius: 8px 0 0 8px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+    .header { display: flex; align-items: center; gap: var(--ha-space-2); margin-block-end: 2px; }
+    .dot { flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; }
     .title {
-      font-weight: 600; font-size: 14px; color: var(--primary-text-color);
+      font-size: 15px; line-height: 1.3; font-weight: 600; color: var(--primary-text-color);
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;
     }
     .preview {
-      font-size: 12px; color: var(--secondary-text-color);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 3px;
+      font-size: 13px; line-height: 1.4; color: var(--secondary-text-color);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-block-end: 2px;
+      padding-inline-start: 16px;
     }
-    .date { font-size: 11px; color: var(--secondary-text-color); }
-    ha-svg-icon { --mdc-icon-size: 12px; color: var(--secondary-text-color); }
+    .date {
+      font-size: 12px; line-height: 1.3; color: var(--secondary-text-color);
+      padding-inline-start: 16px;
+    }
+    ha-svg-icon { --mdc-icon-size: 14px; color: var(--secondary-text-color); flex-shrink: 0; }
   `;
 
   @property({ attribute: false }) note!: Note;
@@ -57,8 +63,8 @@ export class BetterNotesListItem extends LitElement {
     const preview = stripHtml(this.note.content || '');
     const truncated = preview.length > 60 ? `${preview.slice(0, 60)}…` : preview;
     return html`
-      <div class="bar" style="background:${safeColor(this.note.color)}"></div>
       <div class="header">
+        <div class="dot" style="background:${safeColor(this.note.color)}"></div>
         <div class="title">${this.note.title || 'Untitled'}</div>
         ${this.note.pinned ? html`<ha-svg-icon .path=${mdiPin}></ha-svg-icon>` : ''}
       </div>

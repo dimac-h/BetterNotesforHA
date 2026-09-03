@@ -1,19 +1,19 @@
-import { i as v, n as l, a as _, d as P, c as N, m as T, b as a, f as S, t as m, r as h, N as E, h as O, j as A, s as D, g as z, k as I, u as H, l as j } from "./colors-BT8ai8-5.js";
-const B = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
+import { i as v, n as l, a as _, d as P, c as L, m as N, b as a, f as S, t as g, r as h, N as E, h as O, j as A, s as D, g as z, k as I, u as H, l as B } from "./colors-BT8ai8-5.js";
+const j = (t, e, i) => (i.configurable = !0, i.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, i), i);
 function y(t, e) {
   return (i, s, o) => {
-    const r = (n) => n.renderRoot?.querySelector(t) ?? null;
-    return B(i, s, { get() {
-      return r(this);
+    const n = (r) => r.renderRoot?.querySelector(t) ?? null;
+    return j(i, s, { get() {
+      return n(this);
     } });
   };
 }
 var M = Object.defineProperty, G = Object.getOwnPropertyDescriptor, $ = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? G(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? G(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && M(e, i, o), o;
 };
-let x = class extends _ {
+let k = class extends _ {
   constructor() {
     super(...arguments), this.active = !1, this._select = () => {
       this.dispatchEvent(new CustomEvent("note-select", {
@@ -32,53 +32,59 @@ let x = class extends _ {
   render() {
     const t = P(this.note.content || ""), e = t.length > 60 ? `${t.slice(0, 60)}…` : t;
     return a`
-      <div class="bar" style="background:${N(this.note.color)}"></div>
       <div class="header">
+        <div class="dot" style="background:${L(this.note.color)}"></div>
         <div class="title">${this.note.title || "Untitled"}</div>
-        ${this.note.pinned ? a`<ha-svg-icon .path=${T}></ha-svg-icon>` : ""}
+        ${this.note.pinned ? a`<ha-svg-icon .path=${N}></ha-svg-icon>` : ""}
       </div>
       <div class="preview">${e}</div>
       <div class="date">${S(this.note.modified)}</div>
     `;
   }
 };
-x.styles = v`
+k.styles = v`
     :host {
-      position: relative; display: block; padding: 10px 10px 10px 14px; margin-bottom: 8px;
-      background: var(--card-background-color); border: 1px solid var(--divider-color);
-      border-radius: 8px; cursor: pointer;
+      display: block; cursor: pointer;
+      padding-block: var(--ha-space-3);
+      padding-inline: var(--ha-space-4) var(--ha-space-3);
+      border-block-end: 1px solid var(--divider-color);
+      border-inline-start: 3px solid transparent;
+      background: var(--card-background-color);
     }
-    :host(:hover) { border-color: var(--primary-color); box-shadow: var(--ha-box-shadow-s, 0 2px 4px rgba(0,0,0,0.08)); }
+    :host(:hover) { background: color-mix(in srgb, var(--primary-color) 6%, var(--card-background-color)); }
     :host([active]) {
-      background: color-mix(in srgb, var(--primary-color) 18%, var(--card-background-color));
-      border-color: var(--primary-color);
-      box-shadow: inset 3px 0 0 var(--primary-color);
+      background: color-mix(in srgb, var(--primary-color) 12%, var(--card-background-color));
+      border-inline-start-color: var(--primary-color);
     }
-    .bar { position: absolute; left: 0; top: 0; width: 4px; height: 100%; border-radius: 8px 0 0 8px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+    .header { display: flex; align-items: center; gap: var(--ha-space-2); margin-block-end: 2px; }
+    .dot { flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; }
     .title {
-      font-weight: 600; font-size: 14px; color: var(--primary-text-color);
+      font-size: 15px; line-height: 1.3; font-weight: 600; color: var(--primary-text-color);
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;
     }
     .preview {
-      font-size: 12px; color: var(--secondary-text-color);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 3px;
+      font-size: 13px; line-height: 1.4; color: var(--secondary-text-color);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-block-end: 2px;
+      padding-inline-start: 16px;
     }
-    .date { font-size: 11px; color: var(--secondary-text-color); }
-    ha-svg-icon { --mdc-icon-size: 12px; color: var(--secondary-text-color); }
+    .date {
+      font-size: 12px; line-height: 1.3; color: var(--secondary-text-color);
+      padding-inline-start: 16px;
+    }
+    ha-svg-icon { --mdc-icon-size: 14px; color: var(--secondary-text-color); flex-shrink: 0; }
   `;
 $([
   l({ attribute: !1 })
-], x.prototype, "note", 2);
+], k.prototype, "note", 2);
 $([
   l({ type: Boolean, reflect: !0 })
-], x.prototype, "active", 2);
-x = $([
-  m("better-notes-list-item")
-], x);
-var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, k = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? q(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
+], k.prototype, "active", 2);
+k = $([
+  g("better-notes-list-item")
+], k);
+var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, x = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && R(e, i, o), o;
 };
 let b = class extends _ {
@@ -107,10 +113,16 @@ let b = class extends _ {
           <h1>Home Assistant Notes</h1>
         </div>
         <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e) => e.stopPropagation()}></ha-input>
-        <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>+ New Note</ha-button>
+        <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>New note</ha-button>
       </div>
       <div class="items">
-        ${t.length === 0 ? a`<div class="empty">No notes found</div>` : t.map((e) => a`
+        ${t.length === 0 ? a`
+              <div class="empty">
+                <ha-alert alert-type="info" narrow>
+                  ${this.searchTerm ? a`No notes match "${this.searchTerm}".` : "No notes yet. Create one to get started."}
+                </ha-alert>
+              </div>
+            ` : t.map((e) => a`
               <better-notes-list-item .note=${e} ?active=${this.selectedNoteId === e.note_id}></better-notes-list-item>
             `)}
       </div>
@@ -119,29 +131,36 @@ let b = class extends _ {
 };
 b.styles = v`
     :host { display: flex; flex-direction: column; height: 100%; background: var(--secondary-background-color); }
-    .header { padding: 16px; border-bottom: 1px solid var(--divider-color); }
-    .title-row { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
-    h1 { font-size: 22px; font-weight: 600; color: var(--primary-text-color); margin: 0; }
-    ha-input { display: block; width: 100%; margin-bottom: 10px; }
+    .header {
+      padding-block: var(--ha-space-4) var(--ha-space-3);
+      padding-inline: var(--ha-space-4);
+      border-block-end: 1px solid var(--divider-color);
+    }
+    .title-row { display: flex; align-items: center; gap: var(--ha-space-1); margin-block-end: var(--ha-space-3); }
+    h1 {
+      font-size: 20px; line-height: 1.25; font-weight: 600;
+      color: var(--primary-text-color); margin: 0;
+    }
+    ha-input { display: block; width: 100%; margin-block-end: var(--ha-space-2); }
     ha-button { width: 100%; }
-    .items { flex: 1; overflow-y: auto; padding: 10px; }
-    .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
+    .items { flex: 1; overflow-y: auto; }
+    .empty { padding: var(--ha-space-4); }
   `;
-k([
+x([
   l({ attribute: !1 })
 ], b.prototype, "notes", 2);
-k([
+x([
   l({ type: String })
 ], b.prototype, "selectedNoteId", 2);
-k([
+x([
   l({ type: String })
 ], b.prototype, "searchTerm", 2);
-b = k([
-  m("better-notes-list")
+b = x([
+  g("better-notes-list")
 ], b);
-var V = Object.defineProperty, U = Object.getOwnPropertyDescriptor, g = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? U(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
+var V = Object.defineProperty, U = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? U(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && V(e, i, o), o;
 };
 let d = class extends _ {
@@ -271,27 +290,27 @@ d.styles = v`
     .link-row { display: flex; align-items: center; gap: 6px; width: 100%; padding: 6px 0 2px; flex-basis: 100%; }
     .link-row ha-input { flex: 1; }
   `;
-g([
+m([
   l({ type: Boolean })
 ], d.prototype, "pinned", 2);
-g([
+m([
   l({ type: String })
 ], d.prototype, "color", 2);
-g([
+m([
   l({ type: String })
 ], d.prototype, "linkHref", 2);
-g([
+m([
   h()
 ], d.prototype, "_openGroup", 2);
-g([
+m([
   h()
 ], d.prototype, "_linkOpen", 2);
-d = g([
-  m("better-notes-toolbar")
+d = m([
+  g("better-notes-toolbar")
 ], d);
 async function K() {
-  const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: r }, { ListItem: n }] = await Promise.all([
-    import("./index-pa5U7i3D.js").then((L) => L.O),
+  const [{ Editor: t }, { StarterKit: e }, { TaskList: i }, { TaskItem: s }, { Link: o }, { Highlight: n }, { ListItem: r }] = await Promise.all([
+    import("./index-pa5U7i3D.js").then((T) => T.O),
     import("./index-Yys9n5GD.js"),
     import("./index-B0TKEn8L.js"),
     import("./index-D6ncd5DV.js"),
@@ -309,17 +328,17 @@ async function K() {
       // ProseMirror climbs up through every ancestor list to find a place
       // it IS valid, collapsing all nested indentation in the process.
       e.configure({ heading: { levels: [1, 2, 3] }, link: !1, listItem: !1, hardBreak: !1 }),
-      n.extend({ content: "(paragraph|heading) block*" }),
+      r.extend({ content: "(paragraph|heading) block*" }),
       i,
       s.configure({ nested: !0 }),
       o.configure({ openOnClick: !0 }),
-      r
+      n
     ]
   };
 }
 var F = Object.defineProperty, J = Object.getOwnPropertyDescriptor, C = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? J(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? J(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && F(e, i, o), o;
 };
 let w = class extends _ {
@@ -505,11 +524,11 @@ C([
   y("#mount")
 ], w.prototype, "_mount", 2);
 w = C([
-  m("better-notes-tiptap-editor")
+  g("better-notes-tiptap-editor")
 ], w);
 var Q = Object.defineProperty, W = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? W(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? W(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && Q(e, i, o), o;
 };
 let p = class extends _ {
@@ -650,11 +669,11 @@ f([
   y(".title-input")
 ], p.prototype, "_titleInput", 2);
 p = f([
-  m("better-notes-editor")
+  g("better-notes-editor")
 ], p);
 var X = Object.defineProperty, Y = Object.getOwnPropertyDescriptor, u = (t, e, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? Y(e, i) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (o = (s ? n(e, i, o) : n(o)) || o);
+  for (var o = s > 1 ? void 0 : s ? Y(e, i) : e, n = t.length - 1, r; n >= 0; n--)
+    (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && X(e, i, o), o;
 };
 function Z(t) {
@@ -711,7 +730,7 @@ let c = class extends _ {
     await H(this.hass, t.detail), await this._loadNotes();
   }
   async _onNoteDelete(t) {
-    await j(this.hass, t.detail.noteId), this._selectedId = null, this._leaveEditor(), await this._loadNotes();
+    await B(this.hass, t.detail.noteId), this._selectedId = null, this._leaveEditor(), await this._loadNotes();
   }
   _onEditorBack() {
     this._leaveEditor();
@@ -772,7 +791,7 @@ u([
   h()
 ], c.prototype, "_view", 2);
 c = u([
-  m("better-notes-panel")
+  g("better-notes-panel")
 ], c);
 export {
   c as BetterNotesPanel

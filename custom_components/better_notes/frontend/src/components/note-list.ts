@@ -8,13 +8,20 @@ import type { Note } from '../api';
 export class BetterNotesList extends LitElement {
   static styles = css`
     :host { display: flex; flex-direction: column; height: 100%; background: var(--secondary-background-color); }
-    .header { padding: 16px; border-bottom: 1px solid var(--divider-color); }
-    .title-row { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
-    h1 { font-size: 22px; font-weight: 600; color: var(--primary-text-color); margin: 0; }
-    ha-input { display: block; width: 100%; margin-bottom: 10px; }
+    .header {
+      padding-block: var(--ha-space-4) var(--ha-space-3);
+      padding-inline: var(--ha-space-4);
+      border-block-end: 1px solid var(--divider-color);
+    }
+    .title-row { display: flex; align-items: center; gap: var(--ha-space-1); margin-block-end: var(--ha-space-3); }
+    h1 {
+      font-size: 20px; line-height: 1.25; font-weight: 600;
+      color: var(--primary-text-color); margin: 0;
+    }
+    ha-input { display: block; width: 100%; margin-block-end: var(--ha-space-2); }
     ha-button { width: 100%; }
-    .items { flex: 1; overflow-y: auto; padding: 10px; }
-    .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
+    .items { flex: 1; overflow-y: auto; }
+    .empty { padding: var(--ha-space-4); }
   `;
 
   @property({ attribute: false }) notes: Note[] = [];
@@ -48,11 +55,17 @@ export class BetterNotesList extends LitElement {
           <h1>Home Assistant Notes</h1>
         </div>
         <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
-        <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>+ New Note</ha-button>
+        <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>New note</ha-button>
       </div>
       <div class="items">
         ${filtered.length === 0
-          ? html`<div class="empty">No notes found</div>`
+          ? html`
+              <div class="empty">
+                <ha-alert alert-type="info" narrow>
+                  ${this.searchTerm ? html`No notes match "${this.searchTerm}".` : 'No notes yet. Create one to get started.'}
+                </ha-alert>
+              </div>
+            `
           : filtered.map(note => html`
               <better-notes-list-item .note=${note} ?active=${this.selectedNoteId === note.note_id}></better-notes-list-item>
             `)}
