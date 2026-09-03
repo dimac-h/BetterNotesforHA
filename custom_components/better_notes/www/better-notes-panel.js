@@ -413,13 +413,13 @@ let x = class extends _ {
       return;
     }
     const { Editor: e, extensions: i } = t;
-    this._lastEmitted = this.content, this._editor = new e({
+    this._editor = new e({
       element: this._mount,
       extensions: i,
       content: this.content,
       autofocus: "end",
       onUpdate: () => this._emitChanged()
-    });
+    }), this._lastEmitted = this._editor.getHTML();
   }
   _emitChanged() {
     this._lastEmitted = this.getHTML(), this.dispatchEvent(new CustomEvent("content-changed", {
