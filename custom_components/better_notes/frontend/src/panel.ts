@@ -19,7 +19,7 @@ export class BetterNotesPanel extends LitElement {
   static styles = css`
     :host { display: block; height: 100%; }
     .layout { display: flex; height: 100%; background: var(--card-background-color); overflow: hidden; }
-    .list-pane { flex-shrink: 0; }
+    .list-pane { flex-shrink: 0; border-inline-end: 1px solid var(--divider-color); }
     .editor-pane { flex: 1; min-width: 0; }
     @media (min-width: 768px) { .list-pane { width: 280px; } }
     @media (max-width: 767px) {

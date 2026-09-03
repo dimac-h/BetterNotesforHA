@@ -9,16 +9,20 @@ export class BetterNotesList extends LitElement {
   static styles = css`
     :host { display: flex; flex-direction: column; height: 100%; background: var(--secondary-background-color); }
     .header {
+      position: relative; z-index: 1;
+      background: var(--card-background-color);
       padding-block: var(--ha-space-4) var(--ha-space-3);
       padding-inline: var(--ha-space-4);
       border-block-end: 1px solid var(--divider-color);
+      box-shadow: var(--ha-box-shadow-s, 0 1px 2px rgba(0, 0, 0, 0.06));
     }
-    .title-row { display: flex; align-items: center; gap: var(--ha-space-1); margin-block-end: var(--ha-space-3); }
+    .title-row { display: flex; align-items: center; gap: var(--ha-space-2); margin-block-end: var(--ha-space-3); }
+    ha-menu-button { flex-shrink: 0; }
     h1 {
-      font-size: 20px; line-height: 1.25; font-weight: 600;
+      font-size: 20px; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em;
       color: var(--primary-text-color); margin: 0;
     }
-    ha-input { display: block; width: 100%; margin-block-end: var(--ha-space-2); }
+    ha-input { display: block; width: 100%; margin-block-end: var(--ha-space-3); }
     ha-button { width: 100%; }
     .items { flex: 1; overflow-y: auto; }
     .empty { padding: var(--ha-space-4); }

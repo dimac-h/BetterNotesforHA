@@ -82,7 +82,7 @@ $([
 k = $([
   g("better-notes-list-item")
 ], k);
-var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, x = (t, e, i, s) => {
+var R = Object.defineProperty, q = Object.getOwnPropertyDescriptor, w = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? q(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && R(e, i, o), o;
@@ -132,30 +132,34 @@ let b = class extends _ {
 b.styles = v`
     :host { display: flex; flex-direction: column; height: 100%; background: var(--secondary-background-color); }
     .header {
+      position: relative; z-index: 1;
+      background: var(--card-background-color);
       padding-block: var(--ha-space-4) var(--ha-space-3);
       padding-inline: var(--ha-space-4);
       border-block-end: 1px solid var(--divider-color);
+      box-shadow: var(--ha-box-shadow-s, 0 1px 2px rgba(0, 0, 0, 0.06));
     }
-    .title-row { display: flex; align-items: center; gap: var(--ha-space-1); margin-block-end: var(--ha-space-3); }
+    .title-row { display: flex; align-items: center; gap: var(--ha-space-2); margin-block-end: var(--ha-space-3); }
+    ha-menu-button { flex-shrink: 0; }
     h1 {
-      font-size: 20px; line-height: 1.25; font-weight: 600;
+      font-size: 20px; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em;
       color: var(--primary-text-color); margin: 0;
     }
-    ha-input { display: block; width: 100%; margin-block-end: var(--ha-space-2); }
+    ha-input { display: block; width: 100%; margin-block-end: var(--ha-space-3); }
     ha-button { width: 100%; }
     .items { flex: 1; overflow-y: auto; }
     .empty { padding: var(--ha-space-4); }
   `;
-x([
+w([
   l({ attribute: !1 })
 ], b.prototype, "notes", 2);
-x([
+w([
   l({ type: String })
 ], b.prototype, "selectedNoteId", 2);
-x([
+w([
   l({ type: String })
 ], b.prototype, "searchTerm", 2);
-b = x([
+b = w([
   g("better-notes-list")
 ], b);
 var V = Object.defineProperty, U = Object.getOwnPropertyDescriptor, m = (t, e, i, s) => {
@@ -341,7 +345,7 @@ var F = Object.defineProperty, J = Object.getOwnPropertyDescriptor, C = (t, e, i
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
   return s && o && F(e, i, o), o;
 };
-let w = class extends _ {
+let x = class extends _ {
   constructor() {
     super(...arguments), this.content = "", this._editor = null, this._fallback = !1, this._lastEmitted = "";
   }
@@ -458,7 +462,7 @@ let w = class extends _ {
       ></textarea>` : a`<div id="mount" @keydown=${(t) => t.stopPropagation()}></div>`;
   }
 };
-w.styles = v`
+x.styles = v`
     :host { display: flex; flex-direction: column; min-height: 0; flex: 1; }
     .fallback {
       width: 100%; min-height: 300px; font-size: 15px; line-height: 1.6;
@@ -519,13 +523,13 @@ w.styles = v`
   `;
 C([
   l({ attribute: !1 })
-], w.prototype, "content", 2);
+], x.prototype, "content", 2);
 C([
   y("#mount")
-], w.prototype, "_mount", 2);
-w = C([
+], x.prototype, "_mount", 2);
+x = C([
   g("better-notes-tiptap-editor")
-], w);
+], x);
 var Q = Object.defineProperty, W = Object.getOwnPropertyDescriptor, f = (t, e, i, s) => {
   for (var o = s > 1 ? void 0 : s ? W(e, i) : e, n = t.length - 1, r; n >= 0; n--)
     (r = t[n]) && (o = (s ? r(e, i, o) : r(o)) || o);
@@ -763,7 +767,7 @@ let c = class extends _ {
 c.styles = v`
     :host { display: block; height: 100%; }
     .layout { display: flex; height: 100%; background: var(--card-background-color); overflow: hidden; }
-    .list-pane { flex-shrink: 0; }
+    .list-pane { flex-shrink: 0; border-inline-end: 1px solid var(--divider-color); }
     .editor-pane { flex: 1; min-width: 0; }
     @media (min-width: 768px) { .list-pane { width: 280px; } }
     @media (max-width: 767px) {
