@@ -2,13 +2,85 @@
   "config": {
     "step": {
       "user": {
-        "title": "Home Assistant Notes",
-        "description": "Set up the Home Assistant Notes integration to add an Apple Notes-like experience to Home Assistant."
+        "title": "Home Assistant Notes Setup",
+        "description": "Set up the Home Assistant Notes integration. This will add a notes panel to your sidebar and enable note management throughout Home Assistant."
       }
     },
     "abort": {
-      "single_instance_allowed": "Only a single configuration of Home Assistant Notes is allowed."
+      "single_instance_allowed": "Only a single instance of Home Assistant Notes is allowed. The integration is already configured."
     }
   },
-  "title": "Home Assistant Notes"
+  "title": "Home Assistant Notes",
+  "services": {
+    "create_note": {
+      "name": "Create Note",
+      "description": "Create a new note.",
+      "fields": {
+        "title": {
+          "name": "Title",
+          "description": "The title of the note."
+        },
+        "content": {
+          "name": "Content",
+          "description": "The content/body of the note."
+        },
+        "color": {
+          "name": "Color",
+          "description": "The color of the note (hex code)."
+        },
+        "pinned": {
+          "name": "Pinned",
+          "description": "Whether the note should be pinned to the top."
+        },
+        "tags": {
+          "name": "Tags",
+          "description": "Tags for organizing the note."
+        }
+      }
+    },
+    "update_note": {
+      "name": "Update Note",
+      "description": "Update an existing note.",
+      "fields": {
+        "note_id": {
+          "name": "Note ID",
+          "description": "The unique identifier of the note to update."
+        },
+        "title": {
+          "name": "Title",
+          "description": "The new title of the note."
+        },
+        "content": {
+          "name": "Content",
+          "description": "The new content of the note."
+        },
+        "color": {
+          "name": "Color",
+          "description": "The new color of the note."
+        },
+        "pinned": {
+          "name": "Pinned",
+          "description": "Whether the note should be pinned."
+        },
+        "tags": {
+          "name": "Tags",
+          "description": "Updated tags for the note."
+        }
+      }
+    },
+    "delete_note": {
+      "name": "Delete Note",
+      "description": "Delete a note permanently.",
+      "fields": {
+        "note_id": {
+          "name": "Note ID",
+          "description": "The unique identifier of the note to delete."
+        }
+      }
+    },
+    "get_notes": {
+      "name": "Get Notes",
+      "description": "Retrieve all notes. This will fire a 'better_notes_notes_list' event with all notes."
+    }
+  }
 }

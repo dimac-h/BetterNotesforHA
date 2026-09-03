@@ -1,35 +1,37 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { mdiPin } from '@mdi/js';
-import { safeColor, formatRelativeDate, stripHtml } from '../colors';
+import { safeColor, getNoteTextColor, formatRelativeDate, notePreviewHtml } from '../colors';
 import type { Note } from '../api';
 
 @customElement('better-notes-list-item')
 export class BetterNotesListItem extends LitElement {
   static styles = css`
-    :host {
-      position: relative; display: block; padding: 10px 10px 10px 14px; margin-bottom: 8px;
-      background: var(--card-background-color); border: 1px solid var(--divider-color);
-      border-radius: 8px; cursor: pointer;
+    :host { display: block; cursor: pointer; margin-block-end: var(--ha-space-2); }
+    .card {
+      border-radius: 6px;
+      padding: var(--ha-space-3);
     }
-    :host(:hover) { border-color: var(--primary-color); box-shadow: var(--ha-box-shadow-s, 0 2px 4px rgba(0,0,0,0.08)); }
-    :host([active]) {
-      background: color-mix(in srgb, var(--primary-color) 18%, var(--card-background-color));
-      border-color: var(--primary-color);
-      box-shadow: inset 3px 0 0 var(--primary-color);
-    }
-    .bar { position: absolute; left: 0; top: 0; width: 4px; height: 100%; border-radius: 8px 0 0 8px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+    :host(:hover) .card { box-shadow: var(--ha-box-shadow-s, 0 2px 6px rgba(0, 0, 0, 0.15)); }
+    :host([active]) .card { box-shadow: 0 0 0 2px var(--primary-color); }
+    .header { display: flex; align-items: center; gap: var(--ha-space-2); margin-block-end: 4px; }
     .title {
-      font-weight: 600; font-size: 14px; color: var(--primary-text-color);
+      font-size: 15px; line-height: 1.3; font-weight: 600; color: var(--note-text);
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;
     }
     .preview {
-      font-size: 12px; color: var(--secondary-text-color);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 3px;
+      font-size: 13px; line-height: 1.4; color: var(--note-text-muted);
+      margin-block-end: 4px; pointer-events: none;
+      display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+      line-clamp: 3; overflow: hidden;
     }
-    .date { font-size: 11px; color: var(--secondary-text-color); }
-    ha-svg-icon { --mdc-icon-size: 12px; color: var(--secondary-text-color); }
+    .preview p, .preview li { margin: 0; }
+    .preview ul, .preview ol { margin: 0; padding-inline-start: 1.1em; }
+    .preview ul[data-type='taskList'] { list-style: none; padding-inline-start: 0; }
+    .preview input[type='checkbox'] { vertical-align: middle; margin-inline-end: 4px; }
+    .date { font-size: 12px; line-height: 1.3; color: var(--note-text-muted); }
+    ha-svg-icon { --mdc-icon-size: 14px; color: var(--note-text-muted); flex-shrink: 0; }
   `;
 
   @property({ attribute: false }) note!: Note;
@@ -54,16 +56,20 @@ export class BetterNotesListItem extends LitElement {
   };
 
   render() {
-    const preview = stripHtml(this.note.content || '');
-    const truncated = preview.length > 60 ? `${preview.slice(0, 60)}…` : preview;
+    const preview = notePreviewHtml(this.note.content || '');
+    const { title: textColor, muted: mutedColor } = getNoteTextColor(this.note.color);
     return html`
-      <div class="bar" style="background:${safeColor(this.note.color)}"></div>
-      <div class="header">
-        <div class="title">${this.note.title || 'Untitled'}</div>
-        ${this.note.pinned ? html`<ha-svg-icon .path=${mdiPin}></ha-svg-icon>` : ''}
+      <div
+        class="card"
+        style="background:${safeColor(this.note.color)}; --note-text:${textColor}; --note-text-muted:${mutedColor}"
+      >
+        <div class="header">
+          <div class="title">${this.note.title || 'Untitled'}</div>
+          ${this.note.pinned ? html`<ha-svg-icon .path=${mdiPin}></ha-svg-icon>` : ''}
+        </div>
+        <div class="preview">${unsafeHTML(preview)}</div>
+        <div class="date">${formatRelativeDate(this.note.modified)}</div>
       </div>
-      <div class="preview">${truncated}</div>
-      <div class="date">${formatRelativeDate(this.note.modified)}</div>
     `;
   }
 }

@@ -4,7 +4,7 @@ import './components/note-list';
 import './components/note-editor';
 import { getNotes, createNote, updateNote, deleteNote, subscribeNoteEvents } from './api';
 import type { Note } from './api';
-import { NOTE_COLORS } from './colors';
+import { DEFAULT_NOTE_COLOR } from './colors';
 import type { HomeAssistant } from './ha-types';
 
 function sortNotes(notes: Note[]): Note[] {
@@ -19,7 +19,7 @@ export class BetterNotesPanel extends LitElement {
   static styles = css`
     :host { display: block; height: 100%; }
     .layout { display: flex; height: 100%; background: var(--card-background-color); overflow: hidden; }
-    .list-pane { flex-shrink: 0; }
+    .list-pane { flex-shrink: 0; border-inline-end: 1px solid var(--divider-color); }
     .editor-pane { flex: 1; min-width: 0; }
     @media (min-width: 768px) { .list-pane { width: 280px; } }
     @media (max-width: 767px) {
@@ -77,7 +77,14 @@ export class BetterNotesPanel extends LitElement {
 
   private _leaveEditor(): void {
     if (this._pushedEditorState) {
+      // Clear the flag and update _view synchronously so a second call
+      // before the async popstate event fires (e.g. a double-click on the
+      // back button) takes the else branch below instead of calling
+      // history.back() again and popping an extra entry. _onPopState still
+      // handles the flag/view update for the swipe/browser-back gesture,
+      // which doesn't go through this method at all.
       this._pushedEditorState = false;
+      this._view = 'list';
       history.back();
     } else {
       this._view = 'list';
@@ -106,7 +113,7 @@ export class BetterNotesPanel extends LitElement {
     if (this._creatingNote) return;
     this._creatingNote = true;
     try {
-      const noteId = await createNote(this.hass, { title: 'New Note', content: '', color: NOTE_COLORS[0], pinned: false });
+      const noteId = await createNote(this.hass, { title: 'New Note', content: '', color: DEFAULT_NOTE_COLOR, pinned: false });
       await this._loadNotes();
       if (noteId) {
         this._enterEditor(noteId);

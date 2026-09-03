@@ -7,13 +7,39 @@ import type { Note } from '../api';
 @customElement('better-notes-list')
 export class BetterNotesList extends LitElement {
   static styles = css`
-    :host { display: flex; flex-direction: column; height: 100%; background: var(--secondary-background-color); }
-    .header { padding: 16px; border-bottom: 1px solid var(--divider-color); }
-    .title-row { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
-    h1 { font-size: 22px; font-weight: 600; color: var(--primary-text-color); margin: 0; }
-    ha-input { display: block; width: 100%; margin-bottom: 10px; }
-    ha-button { width: 100%; }
-    .items { flex: 1; overflow-y: auto; padding: 10px; }
+    :host { display: flex; flex-direction: column; height: 100%; background: var(--card-background-color); }
+    .header {
+      background: var(--card-background-color);
+      padding-block: var(--ha-space-4) var(--ha-space-3);
+      padding-inline: var(--ha-space-4);
+    }
+    .title-row { display: flex; align-items: center; gap: var(--ha-space-2); margin-block-end: var(--ha-space-3); }
+    ha-menu-button { flex-shrink: 0; }
+    h1 {
+      font-size: 20px; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em;
+      color: var(--primary-text-color); margin: 0;
+    }
+    .search-wrap {
+      margin-block-end: var(--ha-space-3);
+      border-radius: 6px;
+      box-shadow: 0 0 0 1px var(--divider-color);
+      overflow: hidden;
+    }
+    ha-input {
+      display: block; width: 100%;
+      --ha-color-form-background: var(--card-background-color);
+      --ha-color-form-background-hover: var(--card-background-color);
+      --ha-color-form-background-focus: var(--card-background-color);
+      --ha-color-form-background-active: var(--card-background-color);
+      font-size: 12px;
+    }
+    /* ha-input's internal wa-input::part(base) hardcodes height: 56px with
+       no CSS variable indirection — target the exported shadow part
+       directly instead of clipping/offsetting the whole element, so this
+       tracks the control's real box rather than a guessed pixel offset. */
+    ha-input::part(base) { height: 34px; min-height: 34px; }
+    ha-button { width: 100%; --wa-form-control-border-radius: 6px; }
+    .items { flex: 1; overflow-y: auto; padding: var(--ha-space-3) var(--ha-space-4); }
     .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); font-size: 14px; }
   `;
 
@@ -47,8 +73,10 @@ export class BetterNotesList extends LitElement {
           <ha-menu-button></ha-menu-button>
           <h1>Home Assistant Notes</h1>
         </div>
-        <ha-input placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
-        <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>+ New Note</ha-button>
+        <div class="search-wrap">
+          <ha-input appearance="plain" size="s" placeholder="Search notes..." .value=${this.searchTerm} @input=${this._onSearch} @keydown=${(e: KeyboardEvent) => e.stopPropagation()}></ha-input>
+        </div>
+        <ha-button size="s" appearance="filled" variant="brand" @click=${this._onNew}>New note</ha-button>
       </div>
       <div class="items">
         ${filtered.length === 0
